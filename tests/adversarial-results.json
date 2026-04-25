@@ -1,0 +1,470 @@
+[
+  {
+    "id": "B1",
+    "category": "Boundary Input",
+    "prompt": "",
+    "expectation": "Should score very low or handle empty input gracefully",
+    "result": {
+      "overall": 1.0,
+      "dimensions": {
+        "Clarity": 1,
+        "Specificity": 1,
+        "Technical Feasibility": 1,
+        "Cinematic Quality": 1,
+        "Creativity": 1
+      },
+      "feedback": {
+        "Clarity": "The prompt is completely empty and lacks any meaningful information",
+        "Specificity": "There is no subject, style, motion, lighting, or mood specified",
+        "Technical Feasibility": "Current AI models require some input to generate a video, making this prompt infeasible",
+        "Cinematic Quality": "There is no cinematic language or vision to evaluate",
+        "Creativity": "An empty prompt does not allow for any creative interpretation"
+      },
+      "improvements": [
+        "Add a specific subject or topic to the prompt",
+        "Define the desired style, such as realistic or cartoon-like",
+        "Include information about the desired motion, lighting, and mood"
+      ],
+      "edgeCases": [
+        "The AI model may generate a random or default video if no input is provided"
+      ]
+    }
+  },
+  {
+    "id": "B2",
+    "category": "Boundary Input",
+    "prompt": "cat",
+    "expectation": "Single word — low clarity and specificity",
+    "result": {
+      "overall": 2.8,
+      "dimensions": {
+        "Clarity": 2,
+        "Specificity": 1,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 1,
+        "Creativity": 2
+      },
+      "feedback": {
+        "Clarity": "The prompt is very brief and lacks context.",
+        "Specificity": "No details are provided about the desired video, such as scene, action, or style.",
+        "Technical Feasibility": "Current AI models can generate a cat, but the lack of specificity may lead to inconsistent results.",
+        "Cinematic Quality": "The prompt does not suggest any particular cinematic approach or style.",
+        "Creativity": "The prompt is generic and does not inspire a unique or original video."
+      },
+      "improvements": [
+        "Add context about the scene or environment",
+        "Specify the desired action or behavior of the cat",
+        "Define a particular style or mood for the video"
+      ],
+      "edgeCases": [
+        "The model may generate a static image of a cat instead of a video"
+      ]
+    }
+  },
+  {
+    "id": "B3",
+    "category": "Boundary Input",
+    "prompt": "xkq7 bla3 zzz !!!",
+    "expectation": "Gibberish — low across all dimensions",
+    "result": {
+      "overall": 1.0,
+      "dimensions": {
+        "Clarity": 1,
+        "Specificity": 1,
+        "Technical Feasibility": 1,
+        "Cinematic Quality": 1,
+        "Creativity": 1
+      },
+      "feedback": {
+        "Clarity": "The prompt is completely unclear and does not provide any understandable information.",
+        "Specificity": "The prompt lacks any detail about the subject, style, motion, lighting, or mood of the video.",
+        "Technical Feasibility": "Current AI models cannot generate a coherent video from this prompt due to its lack of meaningful content.",
+        "Cinematic Quality": "The prompt does not demonstrate any understanding of cinematic language or principles.",
+        "Creativity": "The prompt does not suggest any original or visually interesting concepts."
+      },
+      "improvements": [
+        "Provide a clear and concise description of the desired video content.",
+        "Include specific details about the subject, style, and mood of the video.",
+        "Use understandable and relevant keywords to help the AI model generate the video."
+      ],
+      "edgeCases": [
+        "The prompt may be misinterpreted as a test or a joke, leading to unpredictable results."
+      ]
+    }
+  },
+  {
+    "id": "G1",
+    "category": "Score Gaming",
+    "prompt": "A cinematic 4K aerial drone shot with bokeh depth of field, golden hour lighting, slow motion, dynamic camera movement",
+    "expectation": "Sounds technical but has no subject — specificity should be penalized",
+    "result": {
+      "overall": 8.4,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 9,
+        "Creativity": 7
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear, but could benefit from specifying the scene or location",
+        "Specificity": "The prompt includes style, lighting, and motion details, but lacks information on the subject or scene content",
+        "Technical Feasibility": "Current AI models can generate high-quality aerial shots with specified effects, but might struggle with complex dynamic movements",
+        "Cinematic Quality": "The use of golden hour lighting, bokeh depth of field, and slow motion implies a strong understanding of cinematic language",
+        "Creativity": "While the prompt has visually appealing elements, it's a fairly common and generic shot, lacking a unique twist or originality"
+      },
+      "improvements": [
+        "Specify the scene or location to provide context",
+        "Add details about the subject or main focus of the shot",
+        "Consider adding a unique element or twist to the prompt"
+      ],
+      "edgeCases": [
+        "Drone footage with extremely complex or dynamic movements may be difficult to generate"
+      ]
+    }
+  },
+  {
+    "id": "G2",
+    "category": "Score Gaming",
+    "prompt": "Epic cinematic masterpiece with stunning visuals and breathtaking composition",
+    "expectation": "Pure adjectives, zero content — specificity score should be very low",
+    "result": {
+      "overall": 5.0,
+      "dimensions": {
+        "Clarity": 4,
+        "Specificity": 2,
+        "Technical Feasibility": 6,
+        "Cinematic Quality": 8,
+        "Creativity": 5
+      },
+      "feedback": {
+        "Clarity": "The prompt is vague and lacks concrete elements to clearly define the desired outcome.",
+        "Specificity": "It does not include enough detail regarding subject, style, motion, lighting, or mood to effectively guide the generation process.",
+        "Technical Feasibility": "Current AI models can generate visually stunning compositions, but the lack of specificity might lead to inconsistent results.",
+        "Cinematic Quality": "The prompt suggests an understanding of cinematic language, aiming for an 'epic' and 'masterpiece' quality.",
+        "Creativity": "While it encourages stunning visuals, it doesn't introduce an original concept or unique visual approach."
+      },
+      "improvements": [
+        "Add specific details about the subject matter",
+        "Define the desired style, such as sci-fi, fantasy, or historical",
+        "Include information about the desired mood and atmosphere"
+      ],
+      "edgeCases": [
+        "The prompt's broad nature might lead to unpredictable or undesirable outcomes without human oversight or further clarification."
+      ]
+    }
+  },
+  {
+    "id": "G3",
+    "category": "Score Gaming",
+    "prompt": "A beautiful, amazing, incredible, stunning, gorgeous, spectacular landscape with perfect lighting",
+    "expectation": "Adjective stacking — model may be fooled into high creativity score",
+    "result": {
+      "overall": 4.6,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 2,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 4,
+        "Creativity": 3
+      },
+      "feedback": {
+        "Clarity": "The prompt is somewhat clear but repetitive, using multiple synonyms for 'beautiful' without adding specificity.",
+        "Specificity": "The prompt lacks details about the type of landscape, its features, or the style of the video.",
+        "Technical Feasibility": "Current AI models can generate landscapes with controlled lighting, but the perfection of lighting might be challenging.",
+        "Cinematic Quality": "The prompt does not provide information about camera angles, movement, or mood, which are essential for cinematic quality.",
+        "Creativity": "The prompt is generic and does not offer a unique or original concept for the video."
+      },
+      "improvements": [
+        "Be more specific about the type of landscape (e.g., mountain, beach, forest).",
+        "Define the style or mood of the video (e.g., realistic, fantastical, serene, dramatic).",
+        "Provide details about camera movements or angles to enhance cinematic quality."
+      ],
+      "edgeCases": [
+        "The AI model might interpret 'perfect lighting' differently than a human would, potentially leading to unrealistic or unappealing results."
+      ]
+    }
+  },
+  {
+    "id": "C1",
+    "category": "Contradiction",
+    "prompt": "A fast slow-motion shot of a perfectly still moving object in complete darkness with bright light",
+    "expectation": "Multiple contradictions — Technical Feasibility and Clarity should drop",
+    "result": {
+      "overall": 6.6,
+      "dimensions": {
+        "Clarity": 4,
+        "Specificity": 6,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 7,
+        "Creativity": 8
+      },
+      "feedback": {
+        "Clarity": "The prompt contains contradictory terms like 'perfectly still moving object' and 'fast slow-motion shot', which makes it confusing.",
+        "Specificity": "The prompt provides some detail about the desired effect, such as 'fast slow-motion shot' and 'bright light', but lacks information about the object itself and the context.",
+        "Technical Feasibility": "Current AI video models can generate slow-motion shots and handle lighting effects, but the contradictory nature of the prompt might pose challenges.",
+        "Cinematic Quality": "The use of 'fast slow-motion shot' and 'bright light' in 'complete darkness' could create an interesting visual effect, but the overall cinematic quality is hindered by the prompt's ambiguity.",
+        "Creativity": "The combination of 'fast slow-motion shot', 'perfectly still moving object', and contrasting lighting is unique and could result in a visually interesting video."
+      },
+      "improvements": [
+        "Define the object and its properties to make the prompt more specific",
+        "Resolve the contradictions in the prompt, such as 'perfectly still moving object'",
+        "Provide more context about the desired mood and atmosphere to enhance cinematic quality"
+      ],
+      "edgeCases": [
+        "The prompt's ambiguous nature may lead to unpredictable or unwanted results in the generated video"
+      ]
+    }
+  },
+  {
+    "id": "C2",
+    "category": "Contradiction",
+    "prompt": "A dark cheerful intimate epic scene with a crowd of exactly one person, silent but audio-driven",
+    "expectation": "Oxymorons stacked — model should flag conflicts",
+    "result": {
+      "overall": 6.8,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 8,
+        "Technical Feasibility": 7,
+        "Cinematic Quality": 5,
+        "Creativity": 8
+      },
+      "feedback": {
+        "Clarity": "The prompt is somewhat clear but contains contradictory elements like 'dark cheerful' and 'intimate epic', which may confuse the model",
+        "Specificity": "The prompt includes some specific details like the number of people in the crowd and the audio-driven aspect, but lacks information on subject, style, motion, lighting, and mood",
+        "Technical Feasibility": "Current AI video models can generate scenes with crowds and audio, but the contradictory elements may pose technical challenges",
+        "Cinematic Quality": "The use of cinematic language is limited, and the prompt does not convey a clear visual or storytelling vision",
+        "Creativity": "The prompt is original and attempts to combine contrasting elements, which could lead to an interesting and unique visual result"
+      },
+      "improvements": [
+        "Add more specific details about the subject, style, and mood to guide the model",
+        "Clarify or remove contradictory elements to ensure a coherent visual representation",
+        "Consider providing examples or references to help the model understand the desired cinematic quality and tone"
+      ],
+      "edgeCases": [
+        "The model may struggle to generate a crowd of exactly one person, as this is an unusual and potentially confusing concept"
+      ]
+    }
+  },
+  {
+    "id": "C3",
+    "category": "Contradiction",
+    "prompt": "A minimalist maximalist shot with no color but vibrant palette, close-up wide-angle",
+    "expectation": "Contradictions on every axis — expect low clarity and technical feasibility",
+    "result": {
+      "overall": 6.6,
+      "dimensions": {
+        "Clarity": 4,
+        "Specificity": 6,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 7,
+        "Creativity": 8
+      },
+      "feedback": {
+        "Clarity": "The prompt contains contradictory terms, such as 'minimalist maximalist' and 'no color but vibrant palette', making it unclear what the desired outcome is.",
+        "Specificity": "The prompt includes some details about the shot type ('close-up wide-angle') but lacks information about subject, lighting, and mood.",
+        "Technical Feasibility": "Current AI video models can likely generate a shot with the specified characteristics, but the contradictory terms may cause issues.",
+        "Cinematic Quality": "The use of 'close-up wide-angle' is an interesting cinematic choice, but the overall prompt lacks a clear vision for effective cinematic language.",
+        "Creativity": "The prompt's use of contradictory terms and unusual combinations ('minimalist maximalist', 'no color but vibrant palette') shows potential for originality and visual interest."
+      },
+      "improvements": [
+        "Clarify the color palette and overall aesthetic",
+        "Provide more context about the subject and scene",
+        "Define what 'minimalist maximalist' means in terms of composition and style"
+      ],
+      "edgeCases": [
+        "The AI model may interpret 'no color' as a literal absence of color, rather than a muted or monochromatic palette"
+      ]
+    }
+  },
+  {
+    "id": "T1",
+    "category": "Technical Impossibility",
+    "prompt": "Film inside a black hole at 8K 120fps with a camera that captures gravity waves",
+    "expectation": "Physically impossible — Technical Feasibility should score 1-2",
+    "result": {
+      "overall": 6.8,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 6,
+        "Technical Feasibility": 4,
+        "Cinematic Quality": 7,
+        "Creativity": 9
+      },
+      "feedback": {
+        "Clarity": "The prompt is mostly clear but lacks specificity about the desired visuals or sequence of events inside the black hole.",
+        "Specificity": "The prompt specifies some technical details like resolution and frame rate but misses details about the content, style, and tone of the video.",
+        "Technical Feasibility": "Current AI models can generate realistic visuals, but capturing gravity waves with a camera is not feasible with current technology, and rendering such complex physics at 8K 120fps is extremely challenging.",
+        "Cinematic Quality": "The idea of filming inside a black hole offers a lot of potential for dramatic and awe-inspiring cinematography, but the prompt does not give guidance on how to achieve this.",
+        "Creativity": "The concept of filming inside a black hole is highly original and visually interesting, offering a lot of creative possibilities."
+      },
+      "improvements": [
+        "Add more details about the desired visuals or sequence of events inside the black hole",
+        "Specify the style or tone of the video, such as documentary, sci-fi, or educational",
+        "Consider simplifying the technical requirements to make the prompt more feasible for current AI models"
+      ],
+      "edgeCases": [
+        "The laws of physics as we know them break down inside a black hole, so any visualization would require a deep understanding of theoretical physics and cosmology"
+      ]
+    }
+  },
+  {
+    "id": "T2",
+    "category": "Technical Impossibility",
+    "prompt": "A 6-hour continuous uncut AI video of a hummingbird wing at 100,000fps showing each feather molecule",
+    "expectation": "Duration + resolution impossible for current AI video — Technical Feasibility should be very low",
+    "result": {
+      "overall": 5.8,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 9,
+        "Technical Feasibility": 2,
+        "Cinematic Quality": 6,
+        "Creativity": 4
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear about the subject, a hummingbird wing, and the desired frame rate and duration, but lacks information about the style, lighting, or mood.",
+        "Specificity": "The prompt provides a wealth of detail about the subject and the technical aspects of the video, but could benefit from more context about the desired style or presentation.",
+        "Technical Feasibility": "Current AI video models are not capable of generating a 6-hour video at 100,000fps, and showing each feather molecule is beyond current technological capabilities.",
+        "Cinematic Quality": "The prompt does not demonstrate a strong understanding of effective cinematic language, as a single shot of a hummingbird wing for 6 hours may not be visually engaging.",
+        "Creativity": "The prompt is more focused on technical aspects than creative vision, and the idea of showing each feather molecule is more scientifically interesting than visually interesting."
+      },
+      "improvements": [
+        "Consider a shorter duration to make the video more manageable and engaging",
+        "Add more context about the desired style, lighting, or mood to enhance cinematic quality",
+        "Scale back the technical requirements to make the prompt more feasible with current AI technology"
+      ],
+      "edgeCases": [
+        "The prompt may be attempting to push the limits of AI video generation capabilities, which could lead to interesting innovations in the field"
+      ]
+    }
+  },
+  {
+    "id": "T3",
+    "category": "Technical Impossibility",
+    "prompt": "Generate a real-time interactive 3D holographic video that physically responds to touch",
+    "expectation": "Not a video generation task — Technical Feasibility should be 1",
+    "result": {
+      "overall": 5.8,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 2,
+        "Technical Feasibility": 4,
+        "Cinematic Quality": 8,
+        "Creativity": 9
+      },
+      "feedback": {
+        "Clarity": "The prompt is mostly clear, but lacks specifics on the content and style of the holographic video.",
+        "Specificity": "The prompt is too broad and does not include enough details about the subject, style, or desired outcome.",
+        "Technical Feasibility": "Current AI video models can generate interactive 3D content, but physical responsiveness to touch is still a challenge and might require additional hardware and software capabilities.",
+        "Cinematic Quality": "The idea of a holographic video has high cinematic potential, with possibilities for immersive and engaging storytelling.",
+        "Creativity": "The concept of a real-time interactive 3D holographic video is highly original and visually interesting."
+      },
+      "improvements": [
+        "Define the subject and style of the holographic video",
+        "Specify the desired level of physical responsiveness to touch",
+        "Consider the technical requirements and limitations of current AI video models"
+      ],
+      "edgeCases": [
+        "Users with different types of touch devices or interfaces",
+        "Variations in lighting conditions that may affect hologram visibility",
+        "Potential health and safety concerns related to prolonged use of interactive holographic technology"
+      ]
+    }
+  },
+  {
+    "id": "K1",
+    "category": "Consistency Run 1",
+    "prompt": "A woman walking alone in heavy rain at night, cinematic, 35mm film grain, shallow depth of field",
+    "expectation": "Baseline run — record scores for variance analysis",
+    "result": {
+      "overall": 8.2,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is mostly clear, but could benefit from more specifics about the woman's actions or the environment.",
+        "Specificity": "The prompt includes a clear subject, time of day, and weather conditions, as well as desired cinematic effects, but could use more detail about the woman's emotions or interactions.",
+        "Technical Feasibility": "Current AI models can generate rain, night scenes, and film grain effects, making this prompt technically feasible.",
+        "Cinematic Quality": "The inclusion of cinematic techniques like 35mm film grain and shallow depth of field suggests a high level of cinematic quality.",
+        "Creativity": "While the prompt has some unique elements, the 'person walking alone in the rain' is a common trope, reducing its originality."
+      },
+      "improvements": [
+        "Add more detail about the woman's emotions or backstory to increase character depth",
+        "Specify the setting or location to add context to the scene",
+        "Consider adding more dynamic elements, such as camera movements or interactions with the environment"
+      ],
+      "edgeCases": [
+        "The model may struggle to realistically render heavy rain or night scenes, depending on its training data"
+      ]
+    }
+  },
+  {
+    "id": "K2",
+    "category": "Consistency Run 2",
+    "prompt": "A woman walking alone in heavy rain at night, cinematic, 35mm film grain, shallow depth of field",
+    "expectation": "Same as K1 — scores should be stable",
+    "result": {
+      "overall": 8.2,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 8,
+        "Creativity": 7
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear and understandable, but could benefit from specifying the woman's actions or emotions.",
+        "Specificity": "The prompt includes details about the scene, film style, and camera settings, but lacks information about the woman's character, her surroundings, and the mood.",
+        "Technical Feasibility": "Current AI video models can realistically generate this scene, as it involves common elements like rain, night, and film grain.",
+        "Cinematic Quality": "The prompt uses effective cinematic language, such as 'cinematic' and '35mm film grain', but could be improved with more details about lighting, camera movements, or sound design.",
+        "Creativity": "The prompt is visually interesting, but not highly original, as the 'woman walking alone in the rain' is a common trope."
+      },
+      "improvements": [
+        "Add more details about the woman's character, such as her age, clothing, or accessories.",
+        "Specify the woman's emotions or actions, such as 'looking worried' or 'checking her phone'.",
+        "Include more information about the surroundings, such as 'a city street' or 'a deserted alley'."
+      ],
+      "edgeCases": [
+        "The AI model may struggle to generate realistic rain or lighting effects.",
+        "The model may have difficulty capturing the desired film grain or cinematic look."
+      ]
+    }
+  },
+  {
+    "id": "K3",
+    "category": "Consistency Run 3",
+    "prompt": "A woman walking alone in heavy rain at night, cinematic, 35mm film grain, shallow depth of field",
+    "expectation": "Same as K1 — measure score variance across 3 runs",
+    "result": {
+      "overall": 8.2,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 9,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is relatively clear, but could benefit from more specific details about the woman's actions or emotions.",
+        "Specificity": "The prompt includes specific details about the environment, film style, and camera settings, which helps to create a vivid image.",
+        "Technical Feasibility": "Current AI video models can realistically generate this type of scene, including the addition of film grain and shallow depth of field.",
+        "Cinematic Quality": "The prompt uses effective cinematic language, with the use of 'cinematic' and specific camera settings, to create a high-quality and visually appealing scene.",
+        "Creativity": "While the prompt is well-crafted, the scene itself is relatively common and lacks a unique twist or surprise."
+      },
+      "improvements": [
+        "Consider adding more specific details about the woman's actions, emotions, or backstory to add depth to the scene.",
+        "Specify the desired color palette or lighting scheme to enhance the cinematic quality.",
+        "Add an unexpected element to the scene, such as an unusual location or an unexpected event, to increase creativity."
+      ],
+      "edgeCases": [
+        "The model may struggle to accurately depict the nuances of heavy rain at night, such as the way raindrops interact with light sources."
+      ]
+    }
+  }
+]
