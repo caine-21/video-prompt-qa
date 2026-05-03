@@ -31,6 +31,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
+.env
 .env.local
 .env*.local
 
@@ -40,4 +41,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# internal / interview files
 CLAUDE.md
+CLAUDE.*.md
+CLAUDE.md.bak
+AGENTS.md
+mode-log.md
+mode.sh
+mode.ps1
+switch-mode.sh
+switch-mode.ps1
+research-guard.sh
+research-guard.ps1
+ADVERSARIAL_TESTS.md
+run_adversarial.py
