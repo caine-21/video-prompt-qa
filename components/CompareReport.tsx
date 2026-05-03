@@ -4,82 +4,105 @@ interface Props {
   result: CompareResult;
 }
 
-function ScorePill({ score, highlight }: { score: number; highlight: boolean }) {
+function AsciiBar({ score }: { score: number }) {
+  const filled = Math.round(score);
+  const empty  = 10 - filled;
+  const color  = score >= 8 ? 'var(--t-fg)' : score >= 5 ? 'var(--t-amber)' : 'var(--t-error)';
   return (
-    <span
-      className={`text-2xl font-bold ${
-        highlight ? "text-purple-300" : "text-gray-500"
-      }`}
-    >
-      {score}
-      <span className="text-sm font-normal text-gray-600">/10</span>
+    <span style={{ color }}>
+      {'['}{'█'.repeat(filled)}{'░'.repeat(empty)}{']'} {score.toFixed(1)}
     </span>
   );
 }
 
 export default function CompareReport({ result }: Props) {
-  const { winner, scoreA, scoreB, reasoning, promptA, promptB, provider, timestamp } =
-    result;
+  const { winner, scoreA, scoreB, reasoning, promptA, promptB, provider, timestamp } = result;
+  const tsLabel = new Date(timestamp).toLocaleTimeString('en-US', { hour12: false });
 
   const winnerLabel =
-    winner === "tie" ? "Tie" : winner === "A" ? "Prompt A wins" : "Prompt B wins";
-  const winnerColor =
-    winner === "tie"
-      ? "text-yellow-400 border-yellow-600"
-      : "text-purple-400 border-purple-600";
+    winner === 'tie' ? 'TIE' : winner === 'A' ? 'PROMPT_A' : 'PROMPT_B';
+
+  const winnerTitleColor = winner === 'tie' ? 'amber' : '';
 
   return (
-    <div className="space-y-4 animate-fade-in">
-      {/* Winner banner */}
-      <div
-        className={`bg-gray-900 rounded-xl border p-6 flex items-center justify-between ${winnerColor}`}
-      >
-        <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Result</p>
-          <p className="text-3xl font-bold">{winnerLabel}</p>
-        </div>
-        <span className="text-xs bg-gray-800 text-gray-400 px-2 py-1 rounded self-start">
-          via {provider} · {new Date(timestamp).toLocaleTimeString()}
-        </span>
-      </div>
+    <div className="space-y-3">
 
-      {/* Side by side scores */}
-      <div className="grid grid-cols-2 gap-4">
-        <div
-          className={`bg-gray-900 rounded-xl border p-5 space-y-2 ${
-            winner === "A" ? "border-purple-600" : "border-gray-800"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">
-              Prompt A {winner === "A" && "✓"}
-            </span>
-            <ScorePill score={scoreA} highlight={winner === "A"} />
-          </div>
-          <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">{promptA}</p>
+      {/* ── Result banner ── */}
+      <div className="t-pane">
+        <div className={`t-pane-title ${winnerTitleColor}`}>
+          {`COMPARISON.RESULT ── WINNER: ${winnerLabel} ── via:${provider.toUpperCase()} ── ${tsLabel}`}
         </div>
-
-        <div
-          className={`bg-gray-900 rounded-xl border p-5 space-y-2 ${
-            winner === "B" ? "border-blue-600" : "border-gray-800"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
-              Prompt B {winner === "B" && "✓"}
-            </span>
-            <ScorePill score={scoreB} highlight={winner === "B"} />
+        <div className="px-4 py-4 flex items-center gap-8">
+          <div className="text-xs space-y-1">
+            <p style={{ color: 'var(--t-muted)', letterSpacing: '0.08em' }}>SCORE_A</p>
+            <AsciiBar score={scoreA} />
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">{promptB}</p>
+          <div
+            className="text-lg"
+            style={{
+              color: 'var(--t-muted)',
+              borderLeft: '1px solid var(--t-border)',
+              borderRight: '1px solid var(--t-border)',
+              padding: '0 16px',
+            }}
+          >
+            VS
+          </div>
+          <div className="text-xs space-y-1">
+            <p style={{ color: 'var(--t-muted)', letterSpacing: '0.08em' }}>SCORE_B</p>
+            <AsciiBar score={scoreB} />
+          </div>
+          <div
+            className="ml-auto text-2xl t-glow"
+            style={{
+              color: winner === 'tie' ? 'var(--t-amber)' : 'var(--t-fg)',
+              letterSpacing: '0.1em',
+            }}
+          >
+            {winner === 'tie' ? '== TIE ==' : `${winnerLabel} WINS`}
+          </div>
         </div>
       </div>
 
-      {/* Reasoning */}
-      <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 space-y-2">
-        <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
-          Reasoning
-        </h3>
-        <p className="text-sm text-gray-400 leading-relaxed">{reasoning}</p>
+      {/* ── Side by side prompts ── */}
+      <div className="grid grid-cols-2 gap-3">
+        <div
+          className="t-pane"
+          style={winner === 'A' ? { borderColor: 'var(--t-fg)' } : {}}
+        >
+          <div className="t-pane-title">
+            {winner === 'A' ? `[WIN] PROMPT_A ── ${scoreA}/10` : `PROMPT_A ── ${scoreA}/10`}
+          </div>
+          <div className="p-3 space-y-2">
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
+              {promptA}
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="t-pane"
+          style={winner === 'B' ? { borderColor: 'var(--t-amber)' } : {}}
+        >
+          <div className={`t-pane-title ${winner === 'B' ? 'amber' : ''}`}>
+            {winner === 'B' ? `[WIN] PROMPT_B ── ${scoreB}/10` : `PROMPT_B ── ${scoreB}/10`}
+          </div>
+          <div className="p-3 space-y-2">
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
+              {promptB}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Reasoning ── */}
+      <div className="t-pane">
+        <div className="t-pane-title">REASONING.OUTPUT</div>
+        <div className="p-4">
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
+            {`> ${reasoning}`}
+          </p>
+        </div>
       </div>
     </div>
   );

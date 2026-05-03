@@ -17,48 +17,80 @@ export default function EvaluatePanel({ onSubmit, loading }: Props) {
   const [prompt, setPrompt] = useState("");
 
   return (
-    <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
-          Prompt
-        </h2>
-        <div className="flex gap-2">
+    <div className="t-pane">
+      <div className="t-pane-title">INPUT.PROMPT</div>
+
+      <div className="p-4 space-y-3">
+        {/* Example buttons */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-xs" style={{ color: 'var(--t-muted)' }}>{`// load example:`}</span>
           {EXAMPLES.map((ex, i) => (
             <button
               key={i}
               onClick={() => setPrompt(ex)}
-              className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-xs"
+              style={{
+                color: 'var(--t-muted)',
+                border: '1px solid var(--t-border)',
+                padding: '1px 8px',
+                background: 'transparent',
+                cursor: 'pointer',
+                letterSpacing: '0.06em',
+              }}
+              onMouseEnter={e => {
+                (e.target as HTMLElement).style.color = 'var(--t-fg)';
+                (e.target as HTMLElement).style.borderColor = 'var(--t-fg)';
+              }}
+              onMouseLeave={e => {
+                (e.target as HTMLElement).style.color = 'var(--t-muted)';
+                (e.target as HTMLElement).style.borderColor = 'var(--t-border)';
+              }}
             >
-              Example {i + 1}
+              eg.{i + 1}
             </button>
           ))}
         </div>
-      </div>
 
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter a video generation prompt to evaluate…"
-        rows={4}
-        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-100 placeholder-gray-600 focus:outline-none focus:border-purple-500 resize-none transition-colors"
-      />
-
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-600">{prompt.length} chars</span>
-        <button
-          onClick={() => onSubmit(prompt)}
-          disabled={loading || !prompt.trim()}
-          className="px-6 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+        {/* Prompt input with shell prefix */}
+        <div
+          style={{ borderTop: '1px solid var(--t-border)', paddingTop: '10px' }}
         >
-          {loading ? (
-            <>
-              <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Analyzing…
-            </>
-          ) : (
-            "Analyze Prompt"
-          )}
-        </button>
+          <div className="flex items-start gap-2">
+            <span className="text-sm shrink-0 pt-0.5 t-glow" style={{ color: 'var(--t-muted)' }}>
+              user@vpqa:~$
+            </span>
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="enter video generation prompt..."
+              rows={4}
+              className="t-input text-sm leading-relaxed"
+              style={{ color: 'var(--t-fg)' }}
+            />
+          </div>
+        </div>
+
+        {/* Footer row */}
+        <div
+          className="flex items-center justify-between"
+          style={{ borderTop: '1px solid var(--t-border)', paddingTop: '10px' }}
+        >
+          <span className="text-xs" style={{ color: 'var(--t-muted)', letterSpacing: '0.06em' }}>
+            {`// CHARS: ${String(prompt.length).padStart(4, '0')}`}
+          </span>
+          <button
+            onClick={() => onSubmit(prompt)}
+            disabled={loading || !prompt.trim()}
+            className="t-btn text-xs"
+            style={{ letterSpacing: '0.1em' }}
+          >
+            {loading ? (
+              <span className="animate-blink">ANALYZING...</span>
+            ) : (
+              "[ ANALYZE_PROMPT --run ]"
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
