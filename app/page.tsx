@@ -8,6 +8,8 @@ import EvaluationReport from "@/components/EvaluationReport";
 import CompareReport from "@/components/CompareReport";
 import DeltaBanner from "@/components/DeltaBanner";
 import FeedbackWidget from "@/components/FeedbackWidget";
+import PromptDiff from "@/components/PromptDiff";
+import StabilityCheck from "@/components/StabilityCheck";
 import HistoryPanel from "@/components/HistoryPanel";
 import CalibrationPanel from "@/components/CalibrationPanel";
 
@@ -25,7 +27,7 @@ export default function Home() {
   const [loading, setLoading]             = useState(false);
   const [improving, setImproving]         = useState(false);
   const [error, setError]                 = useState<string | null>(null);
-  const [delta, setDelta]                 = useState<{ originalPrompt: string; originalScore: number } | null>(null);
+  const [delta, setDelta]                 = useState<{ originalResult: EvaluationResult } | null>(null);
   const [history, setHistory]             = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory]     = useState(false);
   const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
@@ -124,7 +126,7 @@ export default function Home() {
       if (!evalRes.ok) throw new Error(newResult.error);
 
       const deltaScore = Math.round((newResult.overallScore - result.overallScore) * 10) / 10;
-      setDelta({ originalPrompt: result.prompt, originalScore: result.overallScore });
+      setDelta({ originalResult: result });
       setEvalResult(newResult);
       const entryId = saveToHistory(newResult, deltaScore);
       setPendingFeedbackId(entryId);
@@ -281,26 +283,37 @@ export default function Home() {
             </div>
           )}
 
-          {/* Delta banner shown after improvement */}
+          {/* Delta banner + Prompt Diff + Feedback — shown after improvement */}
           {delta && evalResult && tab === "evaluate" && (
-            <DeltaBanner
-              originalPrompt={delta.originalPrompt}
-              originalScore={delta.originalScore}
-              newScore={evalResult.overallScore}
-            />
-          )}
-
-          {/* Feedback widget — shown after improvement until submitted */}
-          {delta && pendingFeedbackId && tab === "evaluate" && (
-            <FeedbackWidget onSubmit={handleFeedback} />
+            <>
+              <DeltaBanner
+                originalPrompt={delta.originalResult.prompt}
+                originalScore={delta.originalResult.overallScore}
+                newScore={evalResult.overallScore}
+              />
+              <PromptDiff
+                originalPrompt={delta.originalResult.prompt}
+                newPrompt={evalResult.prompt}
+                originalAnatomy={delta.originalResult.anatomy}
+                newAnatomy={evalResult.anatomy}
+              />
+              {pendingFeedbackId && <FeedbackWidget onSubmit={handleFeedback} />}
+            </>
           )}
 
           {evalResult && tab === "evaluate" && (
-            <EvaluationReport
-              result={evalResult}
-              onImprove={handleImprove}
-              improving={improving}
-            />
+            <>
+              <EvaluationReport
+                result={evalResult}
+                onImprove={handleImprove}
+                improving={improving}
+              />
+              <StabilityCheck
+                prompt={evalResult.prompt}
+                currentProvider={provider}
+                currentResult={evalResult}
+              />
+            </>
           )}
 
           {compareResult && tab === "compare" && (
