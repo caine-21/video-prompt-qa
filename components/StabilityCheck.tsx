@@ -117,6 +117,11 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult 
 
           {compareResult && (
             <>
+              {/* Baseline note */}
+              <p style={{ fontSize: 11, fontWeight: 500, opacity: 0.45, margin: "0 0 12px", lineHeight: 1.5 }}>
+                Variance reflects directional disagreement, not statistical variance — different providers have different scoring baselines.
+              </p>
+
               {/* Overall variance summary */}
               <div style={{
                 background: overallVariance >= VARIANCE_THRESHOLD ? "#FF6B6B" : overallVariance > 0 ? "#C4B5FD" : "#FFD93D",

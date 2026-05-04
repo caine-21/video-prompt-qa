@@ -168,13 +168,16 @@ export default function CalibrationPanel({ entries }: Props) {
           {tagEntries[0] && tagEntries[0][1] / negativeTotal >= 0.5 && tagEntries[0][1] >= 3 && (
             <div style={{ borderTop: "3px solid #000", padding: "14px 24px", background: "#FFD93D" }}>
               <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 4px" }}>
-                Systematic pattern detected: {Math.round(tagEntries[0][1] / negativeTotal * 100)}% of failures tagged as "{TAG_LABELS[tagEntries[0][0]]}"
+                Repeated pattern: {Math.round(tagEntries[0][1] / negativeTotal * 100)}% of failures tagged as "{TAG_LABELS[tagEntries[0][0]]}"
               </p>
-              <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.7, margin: 0 }}>
-                {tagEntries[0][0] === "too_verbose"  && "Rewrite is over-adding — tighten the length constraint in the system prompt."}
-                {tagEntries[0][0] === "unclear"      && "Rewrite is not resolving ambiguity — feedback specificity rules may need tightening."}
-                {tagEntries[0][0] === "too_generic"  && "Rewrite is adding filler language — force concrete noun/verb substitutions."}
-                {tagEntries[0][0] === "wrong_focus"  && "Rewrite is targeting wrong dimensions — review priority sorting logic."}
+              <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.7, margin: "0 0 6px" }}>
+                {tagEntries[0][0] === "too_verbose"  && "Hypothesis: rewrite is over-adding — consider tightening the length constraint."}
+                {tagEntries[0][0] === "unclear"      && "Hypothesis: rewrite is not resolving ambiguity — feedback specificity rules may need tightening."}
+                {tagEntries[0][0] === "too_generic"  && "Hypothesis: rewrite is adding filler language — force concrete noun/verb substitutions."}
+                {tagEntries[0][0] === "wrong_focus"  && "Hypothesis: rewrite is targeting wrong dimensions — review priority sorting logic."}
+              </p>
+              <p style={{ fontSize: 11, fontWeight: 500, opacity: 0.5, margin: 0 }}>
+                Correlation-based signal, not causal. Treat as a hypothesis for targeted improvement.
               </p>
             </div>
           )}

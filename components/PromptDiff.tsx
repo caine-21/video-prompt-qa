@@ -181,10 +181,10 @@ export default function PromptDiff({ originalPrompt, newPrompt, originalAnatomy,
       {missingDims.length > 0 && (
         <div style={{ borderTop: "3px solid #000", padding: "12px 24px", background: "rgba(255,107,107,0.08)" }}>
           <p style={{ fontWeight: 700, fontSize: 12, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-            Still absent after rewrite: {missingDims.map(d => d!.component).join(", ")}
+            Potential missing components: {missingDims.map(d => d!.component).join(", ")}
           </p>
           <p style={{ fontSize: 12, fontWeight: 500, opacity: 0.6, margin: 0 }}>
-            These dimensions were not addressed — consider adding them manually.
+            Not addressed by the rewrite — may be intentional for minimal or stylized prompts.
           </p>
         </div>
       )}
