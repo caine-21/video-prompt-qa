@@ -100,8 +100,9 @@ The user message tells you the original word count and the maximum allowed words
 Rules:
 - Fix dimensions in order of severity — lowest-scoring dimensions first
 - Keep the same subject, location, and core action — do NOT change who/what/where
-- Add specific cinematic language only where it is missing: one shot type, one lighting cue, one camera movement, one mood word — that's all
-- Do not expand into a paragraph — write one dense, comma-separated prompt sentence
+- Add specific cinematic language only where it is missing — prefer filling absent elements over elaborating existing ones
+- Introduce at most 2 new descriptive elements beyond the original prompt. Do not stack camera + lighting + mood + style all at once.
+- Do not expand into a paragraph — write one comma-separated prompt sentence
 - Return ONLY the improved prompt text — no explanation, no preamble, no quotes, no markdown`;
 
 export function buildRewriteUserMessage(
