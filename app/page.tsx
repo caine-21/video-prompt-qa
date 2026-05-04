@@ -160,7 +160,7 @@ export default function Home() {
             </div>
 
             {/* Right controls: history + provider */}
-            <div className="flex items-center gap-3 pt-1 flex-shrink-0 flex-wrap">
+            <div className="flex items-center gap-2 pt-1 flex-wrap" style={{ minWidth: 0 }}>
               <button
                 onClick={() => setShowHistory(s => !s)}
                 className={`neo-btn ${showHistory ? "neo-btn-active" : "neo-btn-outline"}`}
@@ -169,9 +169,8 @@ export default function Home() {
                 History {history.length > 0 && `(${history.length})`}
               </button>
 
-              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.45 }}>
-                Model
-              </span>
+              <div style={{ width: 1, height: 24, background: "#000", opacity: 0.2, margin: "0 4px" }} />
+
               {PROVIDERS.map((p) => (
                 <button
                   key={p}
