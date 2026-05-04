@@ -6,8 +6,8 @@ interface Props {
 
 export default function DeltaBanner({ originalPrompt, originalScore, newScore }: Props) {
   const delta   = Math.round((newScore - originalScore) * 10) / 10;
-  const gained  = delta > 0;
-  const deltaBg = gained ? "#FFD93D" : "#FF6B6B";
+  const deltaBg = delta > 0 ? "#FFD93D" : delta < 0 ? "#FF6B6B" : "rgba(0,0,0,0.1)";
+  const deltaLabel = delta > 0 ? `+${delta.toFixed(1)}` : delta < 0 ? delta.toFixed(1) : "±0";
 
   return (
     <div className="neo-card" style={{ background: "#C4B5FD" }}>
@@ -46,7 +46,7 @@ export default function DeltaBanner({ originalPrompt, originalScore, newScore }:
             fontWeight: 700,
             fontSize: 20,
           }}>
-            {gained ? "+" : ""}{delta}
+            {deltaLabel}
           </div>
         </div>
 

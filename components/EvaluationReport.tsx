@@ -18,15 +18,19 @@ function scoreLabel(score: number) {
   return "Needs Work";
 }
 
-function ScoreBar({ score }: { score: number }) {
+function ScoreBar({ score, onColoredBg = false }: { score: number; onColoredBg?: boolean }) {
   const { bg } = scoreColors(score);
+  const fillColor = onColoredBg ? "#000" : bg;
+  const trackColor = onColoredBg ? "rgba(0,0,0,0.12)" : "#FFFDF5";
+  const badgeBg = onColoredBg ? "rgba(0,0,0,0.15)" : bg;
+  const badgeBorder = onColoredBg ? "2px solid rgba(0,0,0,0.5)" : "2px solid #000";
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <div style={{
         width: 120,
         height: 16,
-        border: "3px solid #000",
-        background: "#FFFDF5",
+        border: `3px solid ${onColoredBg ? "rgba(0,0,0,0.4)" : "#000"}`,
+        background: trackColor,
         position: "relative",
         overflow: "hidden",
         flexShrink: 0,
@@ -36,14 +40,14 @@ function ScoreBar({ score }: { score: number }) {
           top: 0, left: 0,
           height: "100%",
           width: `${score * 10}%`,
-          background: bg,
+          background: fillColor,
         }} />
       </div>
       <span style={{
         fontWeight: 700,
         fontSize: 13,
-        background: bg,
-        border: "2px solid #000",
+        background: badgeBg,
+        border: badgeBorder,
         padding: "1px 8px",
         minWidth: 44,
         textAlign: "center",
@@ -105,7 +109,7 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
                 }}>
                   {d.name}
                 </span>
-                <ScoreBar score={d.score} />
+                <ScoreBar score={d.score} onColoredBg />
               </div>
             ))}
           </div>
