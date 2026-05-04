@@ -9,6 +9,7 @@ import CompareReport from "@/components/CompareReport";
 import DeltaBanner from "@/components/DeltaBanner";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import HistoryPanel from "@/components/HistoryPanel";
+import CalibrationPanel from "@/components/CalibrationPanel";
 
 type Tab = "evaluate" | "compare";
 
@@ -236,13 +237,16 @@ export default function Home() {
       <main className="neo-grid" style={{ minHeight: "calc(100vh - 200px)" }}>
         <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
 
-          {/* History panel */}
+          {/* History panel + Calibration */}
           {showHistory && (
-            <HistoryPanel
-              entries={history}
-              onSelect={(result) => { setEvalResult(result); setDelta(null); setShowHistory(false); setTab("evaluate"); }}
-              onClear={clearHistory}
-            />
+            <>
+              <HistoryPanel
+                entries={history}
+                onSelect={(result) => { setEvalResult(result); setDelta(null); setPendingFeedbackId(null); setShowHistory(false); setTab("evaluate"); }}
+                onClear={clearHistory}
+              />
+              <CalibrationPanel entries={history} />
+            </>
           )}
 
           {tab === "evaluate" ? (
