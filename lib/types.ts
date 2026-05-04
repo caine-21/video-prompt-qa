@@ -60,7 +60,18 @@ export interface RewriteRequest {
   provider?: AIProvider;
 }
 
+export type FeedbackRating = 1 | 2 | 3; // 1=clearly better, 2=slightly better, 3=no improvement/worse
+
+export type FeedbackTag = "unclear" | "too_generic" | "wrong_focus" | "too_verbose";
+
+export interface HumanFeedback {
+  rating: FeedbackRating;
+  tags?: FeedbackTag[];
+}
+
 export interface HistoryEntry {
   id: string;
   result: EvaluationResult;
+  deltaScore?: number;
+  feedback?: HumanFeedback;
 }

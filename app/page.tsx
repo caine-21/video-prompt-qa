@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { EvaluationResult, CompareResult, AIProvider, HistoryEntry } from "@/lib/types";
+import type { EvaluationResult, CompareResult, AIProvider, HistoryEntry, HumanFeedback } from "@/lib/types";
 import EvaluatePanel from "@/components/EvaluatePanel";
 import ComparePanel from "@/components/ComparePanel";
 import EvaluationReport from "@/components/EvaluationReport";
 import CompareReport from "@/components/CompareReport";
 import DeltaBanner from "@/components/DeltaBanner";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import HistoryPanel from "@/components/HistoryPanel";
 
 type Tab = "evaluate" | "compare";
@@ -26,6 +27,7 @@ export default function Home() {
   const [delta, setDelta]                 = useState<{ originalPrompt: string; originalScore: number } | null>(null);
   const [history, setHistory]             = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory]     = useState(false);
+  const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -34,13 +36,24 @@ export default function Home() {
     } catch { /* ignore */ }
   }, []);
 
-  function saveToHistory(result: EvaluationResult) {
-    const entry: HistoryEntry = { id: `${Date.now()}-${Math.random()}`, result };
+  function saveToHistory(result: EvaluationResult, deltaScore?: number): string {
+    const entry: HistoryEntry = { id: `${Date.now()}-${Math.random()}`, result, deltaScore };
     setHistory(prev => {
       const next = [entry, ...prev].slice(0, MAX_HISTORY);
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
       return next;
     });
+    return entry.id;
+  }
+
+  function handleFeedback(feedback: HumanFeedback) {
+    if (!pendingFeedbackId) return;
+    setHistory(prev => {
+      const next = prev.map(e => e.id === pendingFeedbackId ? { ...e, feedback } : e);
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+    setPendingFeedbackId(null);
   }
 
   function clearHistory() {
@@ -49,7 +62,7 @@ export default function Home() {
   }
 
   async function handleEvaluate(prompt: string) {
-    setLoading(true); setError(null); setEvalResult(null); setDelta(null);
+    setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null);
     try {
       const res  = await fetch("/api/evaluate", {
         method: "POST",
@@ -109,9 +122,11 @@ export default function Home() {
       const newResult = await evalRes.json();
       if (!evalRes.ok) throw new Error(newResult.error);
 
+      const deltaScore = Math.round((newResult.overallScore - result.overallScore) * 10) / 10;
       setDelta({ originalPrompt: result.prompt, originalScore: result.overallScore });
       setEvalResult(newResult);
-      saveToHistory(newResult);
+      const entryId = saveToHistory(newResult, deltaScore);
+      setPendingFeedbackId(entryId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Improvement failed");
     } finally {
@@ -269,6 +284,11 @@ export default function Home() {
               originalScore={delta.originalScore}
               newScore={evalResult.overallScore}
             />
+          )}
+
+          {/* Feedback widget — shown after improvement until submitted */}
+          {delta && pendingFeedbackId && tab === "evaluate" && (
+            <FeedbackWidget onSubmit={handleFeedback} />
           )}
 
           {evalResult && tab === "evaluate" && (

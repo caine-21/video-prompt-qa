@@ -1,70 +1,106 @@
 import type { EvaluationResult, CompareResult, AIProvider } from "@/lib/types";
 
-export const EVALUATION_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer.
+export const EVALUATION_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer. Evaluate the given prompt with strict, calibrated scoring — do not inflate scores.
 
-Evaluate video generation prompts across these 5 dimensions:
-1. Clarity (1-10): Is the prompt clear and unambiguous?
-2. Specificity (1-10): Does it include enough detail (subject, style, motion, lighting, mood)?
-3. Technical Feasibility (1-10): Can current AI video models realistically generate this?
-4. Cinematic Quality (1-10): Does it use effective cinematic language?
-5. Creativity (1-10): Is it original and visually interesting?
+## SCORING SCALE (apply to every dimension)
+1–3: Fails entirely — missing the core element, unusable as-is
+4–6: Partial — something is there but too vague, generic, or incomplete to guide a model reliably
+7–8: Solid — clear and usable, minor gaps that would benefit from improvement
+9–10: Production-ready — specific, precise, leaves no room for model misinterpretation
 
-Also analyze:
+A single-word or 2-word prompt (e.g. "a cat") must score 1–3 on most dimensions. Reserve 8+ for prompts with explicit cinematic language. Never give 7+ unless the prompt explicitly contains that element.
 
-ANATOMY — For each of the 7 components, determine status: "present", "partial", or "absent".
-- Subject: the main person/object/character
-- Action: what the subject does or how it moves
-- Style: visual aesthetic, look, or genre
-- Lighting: light source, time of day, or mood lighting
-- Camera: shot type, angle, or camera movement
-- Mood: emotional tone or atmosphere
-- Duration: implied length or pacing hints
+## DIMENSIONS — score each 1–10
 
-MODEL FIT — Rate (1-10) how well this prompt suits each model with a 1-sentence reason:
-- Runway Gen-3: cinematic realism, smooth motion, strong at physical actions
-- Sora: complex scene understanding, long coherent videos, rich environment
-- Kling: human motion fidelity, realistic people and faces
-- Pika: short stylized clips, animated looks, fast turnaround
+1. Clarity: Is the subject and action unambiguous? Could different people interpret this differently?
+2. Specificity: Does it name specific details — not just "man" but "elderly fisherman", not just "moving" but "rowing slowly against current"?
+3. Technical Feasibility: Can current AI video models (2024–2025) realistically generate this without hallucinating unsupported physics or complex interactions?
+4. Cinematic Quality: Does it include shot type (close-up, wide shot), camera movement (pan, dolly, handheld), or lighting setup (golden hour, neon, overcast)?
+5. Creativity: Is it visually distinct? Would it produce a generic stock-footage result, or something memorable?
 
-NEGATIVE PROMPTS — List 5 specific terms/phrases the user should add to their negative prompt field to avoid common failure modes for this specific prompt.
+FEEDBACK RULE: Every feedback string MUST quote or directly reference a specific word or phrase from the prompt. Do not write generic advice. If the prompt is "a cat", say "The word 'cat' gives no breed, color, size, or setting" — not "the subject could be more specific".
+
+## ANATOMY — classify each component as present, partial, or absent
+
+Status definitions:
+- "present": The prompt explicitly and usably describes this component. A specific word/phrase covers it.
+- "partial": Something is implied or vaguely hinted, but not explicit enough to guide the model reliably.
+- "absent": No mention, no implication. The model must guess entirely.
+
+Components:
+- Subject: the main person/object/character (present = named specifically; partial = generic category; absent = no subject)
+- Action: what the subject does or how it moves (present = specific verb + manner; partial = vague motion implied; absent = static or unspecified)
+- Style: visual aesthetic, look, or genre (present = named style e.g. "noir", "anime", "hyperrealistic"; partial = mood words that imply style; absent = no aesthetic direction)
+- Lighting: light source, time of day, or mood lighting (present = named explicitly e.g. "golden hour", "neon-lit", "overcast"; partial = atmosphere words that imply lighting; absent = no lighting cue)
+- Camera: shot type, angle, or movement (present = named explicitly e.g. "close-up", "slow dolly", "handheld"; partial = implied framing; absent = no camera direction)
+- Mood: emotional tone or atmosphere (present = explicit mood word e.g. "melancholic", "tense", "euphoric"; partial = implied by setting; absent = neutral or unspecified)
+- Duration: implied length or pacing (present = explicit e.g. "slow motion", "quick cuts", "10-second clip"; partial = implied by action pacing; absent = no pacing cue)
+
+For the note field: if present/partial, quote the exact words from the prompt that triggered this status. If absent, write null.
+
+## MODEL FIT — rate 1–10 for each model
+
+Base your score on what THIS specific prompt contains or lacks — not general model reputation.
+- Runway Gen-3: excels when prompt includes clear physical motion and cinematic realism cues. Score high if action + lighting + camera are all present. Score low if any are absent.
+- Sora: excels when prompt requires complex scene coherence, environment detail, or longer narrative. Score high if subject + style + mood are richly specified. Score low for simple/short prompts.
+- Kling: excels when prompt features human subjects with detailed action. Score high if Subject involves a person + Action is explicit. Score low for non-human or static subjects.
+- Pika: excels for short, stylized, or animated content. Score high if Style implies animation/stylization or if the prompt is intentionally brief. Score lower for long narrative prompts.
+
+Reason must reference a specific element from the prompt, not just describe the model's general capability.
+
+## NEGATIVE PROMPTS — list exactly 5 terms
+
+These must be failure modes THIS specific prompt is likely to trigger — based on what is absent or vague in the prompt. Generic terms like "blurry, low quality, watermark" are forbidden unless the prompt has a specific reason to trigger them.
+
+Examples of specific reasoning:
+- If Subject is absent → include "random background character, unintended subject"
+- If Camera is absent → include "dutch angle, unwanted camera shake"
+- If Style is absent → include "stock footage aesthetic, generic color grading"
+- If the prompt involves a person → include "deformed hands, face distortion"
+- If the prompt involves motion → include "motion blur artifacts, stuttering movement"
+
+## EDGE CASES — list 2–4 realistic failure scenarios
+
+Each must be a specific failure mode, not a generic warning. Reference what in the prompt causes it.
 
 Respond ONLY with valid JSON:
 {
   "dimensions": [
-    { "name": "Clarity", "score": <number 1-10>, "feedback": "<string>" },
-    { "name": "Specificity", "score": <number 1-10>, "feedback": "<string>" },
-    { "name": "Technical Feasibility", "score": <number 1-10>, "feedback": "<string>" },
-    { "name": "Cinematic Quality", "score": <number 1-10>, "feedback": "<string>" },
-    { "name": "Creativity", "score": <number 1-10>, "feedback": "<string>" }
+    { "name": "Clarity", "score": <number 1-10>, "feedback": "<must quote specific words from the prompt>" },
+    { "name": "Specificity", "score": <number 1-10>, "feedback": "<must quote specific words from the prompt>" },
+    { "name": "Technical Feasibility", "score": <number 1-10>, "feedback": "<must quote specific words from the prompt>" },
+    { "name": "Cinematic Quality", "score": <number 1-10>, "feedback": "<must quote specific words from the prompt>" },
+    { "name": "Creativity", "score": <number 1-10>, "feedback": "<must quote specific words from the prompt>" }
   ],
-  "improvements": ["<string>", "<string>", "<string>"],
-  "edgeCases": ["<string>"],
+  "improvements": ["<actionable string — tell the user exactly what to add or change>", "<string>", "<string>"],
+  "edgeCases": ["<specific failure scenario>", "<specific failure scenario>"],
   "anatomy": [
-    { "component": "Subject", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Action", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Style", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Lighting", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Camera", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Mood", "status": "present|partial|absent", "note": "<brief description or null>" },
-    { "component": "Duration", "status": "present|partial|absent", "note": "<brief description or null>" }
+    { "component": "Subject", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Action", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Style", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Lighting", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Camera", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Mood", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" },
+    { "component": "Duration", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" }
   ],
   "modelFit": [
-    { "model": "Runway Gen-3", "score": <number 1-10>, "reason": "<1 sentence>" },
-    { "model": "Sora", "score": <number 1-10>, "reason": "<1 sentence>" },
-    { "model": "Kling", "score": <number 1-10>, "reason": "<1 sentence>" },
-    { "model": "Pika", "score": <number 1-10>, "reason": "<1 sentence>" }
+    { "model": "Runway Gen-3", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
+    { "model": "Sora", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
+    { "model": "Kling", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
+    { "model": "Pika", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" }
   ],
-  "negativePrompts": ["<term>", "<term>", "<term>", "<term>", "<term>"]
+  "negativePrompts": ["<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>"]
 }`;
 
 export const REWRITE_SYSTEM_PROMPT = `You are a video prompt optimization expert. Rewrite the given AI video generation prompt to fix its quality issues while preserving the original creative intent.
 
 Rules:
-- Address every weakness mentioned in the dimension feedback
-- Keep the same subject, mood, and creative vision
-- Add specific cinematic language: shot type, lighting, camera movement, pacing
-- Make it concrete and unambiguous
-- Return ONLY the improved prompt text — no explanation, no preamble, no quotes`;
+- Fix dimensions in order of severity — lowest-scoring dimensions first
+- Keep the same subject, location, and core action — do NOT change who/what/where
+- Add specific cinematic language only where it is missing: shot type (close-up, wide shot), lighting (golden hour, neon-lit), camera movement (slow dolly, handheld), mood word
+- Length target: stay within ±20 words of the original. If the original is under 20 words, keep output under 60 words. If original is 50+ words, do not add more than 30 words.
+- Do NOT address every weakness if it would require changing the subject or expanding beyond the length target — prioritize the lowest-scoring dimensions
+- Return ONLY the improved prompt text — no explanation, no preamble, no quotes, no markdown`;
 
 export function buildRewriteUserMessage(
   prompt: string,
@@ -73,20 +109,22 @@ export function buildRewriteUserMessage(
 ): string {
   const weakDims = dimensions
     .filter((d) => d.score < 8)
+    .sort((a, b) => a.score - b.score)
     .map((d) => `- ${d.name} (${d.score}/10): ${d.feedback}`)
     .join("\n");
 
   const impList = improvements.map((imp, i) => `${i + 1}. ${imp}`).join("\n");
+  const wordCount = prompt.trim().split(/\s+/).length;
 
-  return `Original prompt: "${prompt}"
+  return `Original prompt (${wordCount} words): "${prompt}"
 
-Issues to fix:
+Fix these issues in order of priority (lowest score = highest priority):
 ${weakDims}
 
 Suggested improvements:
 ${impList}
 
-Rewrite the prompt to address these issues.`;
+Rewrite the prompt. Stay within ±20 words of the original length (${wordCount} words → target max ${wordCount + 20} words).`;
 }
 
 export const COMPARE_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer.
