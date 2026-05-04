@@ -6,6 +6,18 @@ export interface EvaluationDimension {
   feedback: string;
 }
 
+export interface AnatomyComponent {
+  component: string;
+  status: "present" | "partial" | "absent";
+  note: string | null;
+}
+
+export interface ModelFitEntry {
+  model: string;
+  score: number;
+  reason: string;
+}
+
 export interface EvaluationResult {
   prompt: string;
   provider: AIProvider;
@@ -13,6 +25,9 @@ export interface EvaluationResult {
   dimensions: EvaluationDimension[];
   improvements: string[];
   edgeCases: string[];
+  anatomy?: AnatomyComponent[];
+  modelFit?: ModelFitEntry[];
+  negativePrompts?: string[];
   timestamp: string;
 }
 
