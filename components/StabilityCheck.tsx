@@ -7,6 +7,7 @@ interface Props {
   prompt: string;
   currentProvider: AIProvider;
   currentResult: EvaluationResult;
+  defaultOpen?: boolean;
 }
 
 const ALL_PROVIDERS: AIProvider[] = ["gemini", "claude", "groq"];
@@ -18,14 +19,14 @@ function scoreColors(score: number) {
   return "#FF6B6B";
 }
 
-export default function StabilityCheck({ prompt, currentProvider, currentResult }: Props) {
+export default function StabilityCheck({ prompt, currentProvider, currentResult, defaultOpen = false }: Props) {
   const [compareProvider, setCompareProvider] = useState<AIProvider>(
     ALL_PROVIDERS.find(p => p !== currentProvider) ?? "claude"
   );
   const [compareResult, setCompareResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading]             = useState(false);
   const [error, setError]                 = useState<string | null>(null);
-  const [open, setOpen]                   = useState(false);
+  const [open, setOpen]                   = useState(defaultOpen);
 
   async function runCheck() {
     setLoading(true); setError(null); setCompareResult(null);

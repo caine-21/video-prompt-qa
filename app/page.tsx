@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { EvaluationResult, CompareResult, AIProvider, HistoryEntry, HumanFeedback } from "@/lib/types";
+import { readShareFromURL } from "@/lib/share";
 import EvaluatePanel from "@/components/EvaluatePanel";
 import ComparePanel from "@/components/ComparePanel";
 import EvaluationReport from "@/components/EvaluationReport";
@@ -10,6 +11,8 @@ import DeltaBanner from "@/components/DeltaBanner";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import PromptDiff from "@/components/PromptDiff";
 import StabilityCheck from "@/components/StabilityCheck";
+import ShareButton from "@/components/ShareButton";
+import DemoModeBanner from "@/components/DemoModeBanner";
 import HistoryPanel from "@/components/HistoryPanel";
 import CalibrationPanel from "@/components/CalibrationPanel";
 
@@ -31,12 +34,32 @@ export default function Home() {
   const [history, setHistory]             = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory]     = useState(false);
   const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
+  const [demoMode, setDemoMode]           = useState(false);
+  const [demoTitle, setDemoTitle]         = useState<string>("");
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(HISTORY_KEY);
       if (stored) setHistory(JSON.parse(stored));
     } catch { /* ignore */ }
+
+    // Restore share/demo state from URL hash
+    const shared = readShareFromURL();
+    if (shared) {
+      setProvider(shared.provider);
+      if (shared.improvedResult) {
+        // Demo includes before+after: show full diff pipeline
+        setEvalResult(shared.improvedResult);
+        setDelta({ originalResult: shared.result });
+      } else {
+        setEvalResult(shared.result);
+      }
+      if (shared.demoMode) {
+        setDemoMode(true);
+        setDemoTitle(shared.demoTitle ?? "Evaluation Pipeline Demo");
+      }
+      setTab("evaluate");
+    }
   }, []);
 
   function saveToHistory(result: EvaluationResult, deltaScore?: number): string {
@@ -62,6 +85,22 @@ export default function Home() {
   function clearHistory() {
     setHistory([]);
     try { localStorage.removeItem(HISTORY_KEY); } catch { /* ignore */ }
+  }
+
+  function exportJSON(result: EvaluationResult) {
+    const payload = {
+      version: "v0.3-calibrated",
+      schema: "EvaluationResult",
+      exportedAt: new Date().toISOString(),
+      ...result,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `vpqa-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function handleEvaluate(prompt: string) {
@@ -239,6 +278,11 @@ export default function Home() {
       <main className="neo-grid" style={{ minHeight: "calc(100vh - 200px)" }}>
         <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
 
+          {/* Demo Mode Banner */}
+          {demoMode && (
+            <DemoModeBanner title={demoTitle} onDismiss={() => setDemoMode(false)} />
+          )}
+
           {/* History panel + Calibration */}
           {showHistory && (
             <>
@@ -308,10 +352,37 @@ export default function Home() {
                 onImprove={handleImprove}
                 improving={improving}
               />
+
+              {/* Share + Export row */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <ShareButton
+                  provider={provider}
+                  result={delta ? delta.originalResult : evalResult}
+                  improvedResult={delta ? evalResult : undefined}
+                  demoMode
+                  demoTitle={delta
+                    ? `AI Improve Demo — ${delta.originalResult.overallScore} → ${evalResult.overallScore}`
+                    : `Evaluation Demo — ${evalResult.overallScore}/10`}
+                />
+                <button
+                  onClick={() => exportJSON(evalResult)}
+                  style={{
+                    background: "transparent", border: "3px solid #000",
+                    boxShadow: "4px 4px 0 #000",
+                    padding: "8px 18px", fontSize: 12, fontWeight: 700,
+                    textTransform: "uppercase", letterSpacing: "0.1em",
+                    cursor: "pointer", fontFamily: "var(--font-space-grotesk), sans-serif",
+                  }}
+                >
+                  ↓ Export JSON
+                </button>
+              </div>
+
               <StabilityCheck
                 prompt={evalResult.prompt}
                 currentProvider={provider}
                 currentResult={evalResult}
+                defaultOpen={demoMode}
               />
             </>
           )}
