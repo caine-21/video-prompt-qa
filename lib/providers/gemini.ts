@@ -2,8 +2,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
   EVALUATION_SYSTEM_PROMPT,
   COMPARE_SYSTEM_PROMPT,
+  REWRITE_SYSTEM_PROMPT,
   buildEvaluationResult,
   buildCompareResult,
+  buildRewriteUserMessage,
 } from "./base";
 import type { EvaluationResult, CompareResult } from "@/lib/types";
 
@@ -30,6 +32,22 @@ export async function evaluateWithGemini(
   if (!jsonMatch) throw new Error("No JSON found in Gemini response");
   const parsed = JSON.parse(jsonMatch[0]);
   return buildEvaluationResult(prompt, "gemini", parsed);
+}
+
+export async function rewriteWithGemini(
+  prompt: string,
+  dimensions: Array<{ name: string; score: number; feedback: string }>,
+  improvements: string[]
+): Promise<string> {
+  const genAI = getClient();
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: REWRITE_SYSTEM_PROMPT,
+  });
+  const result = await model.generateContent(
+    buildRewriteUserMessage(prompt, dimensions, improvements)
+  );
+  return result.response.text().trim();
 }
 
 export async function compareWithGemini(

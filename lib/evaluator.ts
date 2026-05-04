@@ -1,7 +1,7 @@
-import type { EvaluationResult, CompareResult, AIProvider } from "@/lib/types";
-import { evaluateWithGemini, compareWithGemini } from "./providers/gemini";
-import { evaluateWithClaude, compareWithClaude } from "./providers/claude";
-import { evaluateWithGroq, compareWithGroq } from "./providers/groq";
+import type { EvaluationResult, CompareResult, AIProvider, EvaluationDimension } from "@/lib/types";
+import { evaluateWithGemini, compareWithGemini, rewriteWithGemini } from "./providers/gemini";
+import { evaluateWithClaude, compareWithClaude, rewriteWithClaude } from "./providers/claude";
+import { evaluateWithGroq, compareWithGroq, rewriteWithGroq } from "./providers/groq";
 
 export async function evaluate(
   prompt: string,
@@ -14,6 +14,19 @@ export async function evaluate(
       return evaluateWithClaude(prompt);
     case "groq":
       return evaluateWithGroq(prompt);
+  }
+}
+
+export async function rewrite(
+  prompt: string,
+  dimensions: EvaluationDimension[],
+  improvements: string[],
+  provider: AIProvider = "groq"
+): Promise<string> {
+  switch (provider) {
+    case "gemini": return rewriteWithGemini(prompt, dimensions, improvements);
+    case "claude": return rewriteWithClaude(prompt, dimensions, improvements);
+    case "groq":   return rewriteWithGroq(prompt, dimensions, improvements);
   }
 }
 

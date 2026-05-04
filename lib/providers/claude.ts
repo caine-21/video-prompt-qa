@@ -2,8 +2,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import {
   EVALUATION_SYSTEM_PROMPT,
   COMPARE_SYSTEM_PROMPT,
+  REWRITE_SYSTEM_PROMPT,
   buildEvaluationResult,
   buildCompareResult,
+  buildRewriteUserMessage,
 } from "./base";
 import type { EvaluationResult, CompareResult } from "@/lib/types";
 
@@ -35,6 +37,24 @@ export async function evaluateWithClaude(
   if (!jsonMatch) throw new Error("No JSON found in Claude response");
   const parsed = JSON.parse(jsonMatch[0]);
   return buildEvaluationResult(prompt, "claude", parsed);
+}
+
+export async function rewriteWithClaude(
+  prompt: string,
+  dimensions: Array<{ name: string; score: number; feedback: string }>,
+  improvements: string[]
+): Promise<string> {
+  const client = getClient();
+  const message = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 512,
+    system: REWRITE_SYSTEM_PROMPT,
+    messages: [
+      { role: "user", content: buildRewriteUserMessage(prompt, dimensions, improvements) },
+    ],
+  });
+  const text = message.content[0].type === "text" ? message.content[0].text : "";
+  return text.trim();
 }
 
 export async function compareWithClaude(

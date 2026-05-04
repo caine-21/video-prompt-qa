@@ -37,3 +37,15 @@ export interface CompareRequest {
   promptB: string;
   provider?: AIProvider;
 }
+
+export interface RewriteRequest {
+  prompt: string;
+  dimensions: EvaluationDimension[];
+  improvements: string[];
+  provider?: AIProvider;
+}
+
+export interface HistoryEntry {
+  id: string;
+  result: EvaluationResult;
+}

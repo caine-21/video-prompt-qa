@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import type { EvaluationResult, CompareResult, AIProvider } from "@/lib/types";
+import { useState, useEffect } from "react";
+import type { EvaluationResult, CompareResult, AIProvider, HistoryEntry } from "@/lib/types";
 import EvaluatePanel from "@/components/EvaluatePanel";
 import ComparePanel from "@/components/ComparePanel";
 import EvaluationReport from "@/components/EvaluationReport";
 import CompareReport from "@/components/CompareReport";
+import DeltaBanner from "@/components/DeltaBanner";
+import HistoryPanel from "@/components/HistoryPanel";
 
 type Tab = "evaluate" | "compare";
 
 const PROVIDERS: AIProvider[] = ["gemini", "claude", "groq"];
+const HISTORY_KEY = "vpqa_history";
+const MAX_HISTORY = 20;
 
 export default function Home() {
   const [tab, setTab]                     = useState<Tab>("evaluate");
@@ -17,10 +21,35 @@ export default function Home() {
   const [evalResult, setEvalResult]       = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [loading, setLoading]             = useState(false);
+  const [improving, setImproving]         = useState(false);
   const [error, setError]                 = useState<string | null>(null);
+  const [delta, setDelta]                 = useState<{ originalPrompt: string; originalScore: number } | null>(null);
+  const [history, setHistory]             = useState<HistoryEntry[]>([]);
+  const [showHistory, setShowHistory]     = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(HISTORY_KEY);
+      if (stored) setHistory(JSON.parse(stored));
+    } catch { /* ignore */ }
+  }, []);
+
+  function saveToHistory(result: EvaluationResult) {
+    const entry: HistoryEntry = { id: `${Date.now()}-${Math.random()}`, result };
+    setHistory(prev => {
+      const next = [entry, ...prev].slice(0, MAX_HISTORY);
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  }
+
+  function clearHistory() {
+    setHistory([]);
+    try { localStorage.removeItem(HISTORY_KEY); } catch { /* ignore */ }
+  }
 
   async function handleEvaluate(prompt: string) {
-    setLoading(true); setError(null); setEvalResult(null);
+    setLoading(true); setError(null); setEvalResult(null); setDelta(null);
     try {
       const res  = await fetch("/api/evaluate", {
         method: "POST",
@@ -30,6 +59,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setEvalResult(data);
+      saveToHistory(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
     } finally {
@@ -55,6 +85,40 @@ export default function Home() {
     }
   }
 
+  async function handleImprove(result: EvaluationResult) {
+    setImproving(true); setError(null);
+    try {
+      const rewriteRes = await fetch("/api/rewrite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: result.prompt,
+          dimensions: result.dimensions,
+          improvements: result.improvements,
+          provider,
+        }),
+      });
+      const rewriteData = await rewriteRes.json();
+      if (!rewriteRes.ok) throw new Error(rewriteData.error);
+
+      const evalRes = await fetch("/api/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: rewriteData.improvedPrompt, provider }),
+      });
+      const newResult = await evalRes.json();
+      if (!evalRes.ok) throw new Error(newResult.error);
+
+      setDelta({ originalPrompt: result.prompt, originalScore: result.overallScore });
+      setEvalResult(newResult);
+      saveToHistory(newResult);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Improvement failed");
+    } finally {
+      setImproving(false);
+    }
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: "#FFFDF5" }}>
 
@@ -62,7 +126,7 @@ export default function Home() {
       <header style={{ borderBottom: "4px solid #000", background: "#FFFDF5" }}>
         <div className="max-w-6xl mx-auto px-6 pt-6 pb-0">
 
-          {/* Top row: logo + provider */}
+          {/* Top row: logo + controls */}
           <div className="flex items-start justify-between gap-6 flex-wrap">
 
             {/* Logo */}
@@ -86,36 +150,26 @@ export default function Home() {
                     VideoPromptQA
                   </span>
                 </div>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.14em",
-                  opacity: 0.4,
-                }}>
+                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.4 }}>
                   v1.0
                 </span>
               </div>
-              <p style={{
-                fontSize: 13,
-                fontWeight: 500,
-                color: "rgba(0,0,0,0.5)",
-                margin: 0,
-              }}>
+              <p style={{ fontSize: 13, fontWeight: 500, color: "rgba(0,0,0,0.5)", margin: 0 }}>
                 Score AI video prompts across 5 failure-mode dimensions
               </p>
             </div>
 
-            {/* Provider selector */}
-            <div className="flex items-center gap-2 pt-1 flex-shrink-0">
-              <span style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                opacity: 0.45,
-                marginRight: 4,
-              }}>
+            {/* Right controls: history + provider */}
+            <div className="flex items-center gap-3 pt-1 flex-shrink-0 flex-wrap">
+              <button
+                onClick={() => setShowHistory(s => !s)}
+                className={`neo-btn ${showHistory ? "neo-btn-active" : "neo-btn-outline"}`}
+                style={{ padding: "6px 14px", minHeight: 36, fontSize: 12 }}
+              >
+                History {history.length > 0 && `(${history.length})`}
+              </button>
+
+              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.45 }}>
                 Model
               </span>
               {PROVIDERS.map((p) => (
@@ -139,7 +193,7 @@ export default function Home() {
             ] as [Tab, string][]).map(([t, label]) => (
               <button
                 key={t}
-                onClick={() => { setTab(t); setError(null); }}
+                onClick={() => { setTab(t); setError(null); setDelta(null); }}
                 style={{
                   border: "4px solid #000",
                   borderBottom: t === tab ? "4px solid #FFFDF5" : "4px solid #000",
@@ -168,6 +222,15 @@ export default function Home() {
       <main className="neo-grid" style={{ minHeight: "calc(100vh - 200px)" }}>
         <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
 
+          {/* History panel */}
+          {showHistory && (
+            <HistoryPanel
+              entries={history}
+              onSelect={(result) => { setEvalResult(result); setDelta(null); setShowHistory(false); setTab("evaluate"); }}
+              onClear={clearHistory}
+            />
+          )}
+
           {tab === "evaluate" ? (
             <EvaluatePanel onSubmit={handleEvaluate} loading={loading} />
           ) : (
@@ -184,8 +247,8 @@ export default function Home() {
             </div>
           )}
 
-          {/* Loading */}
-          {loading && (
+          {/* Loading / Improving */}
+          {(loading || improving) && (
             <div className="neo-card" style={{ textAlign: "center", padding: "48px 24px" }}>
               <div
                 className="animate-spin-slow"
@@ -193,21 +256,28 @@ export default function Home() {
               >
                 ★
               </div>
-              <p style={{
-                fontSize: 18,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                margin: 0,
-              }}>
-                Analyzing via {provider.toUpperCase()}
+              <p style={{ fontSize: 18, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", margin: 0 }}>
+                {improving ? "Rewriting & re-scoring" : `Analyzing via ${provider.toUpperCase()}`}
                 <span className="animate-neo-blink">...</span>
               </p>
             </div>
           )}
 
+          {/* Delta banner shown after improvement */}
+          {delta && evalResult && tab === "evaluate" && (
+            <DeltaBanner
+              originalPrompt={delta.originalPrompt}
+              originalScore={delta.originalScore}
+              newScore={evalResult.overallScore}
+            />
+          )}
+
           {evalResult && tab === "evaluate" && (
-            <EvaluationReport result={evalResult} />
+            <EvaluationReport
+              result={evalResult}
+              onImprove={handleImprove}
+              improving={improving}
+            />
           )}
 
           {compareResult && tab === "compare" && (
@@ -217,11 +287,7 @@ export default function Home() {
       </main>
 
       {/* ── Footer ── */}
-      <footer style={{
-        background: "#FFD93D",
-        borderTop: "4px solid #000",
-        padding: "16px 24px",
-      }}>
+      <footer style={{ background: "#FFD93D", borderTop: "4px solid #000", padding: "16px 24px" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <span style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.06em" }}>
             VideoPromptQA — The QA layer for AI video workflows
@@ -230,15 +296,7 @@ export default function Home() {
             href="https://github.com/caine-21/video-prompt-qa"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              fontWeight: 700,
-              fontSize: 12,
-              textDecoration: "none",
-              color: "#000",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              borderBottom: "2px solid #000",
-            }}
+            style={{ fontWeight: 700, fontSize: 12, textDecoration: "none", color: "#000", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #000" }}
           >
             github.com/caine-21 ↗
           </a>

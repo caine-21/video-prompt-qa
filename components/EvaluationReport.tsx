@@ -2,6 +2,8 @@ import type { EvaluationResult } from "@/lib/types";
 
 interface Props {
   result: EvaluationResult;
+  onImprove?: (result: EvaluationResult) => void;
+  improving?: boolean;
 }
 
 function scoreColors(score: number) {
@@ -53,7 +55,7 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function EvaluationReport({ result }: Props) {
+export default function EvaluationReport({ result, onImprove, improving }: Props) {
   const overallColors = scoreColors(result.overallScore);
 
   return (
@@ -159,6 +161,42 @@ export default function EvaluationReport({ result }: Props) {
           })}
         </div>
       </div>
+
+      {/* ── AI Improve CTA ── */}
+      {onImprove && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 16,
+          background: "#FFFDF5",
+          border: "4px solid #000",
+          boxShadow: "8px 8px 0 #000",
+          padding: "20px 24px",
+        }}>
+          <div>
+            <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 4px" }}>
+              Let AI fix the weak points automatically
+            </p>
+            <p style={{ fontWeight: 500, fontSize: 13, opacity: 0.55, margin: 0 }}>
+              Rewrites your prompt using the dimension feedback, then re-scores it
+            </p>
+          </div>
+          <button
+            onClick={() => onImprove(result)}
+            disabled={improving}
+            className="neo-btn neo-btn-secondary"
+            style={{ minWidth: 200 }}
+          >
+            {improving ? (
+              <span className="animate-neo-blink">Improving...</span>
+            ) : (
+              "✦ AI Improve This Prompt"
+            )}
+          </button>
+        </div>
+      )}
 
       {/* ── Improvements + Edge cases ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

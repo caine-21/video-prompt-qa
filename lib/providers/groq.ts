@@ -2,8 +2,10 @@ import Groq from "groq-sdk";
 import {
   EVALUATION_SYSTEM_PROMPT,
   COMPARE_SYSTEM_PROMPT,
+  REWRITE_SYSTEM_PROMPT,
   buildEvaluationResult,
   buildCompareResult,
+  buildRewriteUserMessage,
 } from "./base";
 import type { EvaluationResult, CompareResult } from "@/lib/types";
 
@@ -33,6 +35,23 @@ export async function evaluateWithGroq(
   const text = completion.choices[0]?.message?.content ?? "";
   const parsed = JSON.parse(text);
   return buildEvaluationResult(prompt, "groq", parsed);
+}
+
+export async function rewriteWithGroq(
+  prompt: string,
+  dimensions: Array<{ name: string; score: number; feedback: string }>,
+  improvements: string[]
+): Promise<string> {
+  const client = getClient();
+  const completion = await client.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: REWRITE_SYSTEM_PROMPT },
+      { role: "user", content: buildRewriteUserMessage(prompt, dimensions, improvements) },
+    ],
+    max_tokens: 512,
+  });
+  return (completion.choices[0]?.message?.content ?? "").trim();
 }
 
 export async function compareWithGroq(

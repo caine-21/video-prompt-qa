@@ -21,6 +21,38 @@ Respond ONLY with valid JSON matching this exact structure:
   "edgeCases": ["<string>"]
 }`;
 
+export const REWRITE_SYSTEM_PROMPT = `You are a video prompt optimization expert. Rewrite the given AI video generation prompt to fix its quality issues while preserving the original creative intent.
+
+Rules:
+- Address every weakness mentioned in the dimension feedback
+- Keep the same subject, mood, and creative vision
+- Add specific cinematic language: shot type, lighting, camera movement, pacing
+- Make it concrete and unambiguous
+- Return ONLY the improved prompt text — no explanation, no preamble, no quotes`;
+
+export function buildRewriteUserMessage(
+  prompt: string,
+  dimensions: Array<{ name: string; score: number; feedback: string }>,
+  improvements: string[]
+): string {
+  const weakDims = dimensions
+    .filter((d) => d.score < 8)
+    .map((d) => `- ${d.name} (${d.score}/10): ${d.feedback}`)
+    .join("\n");
+
+  const impList = improvements.map((imp, i) => `${i + 1}. ${imp}`).join("\n");
+
+  return `Original prompt: "${prompt}"
+
+Issues to fix:
+${weakDims}
+
+Suggested improvements:
+${impList}
+
+Rewrite the prompt to address these issues.`;
+}
+
 export const COMPARE_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer.
 Compare two video generation prompts and determine which is better suited for AI video generation.
 
