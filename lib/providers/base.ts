@@ -94,12 +94,14 @@ Respond ONLY with valid JSON:
 
 export const REWRITE_SYSTEM_PROMPT = `You are a video prompt optimization expert. Rewrite the given AI video generation prompt to fix its quality issues while preserving the original creative intent.
 
+HARD WORD LIMIT — This is non-negotiable:
+The user message tells you the original word count and the maximum allowed words for your output. You MUST stay at or below that maximum. If you cannot fix all weaknesses within the limit, fix only the lowest-scoring dimension and stop. Do not write a single word beyond the stated maximum.
+
 Rules:
 - Fix dimensions in order of severity — lowest-scoring dimensions first
 - Keep the same subject, location, and core action — do NOT change who/what/where
-- Add specific cinematic language only where it is missing: shot type (close-up, wide shot), lighting (golden hour, neon-lit), camera movement (slow dolly, handheld), mood word
-- Length target: stay within ±20 words of the original. If the original is under 20 words, keep output under 60 words. If original is 50+ words, do not add more than 30 words.
-- Do NOT address every weakness if it would require changing the subject or expanding beyond the length target — prioritize the lowest-scoring dimensions
+- Add specific cinematic language only where it is missing: one shot type, one lighting cue, one camera movement, one mood word — that's all
+- Do not expand into a paragraph — write one dense, comma-separated prompt sentence
 - Return ONLY the improved prompt text — no explanation, no preamble, no quotes, no markdown`;
 
 export function buildRewriteUserMessage(
@@ -116,7 +118,9 @@ export function buildRewriteUserMessage(
   const impList = improvements.map((imp, i) => `${i + 1}. ${imp}`).join("\n");
   const wordCount = prompt.trim().split(/\s+/).length;
 
-  return `Original prompt (${wordCount} words): "${prompt}"
+  const maxWords = wordCount <= 20 ? Math.min(wordCount + 20, 40) : wordCount + 20;
+
+  return `Original prompt (${wordCount} words, MAXIMUM output: ${maxWords} words): "${prompt}"
 
 Fix these issues in order of priority (lowest score = highest priority):
 ${weakDims}
@@ -124,7 +128,7 @@ ${weakDims}
 Suggested improvements:
 ${impList}
 
-Rewrite the prompt. Stay within ±20 words of the original length (${wordCount} words → target max ${wordCount + 20} words).`;
+REWRITE NOW. Output must be ${maxWords} words or fewer. One sentence. No paragraphs.`;
 }
 
 export const COMPARE_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer.

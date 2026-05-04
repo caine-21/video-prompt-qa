@@ -67,13 +67,15 @@ export default function CalibrationPanel({ entries }: Props) {
     .sort((a, b) => b[1] - a[1]);
 
   const negativeTotal = rated.filter(e => e.feedback!.rating === 3).length;
+  const isLowSample = total < 20;
 
   return (
     <div className="neo-card">
       <div className="neo-bar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span>Calibration Metrics</span>
         <span style={{ fontSize: 11, opacity: 0.7, fontWeight: 700, letterSpacing: "0.08em" }}>
-          {total} rated sample{total !== 1 ? "s" : ""} · Δ threshold {DELTA_THRESHOLD}
+          {total} rated sample{total !== 1 ? "s" : ""} · Δ≥{DELTA_THRESHOLD} = meaningful shift (1-10 scale)
+          {isLowSample && " · directional only"}
         </span>
       </div>
 
@@ -129,6 +131,15 @@ export default function CalibrationPanel({ entries }: Props) {
         </div>
       </div>
 
+      {/* Low-sample warning */}
+      {isLowSample && (
+        <div style={{ borderTop: "3px solid #000", padding: "10px 24px", background: "rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontWeight: 700, fontSize: 12, opacity: 0.5, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            Directional signal only — {20 - total} more rated sample{20 - total !== 1 ? "s" : ""} needed for stable metrics
+          </span>
+        </div>
+      )}
+
       {/* Tag frequency */}
       {tagEntries.length > 0 && (
         <>
@@ -154,7 +165,7 @@ export default function CalibrationPanel({ entries }: Props) {
             })}
           </div>
 
-          {tagEntries[0] && tagEntries[0][1] / negativeTotal >= 0.5 && (
+          {tagEntries[0] && tagEntries[0][1] / negativeTotal >= 0.5 && tagEntries[0][1] >= 3 && (
             <div style={{ borderTop: "3px solid #000", padding: "14px 24px", background: "#FFD93D" }}>
               <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 4px" }}>
                 Systematic pattern detected: {Math.round(tagEntries[0][1] / negativeTotal * 100)}% of failures tagged as "{TAG_LABELS[tagEntries[0][0]]}"
