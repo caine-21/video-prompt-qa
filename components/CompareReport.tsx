@@ -4,104 +4,134 @@ interface Props {
   result: CompareResult;
 }
 
-function AsciiBar({ score }: { score: number }) {
-  const filled = Math.round(score);
-  const empty  = 10 - filled;
-  const color  = score >= 8 ? 'var(--t-fg)' : score >= 5 ? 'var(--t-amber)' : 'var(--t-error)';
+function scoreColors(score: number) {
+  if (score >= 8) return { bg: "#FFD93D", text: "#000" };
+  if (score >= 5) return { bg: "#C4B5FD", text: "#000" };
+  return { bg: "#FF6B6B", text: "#000" };
+}
+
+function ScoreBar({ score }: { score: number }) {
+  const { bg } = scoreColors(score);
   return (
-    <span style={{ color }}>
-      {'['}{'█'.repeat(filled)}{'░'.repeat(empty)}{']'} {score.toFixed(1)}
-    </span>
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{
+        width: 100,
+        height: 16,
+        border: "3px solid #000",
+        background: "#FFFDF5",
+        position: "relative",
+        overflow: "hidden",
+        flexShrink: 0,
+      }}>
+        <div style={{
+          position: "absolute", top: 0, left: 0,
+          height: "100%", width: `${score * 10}%`,
+          background: bg,
+        }} />
+      </div>
+      <span style={{
+        fontWeight: 700, fontSize: 13,
+        background: bg, border: "2px solid #000",
+        padding: "1px 8px", minWidth: 44,
+        textAlign: "center", display: "inline-block",
+      }}>
+        {score.toFixed(1)}
+      </span>
+    </div>
   );
 }
 
 export default function CompareReport({ result }: Props) {
-  const { winner, scoreA, scoreB, reasoning, promptA, promptB, provider, timestamp } = result;
-  const tsLabel = new Date(timestamp).toLocaleTimeString('en-US', { hour12: false });
+  const { winner, scoreA, scoreB, reasoning, promptA, promptB, provider } = result;
 
-  const winnerLabel =
-    winner === 'tie' ? 'TIE' : winner === 'A' ? 'PROMPT_A' : 'PROMPT_B';
-
-  const winnerTitleColor = winner === 'tie' ? 'amber' : '';
+  const winnerLabel = winner === "tie" ? "It's a Tie" : winner === "A" ? "Prompt A Wins" : "Prompt B Wins";
+  const winnerBg    = winner === "tie" ? "#C4B5FD" : winner === "A" ? "#FF6B6B" : "#FFD93D";
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
 
-      {/* ── Result banner ── */}
-      <div className="t-pane">
-        <div className={`t-pane-title ${winnerTitleColor}`}>
-          {`COMPARISON.RESULT ── WINNER: ${winnerLabel} ── via:${provider.toUpperCase()} ── ${tsLabel}`}
-        </div>
-        <div className="px-4 py-4 flex items-center gap-8">
-          <div className="text-xs space-y-1">
-            <p style={{ color: 'var(--t-muted)', letterSpacing: '0.08em' }}>SCORE_A</p>
-            <AsciiBar score={scoreA} />
+      {/* ── Winner banner ── */}
+      <div className="neo-card" style={{ background: winnerBg }}>
+        <div className="px-6 py-6 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p style={{
+              fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.14em", opacity: 0.6, margin: "0 0 6px",
+            }}>
+              Result — via {provider.toUpperCase()}
+            </p>
+            <p style={{
+              fontSize: 48, fontWeight: 700, lineHeight: 1,
+              textTransform: "uppercase", letterSpacing: "0.02em", margin: 0,
+            }}>
+              {winnerLabel}
+            </p>
           </div>
-          <div
-            className="text-lg"
-            style={{
-              color: 'var(--t-muted)',
-              borderLeft: '1px solid var(--t-border)',
-              borderRight: '1px solid var(--t-border)',
-              padding: '0 16px',
-            }}
-          >
-            VS
-          </div>
-          <div className="text-xs space-y-1">
-            <p style={{ color: 'var(--t-muted)', letterSpacing: '0.08em' }}>SCORE_B</p>
-            <AsciiBar score={scoreB} />
-          </div>
-          <div
-            className="ml-auto text-2xl t-glow"
-            style={{
-              color: winner === 'tie' ? 'var(--t-amber)' : 'var(--t-fg)',
-              letterSpacing: '0.1em',
-            }}
-          >
-            {winner === 'tie' ? '== TIE ==' : `${winnerLabel} WINS`}
+
+          {/* Score comparison */}
+          <div className="flex items-center gap-6">
+            <div style={{ textAlign: "center" }}>
+              <p style={{
+                fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                letterSpacing: "0.1em", opacity: 0.6, margin: "0 0 8px",
+              }}>
+                Score A
+              </p>
+              <ScoreBar score={scoreA} />
+            </div>
+            <div style={{
+              fontSize: 24, fontWeight: 700,
+              border: "3px solid #000", padding: "4px 12px",
+              background: "#fff",
+            }}>
+              VS
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <p style={{
+                fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                letterSpacing: "0.1em", opacity: 0.6, margin: "0 0 8px",
+              }}>
+                Score B
+              </p>
+              <ScoreBar score={scoreB} />
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── Side by side prompts ── */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
         <div
-          className="t-pane"
-          style={winner === 'A' ? { borderColor: 'var(--t-fg)' } : {}}
+          className="neo-card"
+          style={winner === "A" ? { background: "#FF6B6B" } : {}}
         >
-          <div className="t-pane-title">
-            {winner === 'A' ? `[WIN] PROMPT_A ── ${scoreA}/10` : `PROMPT_A ── ${scoreA}/10`}
+          <div className={winner === "A" ? "neo-bar" : "neo-bar-accent"}>
+            {winner === "A" ? "★ Winner — Prompt A" : `Prompt A — ${scoreA}/10`}
           </div>
-          <div className="p-3 space-y-2">
-            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
-              {promptA}
-            </p>
+          <div className="px-5 py-4" style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.6 }}>
+            {promptA}
           </div>
         </div>
 
         <div
-          className="t-pane"
-          style={winner === 'B' ? { borderColor: 'var(--t-amber)' } : {}}
+          className="neo-card"
+          style={winner === "B" ? { background: "#FFD93D" } : {}}
         >
-          <div className={`t-pane-title ${winner === 'B' ? 'amber' : ''}`}>
-            {winner === 'B' ? `[WIN] PROMPT_B ── ${scoreB}/10` : `PROMPT_B ── ${scoreB}/10`}
+          <div className={winner === "B" ? "neo-bar" : "neo-bar-secondary"}>
+            {winner === "B" ? "★ Winner — Prompt B" : `Prompt B — ${scoreB}/10`}
           </div>
-          <div className="p-3 space-y-2">
-            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
-              {promptB}
-            </p>
+          <div className="px-5 py-4" style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.6 }}>
+            {promptB}
           </div>
         </div>
       </div>
 
       {/* ── Reasoning ── */}
-      <div className="t-pane">
-        <div className="t-pane-title">REASONING.OUTPUT</div>
-        <div className="p-4">
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--t-muted)' }}>
-            {`> ${reasoning}`}
-          </p>
+      <div className="neo-card">
+        <div className="neo-bar">Why</div>
+        <div className="px-6 py-5" style={{ fontSize: 15, fontWeight: 500, lineHeight: 1.65, color: "rgba(0,0,0,0.75)" }}>
+          {reasoning}
         </div>
       </div>
     </div>

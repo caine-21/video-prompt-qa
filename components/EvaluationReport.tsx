@@ -4,126 +4,218 @@ interface Props {
   result: EvaluationResult;
 }
 
-function scoreColor(score: number) {
-  if (score >= 8) return 'var(--t-fg)';
-  if (score >= 5) return 'var(--t-amber)';
-  return 'var(--t-error)';
+function scoreColors(score: number) {
+  if (score >= 8) return { bg: "#FFD93D", text: "#000" };
+  if (score >= 5) return { bg: "#C4B5FD", text: "#000" };
+  return { bg: "#FF6B6B", text: "#000" };
 }
 
-function AsciiBar({ score }: { score: number }) {
-  const filled = Math.round(score);
-  const empty  = 10 - filled;
-  return (
-    <span style={{ color: scoreColor(score), fontVariantNumeric: 'tabular-nums' }}>
-      {'['}{'█'.repeat(filled)}{'░'.repeat(empty)}{']'}
-    </span>
-  );
+function scoreLabel(score: number) {
+  if (score >= 8) return "Strong";
+  if (score >= 5) return "Acceptable";
+  return "Needs Work";
 }
 
-function DimLabel({ name }: { name: string }) {
-  const padded = name.toUpperCase().replace(/\s+/g, '_').padEnd(20, '.');
+function ScoreBar({ score }: { score: number }) {
+  const { bg } = scoreColors(score);
   return (
-    <span style={{ color: 'var(--t-muted)', letterSpacing: '0.04em' }}>{padded}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{
+        width: 120,
+        height: 16,
+        border: "3px solid #000",
+        background: "#FFFDF5",
+        position: "relative",
+        overflow: "hidden",
+        flexShrink: 0,
+      }}>
+        <div style={{
+          position: "absolute",
+          top: 0, left: 0,
+          height: "100%",
+          width: `${score * 10}%`,
+          background: bg,
+        }} />
+      </div>
+      <span style={{
+        fontWeight: 700,
+        fontSize: 13,
+        background: bg,
+        border: "2px solid #000",
+        padding: "1px 8px",
+        minWidth: 44,
+        textAlign: "center",
+        display: "inline-block",
+      }}>
+        {score.toFixed(1)}
+      </span>
+    </div>
   );
 }
 
 export default function EvaluationReport({ result }: Props) {
-  const status   = result.overallScore >= 5 ? '[OK]' : '[WARN]';
-  const tsLabel  = new Date(result.timestamp).toLocaleTimeString('en-US', { hour12: false });
+  const overallColors = scoreColors(result.overallScore);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
 
-      {/* ── Overall score pane ── */}
-      <div className="t-pane">
-        <div className="t-pane-title">
-          {`ANALYSIS.COMPLETE ── ${status} ── via:${result.provider.toUpperCase()} ── ${tsLabel}`}
-        </div>
-        <div className="px-4 py-4 flex items-center gap-6">
+      {/* ── Overall score ── */}
+      <div className="neo-card" style={{ background: overallColors.bg }}>
+        <div className="flex items-center justify-between flex-wrap gap-4 px-6 py-5">
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--t-muted)', letterSpacing: '0.08em' }}>
-              OVERALL_SCORE
+            <p style={{
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              opacity: 0.6,
+              margin: "0 0 6px",
+            }}>
+              Overall Score — via {result.provider.toUpperCase()}
             </p>
-            <p
-              className="text-5xl t-glow"
-              style={{ color: scoreColor(result.overallScore), letterSpacing: '-0.02em' }}
-            >
-              {result.overallScore}
-              <span className="text-lg" style={{ color: 'var(--t-muted)' }}>/10</span>
+            <div className="flex items-baseline gap-2">
+              <span style={{ fontSize: 80, fontWeight: 700, lineHeight: 1 }}>
+                {result.overallScore}
+              </span>
+              <span style={{ fontSize: 28, fontWeight: 700, opacity: 0.5 }}>/10</span>
+            </div>
+            <p style={{
+              fontSize: 14,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              margin: "6px 0 0",
+            }}>
+              {scoreLabel(result.overallScore)}
             </p>
           </div>
 
-          {/* Mini bar chart */}
-          <div className="flex-1 space-y-1 text-xs">
+          {/* Mini summary bars */}
+          <div style={{ minWidth: 280 }}>
             {result.dimensions.map((d) => (
-              <div key={d.name} className="flex items-center gap-2">
-                <DimLabel name={d.name} />
-                <AsciiBar score={d.score} />
-                <span style={{ color: scoreColor(d.score), minWidth: '2.5ch' }}>
-                  {d.score.toFixed(1)}
+              <div key={d.name} className="flex items-center justify-between mb-2">
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  minWidth: 130,
+                }}>
+                  {d.name}
                 </span>
+                <ScoreBar score={d.score} />
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── Dimension details ── */}
-      <div className="t-pane">
-        <div className="t-pane-title">DIMENSION.ANALYSIS</div>
-        <div className="p-4 space-y-4">
-          {result.dimensions.map((dim) => (
-            <div key={dim.name} className="space-y-1">
-              <div className="flex items-center gap-3 text-sm">
-                <span
-                  className="text-xs"
-                  style={{
-                    color: 'var(--t-bg)',
-                    background: scoreColor(dim.score),
-                    padding: '1px 6px',
-                    letterSpacing: '0.1em',
-                  }}
-                >
-                  {dim.name.toUpperCase().replace(/\s+/g, '_')}
-                </span>
-                <AsciiBar score={dim.score} />
-                <span style={{ color: scoreColor(dim.score) }}>{dim.score.toFixed(1)}</span>
+      {/* ── Prompt display ── */}
+      <div className="neo-card">
+        <div className="neo-bar">Evaluated Prompt</div>
+        <div className="px-6 py-4" style={{ fontSize: 15, lineHeight: 1.6, fontWeight: 500 }}>
+          &ldquo;{result.prompt}&rdquo;
+        </div>
+      </div>
+
+      {/* ── Dimension breakdown ── */}
+      <div className="neo-card">
+        <div className="neo-bar">Dimension Analysis</div>
+        <div className="divide-y" style={{ borderTop: "none" }}>
+          {result.dimensions.map((dim) => {
+            const colors = scoreColors(dim.score);
+            return (
+              <div key={dim.name} className="px-6 py-5" style={{ borderBottom: "3px solid #000" }}>
+                <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <span style={{
+                      background: colors.bg,
+                      border: "3px solid #000",
+                      padding: "3px 12px",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                    }}>
+                      {dim.name}
+                    </span>
+                    <span style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      opacity: 0.5,
+                    }}>
+                      {scoreLabel(dim.score)}
+                    </span>
+                  </div>
+                  <ScoreBar score={dim.score} />
+                </div>
+                <p style={{ fontSize: 14, fontWeight: 500, color: "rgba(0,0,0,0.7)", margin: 0, lineHeight: 1.55 }}>
+                  {dim.feedback}
+                </p>
               </div>
-              <p className="text-xs pl-2" style={{ color: 'var(--t-muted)' }}>
-                {`// ${dim.feedback}`}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* ── Improvements + Edge cases ── */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="t-pane">
-          <div className="t-pane-title">{`[OK] IMPROVEMENTS`}</div>
-          <ul className="p-4 space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div className="neo-card">
+          <div className="neo-bar-secondary">Improvements</div>
+          <ul className="px-6 py-4 space-y-3">
             {result.improvements.map((item, i) => (
-              <li key={i} className="text-xs flex gap-2">
-                <span style={{ color: 'var(--t-fg)' }} className="shrink-0">{'>'}</span>
-                <span style={{ color: 'var(--t-muted)' }}>{item}</span>
+              <li key={i} className="flex gap-3" style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.5 }}>
+                <span style={{
+                  fontWeight: 700,
+                  fontSize: 13,
+                  background: "#FFD93D",
+                  border: "2px solid #000",
+                  width: 22,
+                  height: 22,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  marginTop: 1,
+                }}>
+                  {i + 1}
+                </span>
+                {item}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="t-pane">
-          <div className="t-pane-title amber">{`[WARN] EDGE_CASES`}</div>
-          <ul className="p-4 space-y-2">
+        <div className="neo-card">
+          <div className="neo-bar-muted">Edge Cases Detected</div>
+          <ul className="px-6 py-4 space-y-3">
             {result.edgeCases.length > 0 ? (
               result.edgeCases.map((item, i) => (
-                <li key={i} className="text-xs flex gap-2">
-                  <span style={{ color: 'var(--t-amber)' }} className="shrink-0">!</span>
-                  <span style={{ color: 'var(--t-muted)' }}>{item}</span>
+                <li key={i} className="flex gap-3" style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.5 }}>
+                  <span style={{
+                    fontWeight: 700,
+                    fontSize: 13,
+                    background: "#C4B5FD",
+                    border: "2px solid #000",
+                    width: 22,
+                    height: 22,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    marginTop: 1,
+                  }}>
+                    !
+                  </span>
+                  {item}
                 </li>
               ))
             ) : (
-              <li className="text-xs" style={{ color: 'var(--t-muted)' }}>
-                {`// no edge cases detected`}
+              <li style={{ fontSize: 14, fontWeight: 500, opacity: 0.5 }}>
+                No edge cases detected.
               </li>
             )}
           </ul>

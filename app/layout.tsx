@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "VideoPromptQA — AI Video Prompt Tester",
-  description: "Evaluate and compare AI video generation prompts across multiple quality dimensions",
+  title: "VideoPromptQA — Know if your prompt works before you generate",
+  description: "Score AI video prompts across 5 failure-mode dimensions. Catch weak prompts before expensive generation runs.",
 };
 
 export default function RootLayout({
@@ -18,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistMono.variable} h-full`}>
+    <html lang="en" className={`${spaceGrotesk.variable} h-full`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -1,155 +1,246 @@
 @import "tailwindcss";
 
-/* ── Terminal Design Tokens ── */
+/* ── Neo-brutalism Design Tokens ── */
 :root {
-  --t-bg:     #0a0a0a;
-  --t-fg:     #33ff00;
-  --t-amber:  #ffb000;
-  --t-muted:  #1f521f;
-  --t-error:  #ff3333;
-  --t-border: #1f521f;
-  --t-glow:   0 0 8px rgba(51, 255, 0, 0.45);
+  --neo-bg:        #FFFDF5;
+  --neo-black:     #000000;
+  --neo-accent:    #FF6B6B;
+  --neo-secondary: #FFD93D;
+  --neo-muted:     #C4B5FD;
+  --neo-white:     #FFFFFF;
 }
 
 @theme inline {
-  --color-background: var(--t-bg);
-  --color-foreground: var(--t-fg);
-  --font-mono: var(--font-geist-mono), 'JetBrains Mono', 'Fira Code', monospace;
+  --color-neo-bg:        #FFFDF5;
+  --color-neo-black:     #000000;
+  --color-neo-accent:    #FF6B6B;
+  --color-neo-secondary: #FFD93D;
+  --color-neo-muted:     #C4B5FD;
+  --color-neo-white:     #FFFFFF;
+  --color-background:    #FFFDF5;
+  --color-foreground:    #000000;
+  --font-sans: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
 }
 
-/* ── Global Reset ── */
+/* ── Reset ── */
 *, *::before, *::after {
-  font-family: var(--font-mono), monospace !important;
   box-sizing: border-box;
 }
 
 html {
-  background: var(--t-bg);
-  color: var(--t-fg);
+  background: var(--neo-bg);
+  color: var(--neo-black);
 }
 
 body {
-  background: var(--t-bg);
-  color: var(--t-fg);
+  background: var(--neo-bg);
+  color: var(--neo-black);
   margin: 0;
   min-height: 100vh;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
 }
 
-/* ── CRT Scanline Overlay ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.07) 2px,
-    rgba(0, 0, 0, 0.07) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
+/* ── Cards ── */
+.neo-card {
+  border: 4px solid #000;
+  background: #fff;
+  box-shadow: 8px 8px 0px 0px #000;
 }
 
-/* ── Animations ── */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+.neo-card-lift {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
 }
 
-@keyframes typing {
-  from { max-width: 0; }
-  to   { max-width: 100%; }
+.neo-card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 12px 12px 0px 0px #000;
 }
 
-@keyframes glitch {
-  0%   { transform: translateX(0); }
-  20%  { transform: translateX(-2px); }
-  40%  { transform: translateX(2px); }
-  60%  { transform: translateX(-1px); }
-  80%  { transform: translateX(1px); }
-  100% { transform: translateX(0); }
-}
-
-.animate-blink   { animation: blink 1s step-end infinite; }
-.animate-typing  { overflow: hidden; white-space: nowrap; animation: typing 1.2s steps(60) forwards; }
-.animate-glitch:hover { animation: glitch 0.3s ease-in-out; }
-
-/* ── Utility Classes ── */
-.t-glow  { text-shadow: var(--t-glow); }
-
-/* Terminal pane with title bar */
-.t-pane {
-  border: 1px solid var(--t-border);
-  background: var(--t-bg);
-}
-
-.t-pane-title {
-  background: var(--t-fg);
-  color: var(--t-bg);
-  padding: 2px 10px;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  user-select: none;
-}
-
-.t-pane-title.amber {
-  background: var(--t-amber);
-}
-
-.t-pane-title.error {
-  background: var(--t-error);
-}
-
-/* Terminal input */
-.t-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--t-fg);
-  width: 100%;
-  resize: none;
-  caret-color: var(--t-fg);
-}
-
-.t-input::placeholder {
-  color: var(--t-muted);
-}
-
-/* Terminal button */
-.t-btn {
-  border: 1px solid var(--t-fg);
-  color: var(--t-fg);
-  background: transparent;
-  padding: 4px 16px;
+/* ── Buttons ── */
+.neo-btn {
+  border: 4px solid #000;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  letter-spacing: 0.08em;
-  font-size: 12px;
-  transition: background 0.1s, color 0.1s;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 4px 4px 0px 0px #000;
+  min-height: 44px;
+  transition: transform 100ms ease-linear, box-shadow 100ms ease-linear;
+  line-height: 1;
 }
 
-.t-btn:hover:not(:disabled) {
-  background: var(--t-fg);
-  color: var(--t-bg);
+.neo-btn:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none;
 }
 
-.t-btn:disabled {
-  border-color: var(--t-muted);
-  color: var(--t-muted);
+.neo-btn:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-.t-btn.amber {
-  border-color: var(--t-amber);
-  color: var(--t-amber);
+.neo-btn-primary {
+  background: #FF6B6B;
+  color: #000;
 }
 
-.t-btn.amber:hover:not(:disabled) {
-  background: var(--t-amber);
-  color: var(--t-bg);
+.neo-btn-primary:hover:not(:disabled) {
+  background: #ff5252;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track  { background: var(--t-bg); }
-::-webkit-scrollbar-thumb  { background: var(--t-muted); }
+.neo-btn-secondary {
+  background: #FFD93D;
+  color: #000;
+}
+
+.neo-btn-secondary:hover:not(:disabled) {
+  background: #ffc800;
+}
+
+.neo-btn-outline {
+  background: #fff;
+  color: #000;
+}
+
+.neo-btn-outline:hover:not(:disabled) {
+  background: #FFD93D;
+}
+
+.neo-btn-ghost {
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  border-color: #000;
+}
+
+.neo-btn-ghost:hover:not(:disabled) {
+  background: #000;
+  color: #FFFDF5;
+}
+
+.neo-btn-active {
+  background: #000;
+  color: #FFFDF5;
+  box-shadow: 4px 4px 0px 0px #FF6B6B;
+}
+
+/* ── Inputs ── */
+.neo-input {
+  border: 4px solid #000;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px;
+  width: 100%;
+  resize: none;
+  outline: none;
+  transition: background 100ms ease-linear, box-shadow 100ms ease-linear;
+  line-height: 1.5;
+}
+
+.neo-input:focus {
+  background: #FFD93D;
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+.neo-input::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+  font-weight: 500;
+}
+
+/* ── Section header bars (inside cards) ── */
+.neo-bar {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 4px solid #000;
+}
+
+.neo-bar-accent {
+  background: #FF6B6B;
+  color: #000;
+  border-bottom: 4px solid #000;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.neo-bar-secondary {
+  background: #FFD93D;
+  color: #000;
+  border-bottom: 4px solid #000;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.neo-bar-muted {
+  background: #C4B5FD;
+  color: #000;
+  border-bottom: 4px solid #000;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Background patterns ── */
+.neo-dots {
+  background-image: radial-gradient(rgba(0,0,0,0.1) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+.neo-grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+}
+
+/* ── Animations ── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes neo-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-spin-slow  { animation: spin-slow 8s linear infinite; }
+.animate-neo-blink  { animation: neo-blink 1s step-end infinite; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar        { width: 8px; }
+::-webkit-scrollbar-track  { background: #FFFDF5; border-left: 3px solid #000; }
+::-webkit-scrollbar-thumb  { background: #000; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow,
+  .animate-bounce,
+  .animate-pulse,
+  .animate-neo-blink { animation: none; }
+  .neo-card-lift,
+  .neo-btn           { transition: none; }
+}

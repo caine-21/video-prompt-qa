@@ -15,73 +15,63 @@ export default function ComparePanel({ onSubmit, loading }: Props) {
   const [promptB, setPromptB] = useState(DEFAULT_B);
 
   return (
-    <div className="t-pane">
-      <div className="t-pane-title">COMPARE.MODE ── TWO_PROMPT_ANALYSIS</div>
+    <div className="space-y-4">
+      {/* A/B panels */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <div className="p-4 space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-
-          {/* Prompt A */}
-          <div className="t-pane">
-            <div className="t-pane-title">{`PROMPT_A`}</div>
-            <div className="p-3 flex items-start gap-2">
-              <span className="text-xs shrink-0 pt-0.5" style={{ color: 'var(--t-muted)' }}>
-                A:$
-              </span>
-              <textarea
-                value={promptA}
-                onChange={(e) => setPromptA(e.target.value)}
-                placeholder="enter prompt A..."
-                rows={5}
-                className="t-input text-xs leading-relaxed"
-                style={{ color: 'var(--t-fg)' }}
-              />
-            </div>
-            <div className="px-3 pb-2 text-xs" style={{ color: 'var(--t-muted)' }}>
-              {`// CHARS: ${String(promptA.length).padStart(4, '0')}`}
-            </div>
+        {/* Prompt A */}
+        <div className="neo-card">
+          <div className="neo-bar-accent">Prompt A — Your best version</div>
+          <div className="p-4">
+            <textarea
+              value={promptA}
+              onChange={(e) => setPromptA(e.target.value)}
+              placeholder="Enter your stronger prompt here..."
+              rows={6}
+              className="neo-input"
+              style={{ fontSize: 14 }}
+            />
           </div>
-
-          {/* Prompt B */}
-          <div className="t-pane">
-            <div className="t-pane-title amber">{`PROMPT_B`}</div>
-            <div className="p-3 flex items-start gap-2">
-              <span className="text-xs shrink-0 pt-0.5" style={{ color: 'var(--t-muted)' }}>
-                B:$
-              </span>
-              <textarea
-                value={promptB}
-                onChange={(e) => setPromptB(e.target.value)}
-                placeholder="enter prompt B..."
-                rows={5}
-                className="t-input text-xs leading-relaxed"
-                style={{ color: 'var(--t-amber)' }}
-              />
-            </div>
-            <div className="px-3 pb-2 text-xs" style={{ color: 'var(--t-muted)' }}>
-              {`// CHARS: ${String(promptB.length).padStart(4, '0')}`}
-            </div>
-          </div>
-        </div>
-
-        {/* Submit */}
-        <div
-          className="flex justify-end"
-          style={{ borderTop: '1px solid var(--t-border)', paddingTop: '10px' }}
-        >
-          <button
-            onClick={() => onSubmit(promptA, promptB)}
-            disabled={loading || !promptA.trim() || !promptB.trim()}
-            className="t-btn text-xs"
-            style={{ letterSpacing: '0.1em' }}
+          <div
+            className="px-4 pb-3"
+            style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}
           >
-            {loading ? (
-              <span className="animate-blink">COMPARING...</span>
-            ) : (
-              "[ COMPARE_PROMPTS --run ]"
-            )}
-          </button>
+            {promptA.length} chars
+          </div>
         </div>
+
+        {/* Prompt B */}
+        <div className="neo-card">
+          <div className="neo-bar-secondary">Prompt B — Your challenger</div>
+          <div className="p-4">
+            <textarea
+              value={promptB}
+              onChange={(e) => setPromptB(e.target.value)}
+              placeholder="Enter the prompt you want to test against A..."
+              rows={6}
+              className="neo-input"
+              style={{ fontSize: 14 }}
+            />
+          </div>
+          <div
+            className="px-4 pb-3"
+            style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}
+          >
+            {promptB.length} chars
+          </div>
+        </div>
+      </div>
+
+      {/* Submit */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => onSubmit(promptA, promptB)}
+          disabled={loading || !promptA.trim() || !promptB.trim()}
+          className="neo-btn neo-btn-primary"
+          style={{ minWidth: 220 }}
+        >
+          {loading ? "Comparing..." : "Run Comparison →"}
+        </button>
       </div>
     </div>
   );
