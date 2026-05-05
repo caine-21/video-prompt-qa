@@ -75,6 +75,20 @@ export default function Home() {
   function handleFeedback(feedback: HumanFeedback) {
     if (!pendingFeedbackId) return;
     setHistory(prev => {
+      const entry = prev.find(e => e.id === pendingFeedbackId);
+      // Log to DB if we have a dbId
+      if (entry?.result.dbId) {
+        fetch("/api/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            evaluationId: entry.result.dbId,
+            rating:       feedback.rating,
+            tags:         feedback.tags ?? [],
+            deltaScore:   entry.deltaScore,
+          }),
+        }).catch(() => { /* non-fatal */ });
+      }
       const next = prev.map(e => e.id === pendingFeedbackId ? { ...e, feedback } : e);
       try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
       return next;

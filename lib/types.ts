@@ -29,6 +29,7 @@ export interface EvaluationResult {
   modelFit?: ModelFitEntry[];
   negativePrompts?: string[];
   timestamp: string;
+  dbId?: string;
 }
 
 export interface CompareResult {
