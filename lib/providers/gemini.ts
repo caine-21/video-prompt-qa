@@ -15,6 +15,16 @@ function getClient() {
   return new GoogleGenerativeAI(apiKey);
 }
 
+function extractFromGeminiError(err: unknown): string | null {
+  const s = String(err);
+  const match = s.match(/"failed_generation"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (!match) return null;
+  return match[1]
+    .replace(/\\n/g, "\n")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, "\\");
+}
+
 export async function evaluateWithGemini(
   prompt: string
 ): Promise<EvaluationResult> {
@@ -24,10 +34,20 @@ export async function evaluateWithGemini(
     systemInstruction: EVALUATION_SYSTEM_PROMPT,
   });
 
-  const result = await model.generateContent(
-    `Evaluate this video generation prompt:\n\n"${prompt}"`
-  );
-  const text = result.response.text().trim();
+  let text: string;
+  try {
+    const result = await model.generateContent(
+      `Evaluate this video generation prompt:\n\n"${prompt}"`
+    );
+    text = result.response.text().trim();
+  } catch (err) {
+    // json_validate_failed: Gemini generated valid content but rejected its own output.
+    // Rescue the generated text from the error's failed_generation field.
+    const rescued = extractFromGeminiError(err);
+    if (!rescued) throw err;
+    text = rescued;
+  }
+
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("No JSON found in Gemini response");
   const parsed = JSON.parse(jsonMatch[0]);
