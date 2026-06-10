@@ -72,8 +72,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Provider | Free tier |
 |---|---|---|
 | `GROQ_API_KEY` | Groq Cloud | ✅ Yes |
-| `GEMINI_API_KEY` | Google AI Studio | ✅ Yes |
-| `ANTHROPIC_API_KEY` | Anthropic | No |
+| `DEEPSEEK_API_KEY` | DeepSeek | ✅ Low cost (~$0.14/1M tokens) |
 
 Set at least one key. GROQ is free and fast — recommended starting point.
 

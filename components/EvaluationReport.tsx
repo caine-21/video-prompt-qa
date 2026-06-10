@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { EvaluationResult } from "@/lib/types";
 import PromptAnatomy from "@/components/PromptAnatomy";
 import ModelFit from "@/components/ModelFit";
+import SubjectWarningCard from "@/components/SubjectWarningCard";
 import { useLanguage } from "@/lib/lang-context";
 import { resolve } from "@/lib/i18n";
 
@@ -111,6 +112,11 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
           </div>
         </div>
       </div>
+
+      {/* ── Subject Warning Card ── */}
+      {result.anatomy && result.anatomy.length > 0 && (
+        <SubjectWarningCard anatomy={result.anatomy} improvements={result.improvements} />
+      )}
 
       {/* ── Evaluated Prompt ── */}
       <div className="neo-card">

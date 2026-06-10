@@ -10,7 +10,7 @@ interface Props {
   defaultOpen?: boolean;
 }
 
-const ALL_PROVIDERS: AIProvider[] = ["gemini", "claude", "groq"];
+const ALL_PROVIDERS: AIProvider[] = ["groq", "deepseek"];
 const VARIANCE_THRESHOLD = 1.5;
 
 function scoreColors(score: number) {
@@ -21,7 +21,7 @@ function scoreColors(score: number) {
 
 export default function StabilityCheck({ prompt, currentProvider, currentResult, defaultOpen = false }: Props) {
   const [compareProvider, setCompareProvider] = useState<AIProvider>(
-    ALL_PROVIDERS.find(p => p !== currentProvider) ?? "claude"
+    ALL_PROVIDERS.find(p => p !== currentProvider) ?? "deepseek"
   );
   const [compareResult, setCompareResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading]             = useState(false);

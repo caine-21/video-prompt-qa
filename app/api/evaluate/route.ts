@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const provider: AIProvider = body.provider ?? "gemini";
+    const provider: AIProvider = body.provider ?? "groq";
     const result = await evaluate(body.prompt.trim(), provider);
 
     if (!result.success) {

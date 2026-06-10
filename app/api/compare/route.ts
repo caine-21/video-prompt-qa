@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const provider: AIProvider = body.provider ?? "gemini";
+    const provider: AIProvider = body.provider ?? "groq";
     const result = await compare(body.promptA.trim(), body.promptB.trim(), provider);
 
     if (!result.success) {

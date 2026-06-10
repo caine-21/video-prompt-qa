@@ -22,7 +22,7 @@ import CalibrationPanel from "@/components/CalibrationPanel";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["gemini", "claude", "groq"];
+const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const MAX_HISTORY = 20;
 

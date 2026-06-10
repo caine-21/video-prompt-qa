@@ -1,7 +1,6 @@
 import type { AIProvider, ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult, EvaluationDimension } from "@/lib/types";
-import { evaluateWithGroq, rewriteWithGroq, compareWithGroq } from "./groq";
-import { evaluateWithClaude, rewriteWithClaude, compareWithClaude } from "./claude";
-import { evaluateWithGemini, rewriteWithGemini, compareWithGemini } from "./gemini";
+import { evaluateWithGroq,     rewriteWithGroq,     compareWithGroq     } from "./groq";
+import { evaluateWithDeepSeek, rewriteWithDeepSeek, compareWithDeepSeek } from "./deepseek";
 
 interface ProviderOps {
   evaluate: (prompt: string) => Promise<ProviderEvaluationResult>;
@@ -10,16 +9,13 @@ interface ProviderOps {
 }
 
 export const PROVIDER_REGISTRY: Record<AIProvider, ProviderOps> = {
-  groq:   { evaluate: evaluateWithGroq,   rewrite: rewriteWithGroq,   compare: compareWithGroq },
-  claude: { evaluate: evaluateWithClaude, rewrite: rewriteWithClaude, compare: compareWithClaude },
-  gemini: { evaluate: evaluateWithGemini, rewrite: rewriteWithGemini, compare: compareWithGemini },
+  groq:     { evaluate: evaluateWithGroq,     rewrite: rewriteWithGroq,     compare: compareWithGroq     },
+  deepseek: { evaluate: evaluateWithDeepSeek, rewrite: rewriteWithDeepSeek, compare: compareWithDeepSeek },
 };
 
-// Priority order for automatic fallback (lower = tried first)
 export const PROVIDER_CONFIG: Record<AIProvider, { priority: number }> = {
-  groq:   { priority: 1 },
-  claude: { priority: 2 },
-  gemini: { priority: 3 },
+  groq:     { priority: 1 },
+  deepseek: { priority: 2 },
 };
 
 export const ALL_PROVIDERS = (Object.keys(PROVIDER_REGISTRY) as AIProvider[]).sort(
