@@ -188,6 +188,13 @@ const TOURNAMENT_UI = ns({
   "trn.report.matchups":   { en: "All Matchups",     zh: "全部对局"    },
   "trn.report.via":        { en: "via",              zh: "通过"        },
   "trn.report.match":      { en: "Match",            zh: "对局"        },
+  "trn.report.matches":    { en: "Matches",          zh: "对局"        },
+});
+
+// ─── §12.5  Model Fit ──────────────────────────────────────────────────────────
+const MODELFIT_UI = ns({
+  "mf.title":      { en: "Model Fit — Which AI video tool to use", zh: "模型适配 — 选择合适的 AI 视频工具" },
+  "mf.bestmatch":  { en: "Best Match",  zh: "最佳匹配" },
 });
 
 // ─── §13  Subject Warning Card ────────────────────────────────────────────────
@@ -223,7 +230,7 @@ const ALL_STRINGS = {
   ...EVAL_UI, ...EVAL_DOMAIN, ...EVAL_REPORT,
   ...CMP_UI, ...CMP_REPORT,
   ...FEEDBACK, ...DELTA, ...HISTORY, ...ANATOMY_UI,
-  ...TOURNAMENT_UI, ...WARN_UI, ...HERO_UI,
+  ...TOURNAMENT_UI, ...MODELFIT_UI, ...WARN_UI, ...HERO_UI,
 } as const;
 
 export type UiKey = keyof typeof ALL_STRINGS;

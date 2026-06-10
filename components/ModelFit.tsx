@@ -1,3 +1,4 @@
+import { useLanguage } from "@/lib/lang-context";
 import type { ModelFitEntry } from "@/lib/types";
 
 interface Props {
@@ -18,12 +19,13 @@ const MODEL_ICONS: Record<string, string> = {
 };
 
 export default function ModelFit({ modelFit }: Props) {
+  const { t } = useLanguage();
   const sorted = [...modelFit].sort((a, b) => b.score - a.score);
   const bestScore = sorted[0]?.score ?? 0;
 
   return (
     <div className="neo-card">
-      <div className="neo-bar">Model Fit — Which AI video tool to use</div>
+      <div className="neo-bar">{t("mf.title")}</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {sorted.map((entry, i) => {
           const isBest = entry.score === bestScore;
@@ -53,7 +55,7 @@ export default function ModelFit({ modelFit }: Props) {
                   padding: "2px 8px",
                   border: "2px solid #000",
                 }}>
-                  Best Match
+                  {t("mf.bestmatch")}
                 </div>
               )}
 

@@ -117,7 +117,7 @@ export default function TournamentReport({ result }: Props) {
 
       {/* All matchups */}
       <div className="neo-card" style={{ overflow: "hidden" }}>
-        <div className="neo-bar">{t("trn.report.matchups")} — {matchups.length} {t("trn.report.match")}{matchups.length !== 1 ? "s" : ""}</div>
+        <div className="neo-bar">{t("trn.report.matchups")} — {matchups.length} {t("trn.report.match")}</div>
         <div className="space-y-0" style={{ borderTop: "2px solid #000" }}>
           {matchups.map((m, idx) => {
             const labelA = `${t("trn.ui.promptlabel")} ${String.fromCharCode(65 + m.indexA)}`;

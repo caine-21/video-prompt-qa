@@ -260,8 +260,8 @@ export function buildCompareResult(
     provider,
     winner: parsed.winner as "A" | "B" | "tie",
     reasoning: parsed.reasoning,
-    scoreA: parsed.scoreA,
-    scoreB: parsed.scoreB,
+    scoreA: Math.min(10, Math.max(0, Number(parsed.scoreA) || 0)),
+    scoreB: Math.min(10, Math.max(0, Number(parsed.scoreB) || 0)),
     timestamp: new Date().toISOString(),
   };
 }
