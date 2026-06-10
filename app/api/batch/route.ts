@@ -24,8 +24,11 @@ export async function POST(req: NextRequest) {
         if (!trimmed) return { prompt, error: "empty prompt" };
         try {
           const result = await evaluate(trimmed, provider);
-          await logEvaluation(result);
-          return result;
+          if (result.success) {
+            await logEvaluation(result.data);
+            return result.data;
+          }
+          return { prompt: trimmed, error: result.error.message ?? "evaluation failed" };
         } catch (e) {
           return { prompt: trimmed, error: e instanceof Error ? e.message : "evaluation failed" };
         }
