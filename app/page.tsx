@@ -194,7 +194,7 @@ function HomeInner() {
                     VideoPromptQA
                   </span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.4 }}>v1.0</span>
+                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.4 }}>v1.3</span>
               </div>
               <p style={{ fontSize: 13, fontWeight: 500, color: "rgba(0,0,0,0.5)", margin: 0 }}>
                 {t("ui.nav.tagline")}
