@@ -283,93 +283,46 @@ function HomeInner() {
 
           {/* ── Landing Hero: visible only before first evaluation ── */}
           {tab === "evaluate" && !evalResult && !loading && !improving && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingBottom: 4 }}>
 
-              {/* Big statement */}
-              <div style={{ borderBottom: "4px solid #000", paddingBottom: 24 }}>
-                <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.01em", lineHeight: 1.2, margin: "0 0 10px", textTransform: "uppercase", fontFamily: "var(--font-space-grotesk), sans-serif" }}>
-                  AI systems fail in predictable ways.<br />
-                  <span style={{ color: "rgba(0,0,0,0.45)" }}>This project finds those failures before users do.</span>
-                </h1>
-                <p style={{ fontSize: 14, fontWeight: 600, color: "rgba(0,0,0,0.55)", margin: 0, maxWidth: 580, lineHeight: 1.6 }}>
-                  Video Prompt QA doesn&apos;t just score prompts — it discovers how AI evaluators fail, validates findings with controlled experiments, and ships fixes into production.
-                </p>
+              {/* Statement */}
+              <p style={{ fontSize: 15, fontWeight: 700, margin: 0, lineHeight: 1.5, color: "rgba(0,0,0,0.7)", maxWidth: 620 }}>
+                AI evaluators fail in predictable ways. This project finds those failures, validates them with controlled experiments, and ships fixes into production.
+              </p>
+
+              {/* Methodology — horizontal compact */}
+              <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", border: "3px solid #000", boxShadow: "4px 4px 0 #000", background: "#FFFDF5", overflow: "hidden", width: "fit-content" }}>
+                {(["Find", "Experiment", "Root Cause", "Fix", "Validate", "Ship"] as const).map((step, i, arr) => (
+                  <div key={step} style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 14px" }}>
+                      <span style={{ background: "#000", color: "#FFFDF5", fontWeight: 900, fontSize: 9, padding: "1px 6px", flexShrink: 0 }}>
+                        {i + 1}
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" }}>
+                        {step}
+                      </span>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <span style={{ fontSize: 10, opacity: 0.3, paddingRight: 2 }}>→</span>
+                    )}
+                  </div>
+                ))}
               </div>
 
-              {/* Failure Mode #01 + Methodology — two columns */}
-              <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "flex-start" }}>
-
-                {/* Failure Mode Card */}
-                <div style={{ flex: "1 1 320px", background: "#FF6B6B", border: "4px solid #000", boxShadow: "8px 8px 0 #000", padding: "20px 24px" }}>
-                  <div style={{ display: "flex", gap: 10, marginBottom: 14, alignItems: "center", flexWrap: "wrap" }}>
-                    <span style={{ background: "#000", color: "#FF6B6B", fontWeight: 900, fontSize: 10, padding: "3px 10px", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                      FAILURE MODE #01
-                    </span>
-                    <span style={{ fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.75 }}>
-                      Subject Omission Attack
-                    </span>
-                  </div>
-
-                  <div style={{ fontFamily: "monospace", fontSize: 12, background: "rgba(0,0,0,0.15)", border: "2px solid rgba(0,0,0,0.2)", padding: "10px 14px", marginBottom: 14, lineHeight: 1.65, color: "#000" }}>
-                    &ldquo;A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.&rdquo;
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
-                    <div style={{ background: "rgba(0,0,0,0.12)", border: "2px solid rgba(0,0,0,0.18)", padding: "10px 12px" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, opacity: 0.65 }}>Original Score</div>
-                      <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1 }}>8.4</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, opacity: 0.7, marginTop: 4 }}>/ 10 &nbsp;·&nbsp; Specificity = 8</div>
-                    </div>
-                    <div style={{ background: "#000", color: "#FF6B6B", border: "2px solid rgba(0,0,0,0.5)", padding: "10px 12px" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, opacity: 0.65 }}>After Gate</div>
-                      <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1 }}>4.6</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, opacity: 0.7, marginTop: 4 }}>/ 10 &nbsp;·&nbsp; Specificity ≤ 3</div>
-                    </div>
-                  </div>
-
-                  <p style={{ fontWeight: 600, fontSize: 12, margin: 0, lineHeight: 1.6, opacity: 0.9 }}>
-                    Root cause: Evaluator rewarded cinematography vocabulary without detecting a missing subject. No subject = no referent for the AI video model.
-                  </p>
-                </div>
-
-                {/* Methodology Loop */}
-                <div style={{ flex: "0 1 220px", border: "4px solid #000", boxShadow: "8px 8px 0 #000", background: "#FFFDF5", padding: "20px 24px" }}>
-                  <div style={{ fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 16, opacity: 0.4 }}>
-                    Methodology
-                  </div>
-                  {(["Find", "Experiment", "Root Cause", "Fix", "Validate", "Ship"] as const).map((step, i, arr) => (
-                    <div key={step}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ background: "#000", color: "#FFFDF5", fontWeight: 900, fontSize: 10, padding: "2px 7px" }}>
-                          {i + 1}
-                        </span>
-                        <span style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                          {step}
-                        </span>
-                      </div>
-                      {i < arr.length - 1 && (
-                        <div style={{ fontSize: 10, opacity: 0.25, paddingLeft: 28, lineHeight: 1, margin: "2px 0" }}>↓</div>
-                      )}
-                    </div>
-                  ))}
-                  <div style={{ marginTop: 18, paddingTop: 14, borderTop: "2px solid #000" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, opacity: 0.4 }}>
-                      Data
-                    </div>
-                    {["15 adversarial cases", "3×3 controlled experiment", "Subject Detection Gate"].map(item => (
-                      <div key={item} style={{ display: "flex", gap: 6, marginBottom: 5, fontSize: 11, fontWeight: 600, lineHeight: 1.4 }}>
-                        <span style={{ opacity: 0.4, flexShrink: 0 }}>→</span> {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {/* Proof badges */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {["15 adversarial cases", "3×3 controlled experiment", "1 production gate"].map(badge => (
+                  <span key={badge} style={{ border: "2px solid #000", fontSize: 11, fontWeight: 700, padding: "3px 10px", letterSpacing: "0.04em", background: "transparent" }}>
+                    {badge}
+                  </span>
+                ))}
               </div>
 
-              {/* Divider before input */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.12 }} />
-                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.4 }}>Try it yourself</span>
-                <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.12 }} />
+              {/* Divider */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
+                <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.1 }} />
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.35 }}>Try it yourself</span>
+                <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.1 }} />
               </div>
             </div>
           )}
