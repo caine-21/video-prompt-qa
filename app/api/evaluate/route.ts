@@ -14,10 +14,12 @@ export async function POST(req: NextRequest) {
     const provider: AIProvider = body.provider ?? "gemini";
     const result = await evaluate(body.prompt.trim(), provider);
 
-    // Log async — non-blocking, non-fatal
-    const dbId = await logEvaluation(result);
-    const response = dbId ? { ...result, dbId } : result;
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.message, errorType: result.error.type }, { status: 503 });
+    }
 
+    const dbId = await logEvaluation(result.data);
+    const response = dbId ? { ...result.data, dbId } : result.data;
     return NextResponse.json(response);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

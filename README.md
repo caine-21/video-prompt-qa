@@ -1,98 +1,98 @@
-# VideoPromptQA
+# Video Prompt QA
 
-AI-powered quality testing tool for video generation prompts. Evaluate prompts across 5 quality dimensions, get actionable improvement suggestions, and compare prompts head-to-head — all powered by your choice of AI provider.
+> Replace prompt intuition with repeatable experiments.
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue) ![Next.js](https://img.shields.io/badge/Next.js-15-black) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8)
+> An experiment in AI evaluation reliability.  
+> Designed to discover how AI evaluators fail, not just how prompts perform.
 
-## Features
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://video-prompt-qa.vercel.app) ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
 
-- **Evaluate** — Score any video prompt across 5 dimensions: Clarity, Specificity, Technical Feasibility, Cinematic Quality, and Creativity
-- **Compare A vs B** — Submit two prompts and get a winner with detailed reasoning
-- **Improvement suggestions** — Actionable tips to make every prompt better
-- **Edge case detection** — Flag prompts that are ambiguous, too vague, or likely to fail
-- **Multi-provider** — Switch between Gemini, Claude, and Groq with one click; designed for easy extensibility
+## Key Finding
 
-## Tech Stack
+A prompt with no subject:
 
-| Layer | Choice |
+> *"A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field."*
+
+received **8.4/10**. Specificity=8. The evaluator was fooled by cinematography vocabulary.
+
+This project started as a prompt evaluator.  
+It became an experiment in evaluator reliability.
+
+→ [Full case study](CASE_STUDY.md) · [Adversarial test data](ADVERSARIAL_TESTS.md)
+
+## 🚀 Live Demo
+
+**[Try it live → https://video-prompt-qa.vercel.app](https://video-prompt-qa.vercel.app)**
+
+> ⚠️ Note: This demo calls real LLM APIs. First response takes 5–10 seconds. No signup required.
+
+## Who this is for
+
+- **Real users:** Ad teams, AI video production pipelines, solo creators buying generation credits
+- **Repeat task:** Filter 20+ video prompts per day before sending to Pika / Runway / Sora — waste generation is the most common complaint in AI video workflows
+- **Pain point:** A bad prompt burns compute, wastes credits, and delays turnaround. Most teams catch this *after* generation. This tool catches it *before*.
+
+## What it does
+
+1. Paste any video prompt
+2. Pick a model (Claude / Gemini / Groq) — or compare two prompts head-to-head
+3. Get a score across 5 dimensions + specific rewrite suggestions in ~6 seconds
+
+**5 evaluation dimensions:**
+
+| Dimension | Failure it catches |
 |---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS |
-| AI Providers | Google Gemini, Anthropic Claude, Groq |
-| API | Next.js Route Handlers |
+| Clarity | Ambiguous subject — model interprets differently each run |
+| Specificity | Under-specified — generic, bland output |
+| Technical Feasibility | Impossible camera moves or physics |
+| Cinematic Quality | Missing shot language — no framing, lighting, mood |
+| Creativity | Derivative, low visual interest |
 
-## Quick Start
+## Design Decisions
 
-**1. Clone and install**
+- **Why 5 orthogonal dimensions, not a single score:** Each dimension maps to a distinct failure mode. A single score hides which aspect to fix. This forces the user to address the actual root cause.
+- **Why all three providers share the same system prompt:** To make scores *comparable* — if Claude gives 7/10 and Groq gives 4/10 on the same prompt, the gap is signal about model calibration, not about prompt quality. Shared prompts are required for fair comparison.
+- **Why 16 edge case fixtures instead of automated tests:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges. They're the spec, not a test suite.
+
+## Quick start
+
 ```bash
-git clone https://github.com/your-username/video-prompt-qa
+git clone https://github.com/caine-21/video-prompt-qa
 cd video-prompt-qa
 npm install
-```
-
-**2. Add your API key**
-```bash
 cp .env.local.example .env.local
-# Edit .env.local and set GEMINI_API_KEY (free at aistudio.google.com)
-```
-
-**3. Run**
-```bash
+# Add at least one API key (GROQ_API_KEY is free)
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Environment Variables
+## API Keys
 
-| Variable | Required | Description |
+| Variable | Provider | Free tier |
 |---|---|---|
-| `GEMINI_API_KEY` | For Gemini | Google AI Studio key |
-| `ANTHROPIC_API_KEY` | For Claude | Anthropic API key |
-| `GROQ_API_KEY` | For Groq | Groq Cloud key |
+| `GROQ_API_KEY` | Groq Cloud | ✅ Yes |
+| `GEMINI_API_KEY` | Google AI Studio | ✅ Yes |
+| `ANTHROPIC_API_KEY` | Anthropic | No |
 
-Set at least one. Get a free Gemini key at [aistudio.google.com](https://aistudio.google.com).
+Set at least one key. GROQ is free and fast — recommended starting point.
 
-## Project Structure
+## Architecture
 
 ```
-video-prompt-qa/
-├── app/
-│   ├── api/
-│   │   ├── evaluate/route.ts   # POST /api/evaluate
-│   │   └── compare/route.ts    # POST /api/compare
-│   ├── layout.tsx
-│   └── page.tsx                # Main UI
-├── components/
-│   ├── EvaluatePanel.tsx
-│   ├── ComparePanel.tsx
-│   ├── EvaluationReport.tsx
-│   └── CompareReport.tsx
-└── lib/
-    ├── types.ts                 # Shared TypeScript types
-    ├── evaluator.ts             # Provider router
-    └── providers/
-        ├── base.ts              # Shared prompts + result builders
-        ├── gemini.ts
-        ├── claude.ts
-        └── groq.ts
+app/page.tsx → app/api/*/route.ts → lib/evaluator.ts → lib/providers/*.ts
+                                                      ↑ base.ts (shared prompts — never change per-provider)
+lib/types.ts — single source of truth for all shared types
 ```
 
-## Adding a New Provider
+**Invariant:** Routes only call `evaluate()` / `compare()` from `lib/evaluator.ts`. Adding a new provider = 4 files, zero changes to routes or UI.
 
-1. Create `lib/providers/yourprovider.ts` implementing `evaluate()` and `compare()`
-2. Add a case in `lib/evaluator.ts`
-3. Add the button in `app/page.tsx`
+## Part of: AI Content Operations System
 
-The provider abstraction keeps all AI-specific code isolated — swapping or adding providers requires no changes to the UI or API routes.
+This is the **Evaluate** module of a 3-layer AI Content Ops system (Evaluate → Generate → Retrieve). See the [system overview](https://github.com/caine-21/ai-content-ops) for the full architecture.
 
-## Example Prompts
+> The system turns content production from trial-and-error into a controlled pipeline. This module is the *quality gate* — it answers: *how do you know if an AI output is good before spending compute to produce it?*
 
-**Good prompt:**
-> A lone astronaut walks across a red Martian landscape at sunset, dust swirling around boots, cinematic wide shot, shallow depth of field
+## Stack
 
-**Weak prompt:**
-> cat
-
-Use the **Compare A vs B** tab to see the quality difference in detail.
+Next.js 16 · TypeScript · Tailwind CSS · Claude / Gemini / Groq APIs · Supabase

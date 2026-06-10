@@ -6,8 +6,9 @@ import {
   buildEvaluationResult,
   buildCompareResult,
   buildRewriteUserMessage,
+  safeProviderCall,
 } from "./base";
-import type { EvaluationResult, CompareResult } from "@/lib/types";
+import type { ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult } from "@/lib/types";
 
 function getClient() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -15,69 +16,55 @@ function getClient() {
   return new Anthropic({ apiKey });
 }
 
-export async function evaluateWithClaude(
-  prompt: string
-): Promise<EvaluationResult> {
-  const client = getClient();
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 2048,
-    system: EVALUATION_SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: `Evaluate this video generation prompt:\n\n"${prompt}"`,
-      },
-    ],
-  });
-
-  const text =
-    message.content[0].type === "text" ? message.content[0].text : "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON found in Claude response");
-  const parsed = JSON.parse(jsonMatch[0]);
-  return buildEvaluationResult(prompt, "claude", parsed);
+export function evaluateWithClaude(prompt: string): Promise<ProviderEvaluationResult> {
+  return safeProviderCall(async () => {
+    const client = getClient();
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2048,
+      system: EVALUATION_SYSTEM_PROMPT,
+      messages: [{ role: "user", content: `Evaluate this video generation prompt:\n\n"${prompt}"` }],
+    });
+    const text = message.content[0].type === "text" ? message.content[0].text : "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in Claude response");
+    return buildEvaluationResult(prompt, "claude", JSON.parse(jsonMatch[0]));
+  }, "claude", "evaluation");
 }
 
-export async function rewriteWithClaude(
+export function rewriteWithClaude(
   prompt: string,
   dimensions: Array<{ name: string; score: number; feedback: string }>,
   improvements: string[]
-): Promise<string> {
-  const client = getClient();
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 512,
-    system: REWRITE_SYSTEM_PROMPT,
-    messages: [
-      { role: "user", content: buildRewriteUserMessage(prompt, dimensions, improvements) },
-    ],
-  });
-  const text = message.content[0].type === "text" ? message.content[0].text : "";
-  return text.trim();
+): Promise<ProviderRewriteResult> {
+  return safeProviderCall(async () => {
+    const client = getClient();
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 512,
+      system: REWRITE_SYSTEM_PROMPT,
+      messages: [{ role: "user", content: buildRewriteUserMessage(prompt, dimensions, improvements) }],
+    });
+    const text = message.content[0].type === "text" ? message.content[0].text : "";
+    return text.trim();
+  }, "claude", "rewrite");
 }
 
-export async function compareWithClaude(
-  promptA: string,
-  promptB: string
-): Promise<CompareResult> {
-  const client = getClient();
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 512,
-    system: COMPARE_SYSTEM_PROMPT,
-    messages: [
-      {
+export function compareWithClaude(promptA: string, promptB: string): Promise<ProviderCompareResult> {
+  return safeProviderCall(async () => {
+    const client = getClient();
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 512,
+      system: COMPARE_SYSTEM_PROMPT,
+      messages: [{
         role: "user",
         content: `Compare these two video generation prompts:\n\nPrompt A: "${promptA}"\n\nPrompt B: "${promptB}"`,
-      },
-    ],
-  });
-
-  const text =
-    message.content[0].type === "text" ? message.content[0].text : "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON found in Claude response");
-  const parsed = JSON.parse(jsonMatch[0]);
-  return buildCompareResult(promptA, promptB, "claude", parsed);
+      }],
+    });
+    const text = message.content[0].type === "text" ? message.content[0].text : "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in Claude response");
+    return buildCompareResult(promptA, promptB, "claude", JSON.parse(jsonMatch[0]));
+  }, "claude", "compare");
 }

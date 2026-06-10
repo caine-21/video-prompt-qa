@@ -57,3 +57,6 @@ ADVERSARIAL_TESTS.md
 run_adversarial.py
 
 .vercel
+
+# test screenshots
+test-*.png

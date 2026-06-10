@@ -1,4 +1,59 @@
-import type { EvaluationResult, CompareResult, AIProvider } from "@/lib/types";
+import type { EvaluationResult, CompareResult, AIProvider, ProviderError, ProviderErrorType, Result } from "@/lib/types";
+
+const ERROR_META: Record<ProviderErrorType, { retryable: boolean; message: (provider: string) => string }> = {
+  network:          { retryable: true,  message: (p) => `Network error: unable to reach ${p}` },
+  rate_limit:       { retryable: true,  message: (p) => `Rate limit exceeded for ${p}` },
+  auth:             { retryable: false, message: (p) => `${p} API key is invalid or missing` },
+  invalid_response: { retryable: true,  message: (p) => `${p} returned an invalid response` },
+  unknown:          { retryable: false, message: (p) => `${p} provider error` },
+};
+
+function classifyError(err: unknown): ProviderErrorType {
+  const status = (err as { status?: number })?.status;
+  if (status === 429) return "rate_limit";
+  if (status === 401 || status === 403) return "auth";
+  if (status === 400) return "invalid_response";
+
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  if (msg.includes("fetch") || msg.includes("network") || msg.includes("econnrefused")) return "network";
+  if (msg.includes("json") || msg.includes("json_validate_failed") || msg.includes("invalid response")) return "invalid_response";
+  if (msg.includes("429") || msg.includes("rate limit") || msg.includes("quota") || msg.includes("resource_exhausted")) return "rate_limit";
+  if (msg.includes("401") || msg.includes("403") || msg.includes("api key") || msg.includes("invalid_api_key")) return "auth";
+  return "unknown";
+}
+
+export function normalizeProviderError(err: unknown, provider: string, context?: string): ProviderError {
+  const type = classifyError(err);
+  const meta = ERROR_META[type];
+  return { type, message: meta.message(provider), retryable: meta.retryable, raw: { err, context } };
+}
+
+export function shouldRetry(error: ProviderError): boolean {
+  return error.retryable;
+}
+
+function sleep(ms: number) {
+  return new Promise((res) => setTimeout(res, ms));
+}
+
+export async function safeProviderCall<T>(
+  fn: () => Promise<T>,
+  provider: AIProvider,
+  context: string,
+  retries = 2
+): Promise<Result<T>> {
+  try {
+    return { success: true, data: await fn(), provider };
+  } catch (err) {
+    const error = normalizeProviderError(err, provider, context);
+    console.warn("[ProviderError]", { provider, context, type: error.type, message: error.message, retryable: error.retryable });
+    if (error.retryable && retries > 0) {
+      await sleep(300 * Math.pow(2, 2 - retries));
+      return safeProviderCall(fn, provider, context, retries - 1);
+    }
+    return { success: false, error, provider };
+  }
+}
 
 export const EVALUATION_SYSTEM_PROMPT = `You are an expert AI video generation quality engineer. Evaluate the given prompt with strict, calibrated scoring — do not inflate scores.
 

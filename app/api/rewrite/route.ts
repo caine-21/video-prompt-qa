@@ -14,13 +14,12 @@ export async function POST(req: NextRequest) {
     }
 
     const provider: AIProvider = body.provider ?? "groq";
-    const improvedPrompt = await rewrite(
-      body.prompt.trim(),
-      body.dimensions,
-      body.improvements,
-      provider
-    );
-    return NextResponse.json({ improvedPrompt });
+    const result = await rewrite(body.prompt.trim(), body.dimensions, body.improvements, provider);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.message, errorType: result.error.type }, { status: 503 });
+    }
+    return NextResponse.json({ improvedPrompt: result.data });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

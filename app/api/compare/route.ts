@@ -15,7 +15,11 @@ export async function POST(req: NextRequest) {
 
     const provider: AIProvider = body.provider ?? "gemini";
     const result = await compare(body.promptA.trim(), body.promptB.trim(), provider);
-    return NextResponse.json(result);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.message, errorType: result.error.type }, { status: 503 });
+    }
+    return NextResponse.json(result.data);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

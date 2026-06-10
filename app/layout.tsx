@@ -9,8 +9,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "VideoPromptQA — Know if your prompt works before you generate",
-  description: "Score AI video prompts across 5 failure-mode dimensions. Catch weak prompts before expensive generation runs.",
+  title: "VideoPromptQA — Replace prompt intuition with repeatable experiments",
+  description: "Discover prompt failures before generation. An experiment in AI evaluation reliability.",
 };
 
 export default function RootLayout({

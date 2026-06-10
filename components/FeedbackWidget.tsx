@@ -2,30 +2,32 @@
 
 import { useState, useEffect } from "react";
 import type { HumanFeedback, FeedbackTag } from "@/lib/types";
+import { useLanguage } from "@/lib/lang-context";
 
 interface Props {
   onSubmit: (feedback: HumanFeedback) => void;
 }
 
-const TAGS: { id: FeedbackTag; label: string }[] = [
-  { id: "unclear",     label: "Still unclear"     },
-  { id: "too_generic", label: "Too generic"        },
-  { id: "wrong_focus", label: "Changed wrong thing"},
-  { id: "too_verbose", label: "Became too long"    },
-];
-
 const RATINGS = [
-  { value: 1 as const, emoji: "▲▲", label: "Clearly better"  },
-  { value: 2 as const, emoji: "▲",  label: "Slightly better" },
-  { value: 3 as const, emoji: "—",  label: "No improvement"  },
+  { value: 1 as const, emoji: "▲▲", key: "fb.rating.1" as const },
+  { value: 2 as const, emoji: "▲",  key: "fb.rating.2" as const },
+  { value: 3 as const, emoji: "—",  key: "fb.rating.3" as const },
 ] as const;
 
+const TAG_KEYS: { id: FeedbackTag; key: "fb.tag.unclear" | "fb.tag.generic" | "fb.tag.focus" | "fb.tag.verbose" }[] = [
+  { id: "unclear",     key: "fb.tag.unclear"  },
+  { id: "too_generic", key: "fb.tag.generic"  },
+  { id: "wrong_focus", key: "fb.tag.focus"    },
+  { id: "too_verbose", key: "fb.tag.verbose"  },
+];
+
 export default function FeedbackWidget({ onSubmit }: Props) {
-  const [ready, setReady]             = useState(false);
-  const [rating, setRating]           = useState<1 | 2 | 3 | null>(null);
-  const [tags, setTags]               = useState<FeedbackTag[]>([]);
-  const [submitted, setSubmitted]     = useState(false);
-  const [countdown, setCountdown]     = useState(4);
+  const { t, lang } = useLanguage();
+  const [ready, setReady]         = useState(false);
+  const [rating, setRating]       = useState<1 | 2 | 3 | null>(null);
+  const [tags, setTags]           = useState<FeedbackTag[]>([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [countdown, setCountdown] = useState(4);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -38,45 +40,39 @@ export default function FeedbackWidget({ onSubmit }: Props) {
   }, []);
 
   function toggleTag(tag: FeedbackTag) {
-    setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+    setTags(prev => prev.includes(tag) ? prev.filter(x => x !== tag) : [...prev, tag]);
   }
 
   function handleSubmit() {
     if (!rating) return;
-    const feedback: HumanFeedback = { rating, ...(rating === 3 && tags.length > 0 ? { tags } : {}) };
-    onSubmit(feedback);
+    onSubmit({ rating, ...(rating === 3 && tags.length > 0 ? { tags } : {}) });
     setSubmitted(true);
   }
 
+  const waitText = lang === "zh"
+    ? `${t("fb.wait")} ${countdown} ${t("fb.waitsuffix")}`
+    : `${t("fb.wait")} ${countdown}${t("fb.waitsuffix")}`;
+
   if (submitted) {
     return (
-      <div style={{
-        background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000",
-        padding: "20px 24px", display: "flex", alignItems: "center", gap: 12,
-      }}>
+      <div style={{ background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000", padding: "20px 24px", display: "flex", alignItems: "center", gap: 12 }}>
         <span style={{ fontSize: 20 }}>✓</span>
-        <p style={{ fontWeight: 700, fontSize: 14, margin: 0 }}>
-          Feedback recorded — this helps calibrate the evaluator.
-        </p>
+        <p style={{ fontWeight: 700, fontSize: 14, margin: 0 }}>{t("fb.done")}</p>
       </div>
     );
   }
 
   return (
-    <div style={{
-      background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000",
-      padding: "20px 24px",
-    }}>
+    <div style={{ background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000", padding: "20px 24px" }}>
       <div style={{ marginBottom: 14 }}>
         <p style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 2px" }}>
-          Did the rewrite actually improve the prompt?
+          {t("fb.question")}
         </p>
         <p style={{ fontSize: 12, fontWeight: 500, opacity: 0.5, margin: 0 }}>
-          {ready ? "Compare both prompts above, then rate." : `Read both prompts first — rating unlocks in ${countdown}s`}
+          {ready ? t("fb.ready") : waitText}
         </p>
       </div>
 
-      {/* Rating buttons */}
       <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
         {RATINGS.map(r => (
           <button
@@ -97,33 +93,24 @@ export default function FeedbackWidget({ onSubmit }: Props) {
             }}
           >
             <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 2 }}>{r.emoji}</div>
-            <div style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>{r.label}</div>
+            <div style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>{t(r.key)}</div>
           </button>
         ))}
       </div>
 
-      {/* Negative tags — only when rating=3 */}
       {rating === 3 && (
         <div style={{ marginBottom: 14 }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.5, margin: "0 0 8px" }}>
-            What went wrong? (optional)
+            {t("fb.wrong")}
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {TAGS.map(tag => (
+            {TAG_KEYS.map(tag => (
               <button
                 key={tag.id}
                 onClick={() => toggleTag(tag.id)}
-                style={{
-                  border: `2px solid ${tags.includes(tag.id) ? "#000" : "rgba(0,0,0,0.3)"}`,
-                  background: tags.includes(tag.id) ? "#FF6B6B" : "#fff",
-                  padding: "4px 12px",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  fontFamily: "var(--font-space-grotesk), sans-serif",
-                }}
+                style={{ border: `2px solid ${tags.includes(tag.id) ? "#000" : "rgba(0,0,0,0.3)"}`, background: tags.includes(tag.id) ? "#FF6B6B" : "#fff", padding: "4px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "var(--font-space-grotesk), sans-serif" }}
               >
-                {tag.label}
+                {t(tag.key)}
               </button>
             ))}
           </div>
@@ -136,7 +123,7 @@ export default function FeedbackWidget({ onSubmit }: Props) {
         className="neo-btn neo-btn-secondary"
         style={{ minWidth: 140, opacity: ready && rating ? 1 : 0.4 }}
       >
-        Submit Feedback
+        {t("fb.submit")}
       </button>
     </div>
   );

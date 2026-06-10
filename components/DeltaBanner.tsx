@@ -1,3 +1,7 @@
+"use client";
+
+import { useLanguage } from "@/lib/lang-context";
+
 interface Props {
   originalPrompt: string;
   originalScore: number;
@@ -5,55 +9,40 @@ interface Props {
 }
 
 export default function DeltaBanner({ originalPrompt, originalScore, newScore }: Props) {
-  const delta   = Math.round((newScore - originalScore) * 10) / 10;
-  const deltaBg = delta > 0 ? "#FFD93D" : delta < 0 ? "#FF6B6B" : "rgba(0,0,0,0.1)";
+  const { t } = useLanguage();
+  const delta      = Math.round((newScore - originalScore) * 10) / 10;
+  const deltaBg    = delta > 0 ? "#FFD93D" : delta < 0 ? "#FF6B6B" : "rgba(0,0,0,0.1)";
   const deltaLabel = delta > 0 ? `+${delta.toFixed(1)}` : delta < 0 ? delta.toFixed(1) : "±0";
 
   return (
     <div className="neo-card" style={{ background: "#C4B5FD" }}>
       <div className="neo-bar" style={{ background: "#000", color: "#fff" }}>
-        ✦ AI Improvement Complete
+        {t("delta.title")}
       </div>
       <div className="px-6 py-5 flex flex-wrap items-center justify-between gap-6">
 
-        {/* Score delta */}
         <div className="flex items-center gap-4">
           <div style={{ textAlign: "center" }}>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.6, margin: "0 0 4px" }}>
-              Before
+              {t("delta.before")}
             </p>
-            <span style={{ fontSize: 36, fontWeight: 700, lineHeight: 1, opacity: 0.6 }}>
-              {originalScore}
-            </span>
+            <span style={{ fontSize: 36, fontWeight: 700, lineHeight: 1, opacity: 0.6 }}>{originalScore}</span>
           </div>
-
           <span style={{ fontSize: 28, fontWeight: 700, opacity: 0.4 }}>→</span>
-
           <div style={{ textAlign: "center" }}>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.6, margin: "0 0 4px" }}>
-              After
+              {t("delta.after")}
             </p>
-            <span style={{ fontSize: 36, fontWeight: 700, lineHeight: 1 }}>
-              {newScore}
-            </span>
+            <span style={{ fontSize: 36, fontWeight: 700, lineHeight: 1 }}>{newScore}</span>
           </div>
-
-          <div style={{
-            background: deltaBg,
-            border: "3px solid #000",
-            boxShadow: "3px 3px 0 #000",
-            padding: "6px 14px",
-            fontWeight: 700,
-            fontSize: 20,
-          }}>
+          <div style={{ background: deltaBg, border: "3px solid #000", boxShadow: "3px 3px 0 #000", padding: "6px 14px", fontWeight: 700, fontSize: 20 }}>
             {deltaLabel}
           </div>
         </div>
 
-        {/* Original prompt */}
         <div style={{ flex: 1, minWidth: 200, maxWidth: 500 }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.6, margin: "0 0 6px" }}>
-            Original prompt
+            {t("delta.original")}
           </p>
           <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.5, margin: 0, opacity: 0.75 }}>
             &ldquo;{originalPrompt}&rdquo;

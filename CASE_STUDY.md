@@ -1,0 +1,233 @@
+# AI Product Case Study
+## Video Prompt QA
+### How I discovered that my AI evaluator was wrong.
+
+> **"Stop guessing which prompts work. Replace prompt intuition with repeatable experiments."**
+>
+> **"不再靠感觉改 Prompt，而是用实验验证 Prompt。"**
+
+**作者：** 李哲雷  
+**项目地址：** https://github.com/caine-21/video-prompt-qa  
+**Live Demo：** https://video-prompt-qa.vercel.app  
+**对抗测试数据：** `ADVERSARIAL_TESTS.md` / `tests/adversarial-results.json`
+
+---
+
+## 1. Opportunity — 为什么做这个
+
+AI 团队每天都在做这些事：修改 Prompt、切换模型、调整参数。
+
+但一个问题很少被系统回答：
+
+> **"我们怎么知道它真的变好了？"**
+
+大多数 Prompt 优化依赖的判断是：
+
+- "看起来比之前好"
+- "感觉更稳定了"
+- "用户反馈还行"
+
+这些都不是证据。它们是直觉，而直觉不可重复、不可对比、不可审计。
+
+AI 视频生产场景让这个问题变得更具体：一个坏的 Prompt 在 Pika / Runway / Sora 上跑完，浪费的不只是时间——是真实的 credits。大多数团队在生成之后才发现 Prompt 有问题。
+
+**机会点：** 把"生成前的 Prompt 质量判断"从主观经验变成可量化、可重复的实验流程。
+
+---
+
+## 2. User Problem — 谁在遇到这个问题
+
+**直接用户：** AI 视频创作团队、独立内容创作者、每天在 AI 视频平台消耗 credits 的人
+
+**更大的模式：** 这个问题不只属于视频领域。任何在生产环境使用 LLM 的团队都面临同样的结构性困境：
+
+```
+改了 Prompt → 主观感觉好了 → 没有对比数据 → 下次遇到同类问题仍靠感觉
+```
+
+核心缺失的是**反馈闭环**——把每次 Prompt 迭代变成有记录、可复现的实验，而不是事后无法追溯的感性判断。
+
+**用户痛点的三个层级：**
+
+| 层级 | 问题 | 现有解法的缺陷 |
+|---|---|---|
+| 即时 | "这个 Prompt 能用吗？" | 靠感觉、靠经验，无法给新人传递标准 |
+| 比较 | "A 和 B 哪个更好？" | 没有共同评分标准，比较结果随人而异 |
+| 系统 | "我们的 Prompt 质量在变好吗？" | 无历史数据，无法追踪改进轨迹 |
+
+---
+
+## 3. MVP Design — 如何把直觉变成实验
+
+**核心设计原则：把 AI 系统当作可实验对象，而不是黑盒。**
+
+### 3.1 为什么是 5 个维度，而不是 1 个总分
+
+单一分数掩盖了失败的具体位置。如果一个 Prompt 得了 5/10，你不知道是主体不清楚、还是技术上不可行、还是缺少画面语言。
+
+5 个维度来自对 LLM 输出失败模式的分类，每个维度捕捉一种独立的错误类型：
+
+| 维度 | 捕捉的失败 |
+|---|---|
+| **Clarity（清晰度）** | 主体模糊，同一 Prompt 不同模型解读不同 |
+| **Specificity（具体性）** | 描述不足，输出趋向通用素材库质感 |
+| **Technical Feasibility（技术可行性）** | 不可能完成的物理场景或镜头要求 |
+| **Cinematic Quality（电影质感）** | 缺少镜头语言：景别、运镜、打光、情绪 |
+| **Creativity（创意度）** | 输出缺乏视觉辨识度，像素材库风格 |
+
+### 3.2 为什么三个模型共用同一套评估 Prompt
+
+不共用 system prompt，就无法区分"是 Prompt 写得差"还是"是这个模型的基准偏高"。
+
+共享 system prompt 把跨模型比较变成了**模型校准实验**：如果 Claude 给 7/10、Groq 给 4/10，这个分差本身是信号——它告诉你两个模型的评分基准不同，而不是 Prompt 的质量不同。
+
+### 3.3 架构决策
+
+```
+用户输入
+    ↓
+路由层（evaluate() / compare()）
+    ↓
+编排器（consensus / race / fallback 三种策略）
+    ↓
+Provider（Groq / Claude / Gemini，共享 system prompt）
+    ↓
+结构化评分结果（JSON）
+```
+
+**关键约束：** 路由层只调用 `evaluate()` 和 `compare()`，从不直接访问 provider。新增一个 provider = 4 个文件，零改动其他代码。这是可扩展性的核心设计决策，不是偶然的结构。
+
+---
+
+## 4. AI Workflow — 怎么用 AI 构建这个系统
+
+整个项目在 Claude Code 辅助下独立完成，但"怎么用 AI"比"用了哪个工具"更重要。
+
+**关键判断：** 在这个项目里，AI 不是代码生成器。最难的问题不是"怎么写代码"，而是：
+
+- 5 个维度应该是哪 5 个？（需要先想清楚失败模式分类）
+- system prompt 怎么写才能让三个模型的分数具有可比性？（需要迭代测试）
+- orchestrator 的 consensus 策略应该是"取平均"还是"取最高"？（需要理解不同策略的含义）
+
+这些判断 AI 给不了答案，只能辅助执行。
+
+**实际 workflow：**
+1. 先写 EVALUATION_SYSTEM_PROMPT 的第一版，手动测试 10 个 Prompt，观察分数分布是否合理
+2. 发现 Groq 和 Claude 基准差异后，固定 shared prompt 设计
+3. 写 16 个 edge-case fixtures 定义边界行为（不是 automated tests，是 spec）
+4. 用 Python 脚本跑 15 个对抗用例，捕获原始 JSON 输出，再分析
+
+---
+
+## 5. Unexpected Findings — 实验中最重要的发现
+
+我设计这套评测系统，是为了判断 Prompt 的质量。
+
+跑完对抗测试之后，我发现了一个更重要的问题：**评测系统本身可以被 gaming。**
+
+**关键数字：G1 = 8.4/10**
+
+测试 Prompt：
+> *"A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field."*
+
+得分：8.4/10，Specificity=8，Clarity=9
+
+这个 Prompt 没有主体。我们完全不知道在拍什么——是人、是城市、是动物？一个 AI 视频模型看到这个 Prompt，只能随机生成"某种东西"。任何有经验的视频导演看到它会立刻追问："拍谁？拍什么？"
+
+但评测器打了 8.4 分。
+
+**为什么：** Specificity 维度的评分 rubric 聚焦"是否有细节"，而这个 Prompt 有大量技术细节。模型被细节的数量误导，没有意识到这些细节全部是关于 *how to film*，没有一个字在说 *what to film*。
+
+这不是 Prompt 写得好，这是 Prompt 在系统性地欺骗评测器。
+
+这也是整个项目最重要的转折点。我原本在评测 Prompt，后来开始评测评测器本身。
+
+---
+
+对抗测试 15 个用例的完整结果（Groq / llama-3.3-70b-versatile，2026-04-26）：
+
+| ID | 类型 | 关键分数 | 评价 |
+|---|---|---|---|
+| B1 | 空字符串 | 1.0 | ✅ 正确处理 |
+| B2 | "cat" | TF=8 | ⚠️ TF 假阳性 |
+| **G1** | **零主体 + 摄影词汇** | **Overall=8.4, Spe=8** | **❌ Critical** |
+| G2/G3 | 纯形容词堆砌 | Spe=2 | ✅ 正确惩罚 |
+| C1-C3 | 矛盾指令 | TF=7-8, Cre=8 | ❌ 矛盾被奖励 |
+| T1 | "黑洞内部拍摄" | TF=4 | ⚠️ 应为 1 |
+| T2 | "10万fps蜂鸟" | TF=2 | ✅ 最佳捕获 |
+| K1-K3 | 一致性检查 | StdDev=0.0 | ✅ 完全确定 |
+
+---
+
+## 6. Failure Taxonomy — 从数据中提炼的失效分类
+
+基于上述测试数据，归纳出 4 类结构性失效模式：
+
+| # | 失效模式 | 严重程度 | 根因 |
+|---|---|---|---|
+| 1 | **技术词汇 gaming** | 🔴 严重 | 模型把"怎么拍"和"拍什么"混为一谈 |
+| 2 | **矛盾被当创意奖励** | 🟠 高 | 模型假设矛盾是艺术意图，而非结构性错误 |
+| 3 | **物理不可行降分不足** | 🟡 中 | 模型降分但不归零（应得 1 分却得 4 分） |
+| 4 | **单词 TF 假阳性** | 🟡 低 | "cat"=TF:8，因为猫"在技术上可拍" |
+
+每类失效都有对应的修复方向：
+
+1. **Subject Detection Gate** — 评分前验证主体存在；否则 Specificity 上限强制为 3
+2. **Contradiction Detector** — 前置检测逻辑矛盾；矛盾 Prompt 的 TF 不得被 Creativity 拉高
+3. **Feasibility Hard Floor** — 物理不可行场景 TF 强制为 1，不允许降分停在 4
+
+这三个修复均为 Prompt Engineering 改动，不涉及代码变更——只需修改 `EVALUATION_SYSTEM_PROMPT` 的评分 rubric。
+
+**为什么还没做：** 我在这里做了一个有意的选择——先记录失效，再决定是否修复。一个评测系统应该先知道自己的边界在哪里，而不是在修复中掩盖真实的失效数据。`ADVERSARIAL_TESTS.md` 是诚实的记录，比修复后的干净结果更有价值。
+
+---
+
+## 7. Next Iteration — 诚实的差距
+
+**现状：全部是 design-time 工作，没有线上 Monitoring。**
+
+这是我在自己的工程笔记里已经标注的最大缺口（笔记原文："⚠️ 无线上 Monitoring/FailureAnalysis，L6 Feedback Loop：空白"）。
+
+当前系统能做：在构建阶段发现失效模式。
+
+当前系统不能做：在有真实用户使用时，持续收集失效数据并触发系统迭代。
+
+**真正的 Production Feedback Loop 应该是：**
+
+```
+用户使用 Prompt 评测
+    ↓
+用户对评分结果给出反馈（同意/不同意/标记异常）
+    ↓
+异常评分自动汇聚成新的对抗用例
+    ↓
+触发重新评估 + rubric 更新
+    ↓
+版本化的评测系统，有迭代历史
+```
+
+这是下一个版本真正要解决的问题。目前 `lib/db.ts` 已接入 Supabase，可以作为反馈数据的存储基础——但收集逻辑、触发机制、迭代流程尚未实现。
+
+**其他迭代方向：**
+- 多 Provider 对抗数据集（当前仅有 Groq 数据；Claude 和 Gemini 的失效模式是否相同？）
+- Subject Detection 作为 v2 核心功能
+- 从视频 Prompt 扩展到通用 LLM 输出评测（核心评测框架已经是通用的）
+
+---
+
+## 总结
+
+这个项目的核心不是"我做了一个评测工具"。
+
+核心是：**我建立了一套把直觉转化为实验的工作方法。**
+
+- 定义失效模式，而不是定义"好"
+- 设计可测量的维度，而不是打一个整体感觉分
+- 主动跑对抗测试，而不是等用户报告问题
+- 记录失效，而不是掩盖它
+
+这个项目让我意识到：**AI 系统最大的风险，往往不是模型出错，而是团队不知道模型什么时候出错。**
+
+相比生成内容本身，我对"如何发现失效模式、如何建立反馈闭环、如何让系统持续变好"更感兴趣。
+
+Video Prompt QA 是一次尝试。

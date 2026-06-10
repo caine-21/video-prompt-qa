@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/lib/lang-context";
 
 interface Props {
   onSubmit: (promptA: string, promptB: string) => void;
@@ -11,58 +12,49 @@ const DEFAULT_A = "A lone astronaut walks across a red Martian landscape at suns
 const DEFAULT_B = "astronaut on mars walking";
 
 export default function ComparePanel({ onSubmit, loading }: Props) {
+  const { t } = useLanguage();
   const [promptA, setPromptA] = useState(DEFAULT_A);
   const [promptB, setPromptB] = useState(DEFAULT_B);
 
   return (
     <div className="space-y-4">
-      {/* A/B panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Prompt A */}
         <div className="neo-card">
-          <div className="neo-bar-accent">Prompt A — Your best version</div>
+          <div className="neo-bar-accent">{t("cmp.ui.promptA")}</div>
           <div className="p-4">
             <textarea
               value={promptA}
               onChange={(e) => setPromptA(e.target.value)}
-              placeholder="Enter your stronger prompt here..."
+              placeholder={t("cmp.ui.placeholder.a")}
               rows={6}
               className="neo-input"
               style={{ fontSize: 14 }}
             />
           </div>
-          <div
-            className="px-4 pb-3"
-            style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}
-          >
-            {promptA.length} chars
+          <div className="px-4 pb-3" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}>
+            {promptA.length} {t("eval.ui.chars")}
           </div>
         </div>
 
-        {/* Prompt B */}
         <div className="neo-card">
-          <div className="neo-bar-secondary">Prompt B — Your challenger</div>
+          <div className="neo-bar-secondary">{t("cmp.ui.promptB")}</div>
           <div className="p-4">
             <textarea
               value={promptB}
               onChange={(e) => setPromptB(e.target.value)}
-              placeholder="Enter the prompt you want to test against A..."
+              placeholder={t("cmp.ui.placeholder.b")}
               rows={6}
               className="neo-input"
               style={{ fontSize: 14 }}
             />
           </div>
-          <div
-            className="px-4 pb-3"
-            style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}
-          >
-            {promptB.length} chars
+          <div className="px-4 pb-3" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}>
+            {promptB.length} {t("eval.ui.chars")}
           </div>
         </div>
       </div>
 
-      {/* Submit */}
       <div className="flex justify-end">
         <button
           onClick={() => onSubmit(promptA, promptB)}
@@ -70,7 +62,7 @@ export default function ComparePanel({ onSubmit, loading }: Props) {
           className="neo-btn neo-btn-primary"
           style={{ minWidth: 220 }}
         >
-          {loading ? "Comparing..." : "Run Comparison →"}
+          {loading ? t("cmp.ui.loading") : t("cmp.ui.submit")}
         </button>
       </div>
     </div>
