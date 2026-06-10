@@ -202,13 +202,28 @@ const WARN_UI = ns({
   "warn.impact.suffix":     { en: "points after adding a subject", zh: "分（添加主体后）" },
 });
 
+// ─── §14  Landing Hero ───────────────────────────────────────────────────────
+const HERO_UI = ns({
+  "hero.statement":       { en: "AI evaluators fail in predictable ways. This project finds those failures, validates them with controlled experiments, and ships fixes into production.", zh: "AI 评测系统会以可预测的方式失效。本项目发现这些失效模式，用受控实验验证，并将修复上线到生产环境。" },
+  "hero.step.find":       { en: "Find",        zh: "发现" },
+  "hero.step.experiment": { en: "Experiment",  zh: "实验" },
+  "hero.step.rootcause":  { en: "Root Cause",  zh: "根因" },
+  "hero.step.fix":        { en: "Fix",         zh: "修复" },
+  "hero.step.validate":   { en: "Validate",    zh: "验证" },
+  "hero.step.ship":       { en: "Ship",        zh: "上线" },
+  "hero.badge.cases":     { en: "15 adversarial cases",      zh: "15 个对抗用例" },
+  "hero.badge.experiment":{ en: "3×3 controlled experiment", zh: "3×3 受控实验" },
+  "hero.badge.gate":      { en: "1 production gate",         zh: "1 个生产护栏" },
+  "hero.divider":         { en: "Try it yourself",           zh: "试试看" },
+});
+
 // ─── Master lookup ────────────────────────────────────────────────────────────
 const ALL_STRINGS = {
   ...UI_NAV, ...UI_LOADING,
   ...EVAL_UI, ...EVAL_DOMAIN, ...EVAL_REPORT,
   ...CMP_UI, ...CMP_REPORT,
   ...FEEDBACK, ...DELTA, ...HISTORY, ...ANATOMY_UI,
-  ...TOURNAMENT_UI, ...WARN_UI,
+  ...TOURNAMENT_UI, ...WARN_UI, ...HERO_UI,
 } as const;
 
 export type UiKey = keyof typeof ALL_STRINGS;

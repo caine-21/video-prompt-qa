@@ -57,7 +57,7 @@ export default function PromptAnatomy({ anatomy }: Props) {
                     {cfg.label}
                   </span>
                 </div>
-                {item.note ? (
+                {item.note && item.note !== "null" ? (
                   <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(0,0,0,0.6)", margin: 0, lineHeight: 1.4 }}>{item.note}</p>
                 ) : (
                   <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(0,0,0,0.3)", margin: 0, fontStyle: "italic" }}>{t("anat.unspecified")}</p>

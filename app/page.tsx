@@ -287,12 +287,19 @@ function HomeInner() {
 
               {/* Statement */}
               <p style={{ fontSize: 15, fontWeight: 700, margin: 0, lineHeight: 1.5, color: "rgba(0,0,0,0.7)", maxWidth: 620 }}>
-                AI evaluators fail in predictable ways. This project finds those failures, validates them with controlled experiments, and ships fixes into production.
+                {t("hero.statement")}
               </p>
 
               {/* Methodology — horizontal compact */}
               <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", border: "3px solid #000", boxShadow: "4px 4px 0 #000", background: "#FFFDF5", overflow: "hidden", width: "fit-content" }}>
-                {(["Find", "Experiment", "Root Cause", "Fix", "Validate", "Ship"] as const).map((step, i, arr) => (
+                {([
+                  t("hero.step.find"),
+                  t("hero.step.experiment"),
+                  t("hero.step.rootcause"),
+                  t("hero.step.fix"),
+                  t("hero.step.validate"),
+                  t("hero.step.ship"),
+                ] as const).map((step, i, arr) => (
                   <div key={step} style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 14px" }}>
                       <span style={{ background: "#000", color: "#FFFDF5", fontWeight: 900, fontSize: 9, padding: "1px 6px", flexShrink: 0 }}>
@@ -311,7 +318,7 @@ function HomeInner() {
 
               {/* Proof badges */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {["15 adversarial cases", "3×3 controlled experiment", "1 production gate"].map(badge => (
+                {[t("hero.badge.cases"), t("hero.badge.experiment"), t("hero.badge.gate")].map(badge => (
                   <span key={badge} style={{ border: "2px solid #000", fontSize: 11, fontWeight: 700, padding: "3px 10px", letterSpacing: "0.04em", background: "transparent" }}>
                     {badge}
                   </span>
@@ -321,7 +328,7 @@ function HomeInner() {
               {/* Divider */}
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
                 <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.1 }} />
-                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.35 }}>Try it yourself</span>
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.35 }}>{t("hero.divider")}</span>
                 <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.1 }} />
               </div>
             </div>
