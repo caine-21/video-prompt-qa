@@ -190,13 +190,25 @@ const TOURNAMENT_UI = ns({
   "trn.report.match":      { en: "Match",            zh: "对局"        },
 });
 
+// ─── §13  Subject Warning Card ────────────────────────────────────────────────
+const WARN_UI = ns({
+  "warn.absent.title":      { en: "SUBJECT MISSING",    zh: "主体缺失" },
+  "warn.placeholder.title": { en: "SUBJECT UNCLEAR",    zh: "主体不明确" },
+  "warn.absent.body":       { en: "This prompt describes cinematography technique but does not specify what is being filmed. An AI video model will generate random content.", zh: "这个提示词描述了摄影技法，但未指定拍摄对象。AI 视频模型将随机生成内容。" },
+  "warn.placeholder.body":  { en: "The subject is a placeholder with no referent. Specificity cannot be assessed without knowing what is being filmed.", zh: "主体是占位符，没有实际指代。在不知道拍摄什么的情况下，无法评估具体性。" },
+  "warn.examples.label":    { en: "Add a specific subject, e.g.", zh: "添加具体主体，例如" },
+  "warn.impact.label":      { en: "Expected impact",    zh: "预期效果" },
+  "warn.impact.value":      { en: "Specificity +3–5",   zh: "具体性 +3–5" },
+  "warn.impact.suffix":     { en: "points after adding a subject", zh: "分（添加主体后）" },
+});
+
 // ─── Master lookup ────────────────────────────────────────────────────────────
 const ALL_STRINGS = {
   ...UI_NAV, ...UI_LOADING,
   ...EVAL_UI, ...EVAL_DOMAIN, ...EVAL_REPORT,
   ...CMP_UI, ...CMP_REPORT,
   ...FEEDBACK, ...DELTA, ...HISTORY, ...ANATOMY_UI,
-  ...TOURNAMENT_UI,
+  ...TOURNAMENT_UI, ...WARN_UI,
 } as const;
 
 export type UiKey = keyof typeof ALL_STRINGS;

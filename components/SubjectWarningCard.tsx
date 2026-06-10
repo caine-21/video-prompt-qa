@@ -1,5 +1,6 @@
 "use client";
 
+import { useLanguage } from "@/lib/lang-context";
 import type { AnatomyComponent } from "@/lib/types";
 
 interface Props {
@@ -27,6 +28,7 @@ const SUBJECT_EXAMPLES = [
 ];
 
 export default function SubjectWarningCard({ anatomy, improvements }: Props) {
+  const { t } = useLanguage();
   const issue = detectSubjectIssue(anatomy);
   if (!issue) return null;
 
@@ -56,22 +58,20 @@ export default function SubjectWarningCard({ anatomy, improvements }: Props) {
           padding: "4px 12px",
           letterSpacing: "0.04em",
         }}>
-          ⚠ {isAbsent ? "SUBJECT MISSING" : "SUBJECT UNCLEAR"}
+          ⚠ {isAbsent ? t("warn.absent.title") : t("warn.placeholder.title")}
         </span>
       </div>
 
       {/* Body */}
       <p style={{ fontWeight: 600, fontSize: 14, margin: "0 0 14px", lineHeight: 1.55 }}>
-        {isAbsent
-          ? "This prompt describes cinematography technique but does not specify what is being filmed. An AI video model will generate random content."
-          : "The subject is a placeholder with no referent. Specificity cannot be assessed without knowing what is being filmed."}
+        {isAbsent ? t("warn.absent.body") : t("warn.placeholder.body")}
       </p>
 
       {/* Two-column: examples + impact */}
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
         <div>
           <p style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 8px" }}>
-            Add a specific subject, e.g.
+            {t("warn.examples.label")}
           </p>
           <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 4 }}>
             {SUBJECT_EXAMPLES.map(ex => (
@@ -85,10 +85,10 @@ export default function SubjectWarningCard({ anatomy, improvements }: Props) {
 
         <div style={{ borderLeft: "3px solid rgba(0,0,0,0.25)", paddingLeft: 24 }}>
           <p style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 8px" }}>
-            Expected impact
+            {t("warn.impact.label")}
           </p>
-          <p style={{ fontWeight: 700, fontSize: 22, margin: "0 0 4px" }}>Specificity +3–5</p>
-          <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.75, margin: 0 }}>points after adding a subject</p>
+          <p style={{ fontWeight: 700, fontSize: 22, margin: "0 0 4px" }}>{t("warn.impact.value")}</p>
+          <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.75, margin: 0 }}>{t("warn.impact.suffix")}</p>
         </div>
       </div>
 
