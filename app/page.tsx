@@ -286,9 +286,13 @@ function HomeInner() {
             <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingBottom: 4 }}>
 
               {/* Statement */}
-              <p style={{ fontSize: 15, fontWeight: 700, margin: 0, lineHeight: 1.5, color: "rgba(0,0,0,0.7)", maxWidth: 620 }}>
-                {t("hero.statement")}
-              </p>
+              <div style={{ maxWidth: 620 }}>
+                {t("hero.statement").split("\n").map((line, i) => (
+                  <p key={i} style={{ fontSize: i === 0 ? 16 : 14, fontWeight: i === 0 ? 800 : 600, margin: i === 0 ? "0 0 6px" : 0, lineHeight: 1.55, color: i === 0 ? "#000" : "rgba(0,0,0,0.65)" }}>
+                    {line}
+                  </p>
+                ))}
+              </div>
 
               {/* Methodology — horizontal compact */}
               <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", border: "3px solid #000", boxShadow: "4px 4px 0 #000", background: "#FFFDF5", overflow: "hidden", width: "fit-content" }}>

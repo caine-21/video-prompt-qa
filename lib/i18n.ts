@@ -204,7 +204,7 @@ const WARN_UI = ns({
 
 // ─── §14  Landing Hero ───────────────────────────────────────────────────────
 const HERO_UI = ns({
-  "hero.statement":       { en: "AI evaluators fail in predictable ways. This project finds those failures, validates them with controlled experiments, and ships fixes into production.", zh: "AI 评测系统会以可预测的方式失效。本项目发现这些失效模式，用受控实验验证，并将修复上线到生产环境。" },
+  "hero.statement":       { en: "Reliability is not a model property. It's an engineering process.\nThis project turns AI evaluation failures into measurable experiments, validated fixes, and production safeguards.", zh: "可靠性不是模型属性，而是工程过程。\n本项目将 AI 评测失效转化为可测量实验、可验证修复和生产级护栏。" },
   "hero.step.find":       { en: "Find",        zh: "发现" },
   "hero.step.experiment": { en: "Experiment",  zh: "实验" },
   "hero.step.rootcause":  { en: "Root Cause",  zh: "根因" },
@@ -213,7 +213,7 @@ const HERO_UI = ns({
   "hero.step.ship":       { en: "Ship",        zh: "上线" },
   "hero.badge.cases":     { en: "15 adversarial cases",      zh: "15 个对抗用例" },
   "hero.badge.experiment":{ en: "3×3 controlled experiment", zh: "3×3 受控实验" },
-  "hero.badge.gate":      { en: "1 production gate",         zh: "1 个生产护栏" },
+  "hero.badge.gate":      { en: "1 production safeguard",    zh: "1 个生产级护栏" },
   "hero.divider":         { en: "Try it yourself",           zh: "试试看" },
 });
 
