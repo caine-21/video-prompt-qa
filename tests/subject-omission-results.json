@@ -1,0 +1,290 @@
+[
+  {
+    "id": "S-V0",
+    "group": "Real Subject",
+    "vocab_level": "V0 (minimal)",
+    "prompt": "A cat sits on a rooftop.",
+    "hypothesis": "Low vocab, clear subject → moderate Specificity, moderate overall",
+    "result": {
+      "overall": 5.2,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 2,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 4,
+        "Creativity": 3
+      },
+      "feedback": {
+        "Clarity": "The prompt is straightforward, but lacks detail about the desired outcome.",
+        "Specificity": "The prompt lacks specifics about the cat, rooftop, time of day, and desired visual style.",
+        "Technical Feasibility": "Current AI models can generate a cat on a rooftop with ease.",
+        "Cinematic Quality": "The prompt does not provide any information about desired camera angles, lighting, or mood.",
+        "Creativity": "The prompt is a fairly generic scenario and doesn't offer much room for creative interpretation."
+      },
+      "improvements": [
+        "Add more details about the cat's appearance and behavior",
+        "Specify the desired visual style, such as realistic or stylized",
+        "Include information about the rooftop's environment and time of day"
+      ],
+      "edgeCases": [
+        "The AI model may struggle to generate a realistic rooftop environment if it's not properly specified"
+      ]
+    }
+  },
+  {
+    "id": "S-V+",
+    "group": "Real Subject",
+    "vocab_level": "V+ (moderate)",
+    "prompt": "A cat on a rooftop at sunset, filmed in close-up with warm lighting.",
+    "hypothesis": "Moderate vocab + clear subject → higher Specificity and Cinematic",
+    "result": {
+      "overall": 7.6,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 7,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 8,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear but could benefit from additional context about the cat's actions or the desired mood.",
+        "Specificity": "The prompt includes details about the subject, lighting, and camera angle, but lacks information about the background, camera movement, or audio.",
+        "Technical Feasibility": "Current AI video models can generate a realistic cat, rooftop, and sunset scene with warm lighting, given sufficient training data.",
+        "Cinematic Quality": "The prompt uses effective cinematic language, such as close-up and warm lighting, to create a visually appealing scene.",
+        "Creativity": "The prompt is visually interesting but not particularly original, as similar scenes have been depicted in various films and commercials."
+      },
+      "improvements": [
+        "Add more context about the cat's actions or personality to make the scene more engaging.",
+        "Specify the desired camera movement or editing style to enhance the cinematic quality.",
+        "Consider adding audio or music specifications to create a more immersive experience."
+      ],
+      "edgeCases": [
+        "The AI model may struggle to generate realistic fur textures or cat movements, requiring additional fine-tuning or data."
+      ]
+    }
+  },
+  {
+    "id": "S-V++",
+    "group": "Real Subject",
+    "vocab_level": "V++ (high density)",
+    "prompt": "A black cat on a rooftop, cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "hypothesis": "High vocab + clear subject → should score high legitimately",
+    "result": {
+      "overall": 8.0,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear about the subject, style, and desired effects, but could benefit from more context about the scene's environment and the cat's actions.",
+        "Specificity": "The prompt includes specific details about the camera shot, lighting, and effects, but lacks information about the rooftop's setting, the cat's appearance, and the desired mood.",
+        "Technical Feasibility": "Current AI video models can generate realistic aerial shots and apply effects like bokeh and slow-motion, but might struggle with complex scenes or detailed textures.",
+        "Cinematic Quality": "The prompt effectively uses cinematic language, describing a shot that would be visually appealing and engaging, with a clear sense of atmosphere and mood.",
+        "Creativity": "While the prompt describes a visually interesting scene, it's a relatively common and familiar setup, lacking a unique twist or original element to set it apart."
+      },
+      "improvements": [
+        "Add more context about the rooftop's setting and environment",
+        "Specify the cat's appearance, actions, or personality traits",
+        "Consider adding a unique twist or surprise element to the scene"
+      ],
+      "edgeCases": [
+        "The AI model may struggle with rendering realistic textures or complex details in the scene, such as the cat's fur or the rooftop's surroundings"
+      ]
+    }
+  },
+  {
+    "id": "N-V0",
+    "group": "No Subject",
+    "vocab_level": "V0 (minimal)",
+    "prompt": "A scene at sunset.",
+    "hypothesis": "Low vocab, no subject → low Clarity and Specificity",
+    "result": {
+      "overall": 4.6,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 2,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 4,
+        "Creativity": 3
+      },
+      "feedback": {
+        "Clarity": "The prompt is simple, but it does not specify the location or content of the scene, leading to ambiguity.",
+        "Specificity": "The prompt lacks detail about the subject, style, motion, lighting, and mood, making it hard to generate a specific video.",
+        "Technical Feasibility": "Current AI models can generate sunset scenes, but the lack of specificity might lead to inconsistent results.",
+        "Cinematic Quality": "The prompt does not utilize effective cinematic language, such as camera angles, pacing, or composition, to create an engaging scene.",
+        "Creativity": "The prompt is not original, as sunset scenes are common, and it does not suggest any unique or visually interesting elements."
+      },
+      "improvements": [
+        "Add a specific location, such as a beach or mountain range, to the prompt.",
+        "Include details about the subject, such as people, animals, or objects, to be included in the scene.",
+        "Specify the desired mood or atmosphere, such as peaceful or dramatic, to guide the generation process."
+      ],
+      "edgeCases": [
+        "The AI model may generate a static image instead of a video if it struggles to interpret the prompt as a dynamic scene."
+      ]
+    }
+  },
+  {
+    "id": "N-V+",
+    "group": "No Subject",
+    "vocab_level": "V+ (moderate)",
+    "prompt": "A rooftop scene at sunset, close-up with warm lighting.",
+    "hypothesis": "Moderate vocab, no subject → still missing what to film",
+    "result": {
+      "overall": 6.8,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 6,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 7,
+        "Creativity": 4
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear about the setting and lighting, but it could be improved with more details about the subject",
+        "Specificity": "The prompt includes some specific details like the rooftop setting and warm lighting, but lacks information about the subject, motion, or style",
+        "Technical Feasibility": "Current AI video models can realistically generate a static or slightly dynamic rooftop scene at sunset with warm lighting",
+        "Cinematic Quality": "The use of a close-up shot and warm lighting suggests some understanding of cinematic language, but more details about camera movement or composition would enhance the prompt",
+        "Creativity": "The prompt is a fairly common scene and does not offer anything particularly original or visually interesting"
+      },
+      "improvements": [
+        "Specify the subject of the close-up, such as a person or object",
+        "Add details about the style, such as realistic or stylized",
+        "Consider adding information about motion or camera movement"
+      ],
+      "edgeCases": [
+        "The model may struggle to generate realistic shadows or lighting effects in the scene"
+      ]
+    }
+  },
+  {
+    "id": "N-V++",
+    "group": "No Subject",
+    "vocab_level": "V++ (high density) — G1 baseline",
+    "prompt": "A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "hypothesis": "G1 case: high vocab, zero subject → evaluator inflates score (baseline = 8.4/10)",
+    "result": {
+      "overall": 8.2,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is mostly clear but could benefit from specifying the subject or location of the aerial shot.",
+        "Specificity": "The prompt includes details about the style, lighting, and motion, but lacks information about the subject or setting.",
+        "Technical Feasibility": "Current AI video models can generate aerial shots with specified effects, but may struggle with precise bokeh or shallow depth of field control.",
+        "Cinematic Quality": "The prompt effectively uses cinematic language, combining elements like golden hour lighting and slow-motion to create a visually appealing scene.",
+        "Creativity": "While the prompt has some creative elements, it is a fairly common and familiar drone shot scenario, lacking a unique twist or surprise."
+      },
+      "improvements": [
+        "Specify the subject or location of the aerial shot",
+        "Add more unique or creative elements to the prompt",
+        "Consider including audio or sound design elements to enhance the cinematic experience"
+      ],
+      "edgeCases": [
+        "The AI model may struggle with accurately rendering the bokeh effect or achieving a convincing shallow depth of field in certain scenarios."
+      ]
+    }
+  },
+  {
+    "id": "F-V+",
+    "group": "Fake Subject",
+    "vocab_level": "V+ (moderate)",
+    "prompt": "A subject on a rooftop, filmed at sunset with warm lighting.",
+    "hypothesis": "'A subject' is syntactically valid but semantically empty — should evaluator penalize?",
+    "result": {
+      "overall": 7.0,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 6,
+        "Technical Feasibility": 9,
+        "Cinematic Quality": 7,
+        "Creativity": 5
+      },
+      "feedback": {
+        "Clarity": "The prompt is fairly straightforward but lacks specificity about the subject.",
+        "Specificity": "It includes some details like the setting and lighting, but lacks specifics about the subject, motion, and mood.",
+        "Technical Feasibility": "Current AI video models can realistically generate a static scene like a rooftop at sunset.",
+        "Cinematic Quality": "The mention of warm lighting at sunset hints at a visually appealing scene, but lacks depth in terms of camera angles or pacing.",
+        "Creativity": "The prompt, while visually potentially interesting, is not highly original and could benefit from unique elements."
+      },
+      "improvements": [
+        "Specify the subject and their actions or pose.",
+        "Include details about the style, such as realism or stylization.",
+        "Define the mood or emotion the scene should evoke."
+      ],
+      "edgeCases": [
+        "The subject's interaction with the sunset environment could lead to interesting narrative possibilities."
+      ]
+    }
+  },
+  {
+    "id": "F-V++",
+    "group": "Fake Subject",
+    "vocab_level": "V++ (high density)",
+    "prompt": "Something moving on a rooftop, cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "hypothesis": "'Something moving' = fake subject + max vocab — does it game the evaluator like G1?",
+    "result": {
+      "overall": 8.0,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 9,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear but lacks specific details about the subject moving on the rooftop.",
+        "Specificity": "The prompt includes detailed information about the style, lighting, and camera effects, but could benefit from more context about the rooftop and the moving subject.",
+        "Technical Feasibility": "Current AI video models can generate aerial drone shots and simulate bokeh, golden hour lighting, and slow-motion, but may struggle with complex subjects or precise control over depth of field.",
+        "Cinematic Quality": "The prompt effectively uses cinematic language, specifying a high-resolution 4K format, aerial drone shot, and artistic lighting, which suggests a high-quality visual aesthetic.",
+        "Creativity": "While the prompt is visually interesting, it relies on familiar cinematic tropes and doesn't introduce particularly new or original elements."
+      },
+      "improvements": [
+        "Specify the subject moving on the rooftop to add narrative interest",
+        "Add more context about the rooftop environment to help the AI model generate a more detailed and realistic scene",
+        "Consider introducing more unique or unexpected elements to enhance creativity"
+      ],
+      "edgeCases": [
+        "The subject moving on the rooftop could be an object, an animal, or a person, which may affect the feasibility and quality of the generated video"
+      ]
+    }
+  },
+  {
+    "id": "G1+S",
+    "group": "G1 Repaired",
+    "vocab_level": "V++ (high density) + real subject",
+    "prompt": "A black cat on a rooftop, cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "hypothesis": "Same as S-V++ — adds real subject to G1 vocabulary. Controls for vocabulary density.",
+    "result": {
+      "overall": 8.0,
+      "dimensions": {
+        "Clarity": 9,
+        "Specificity": 8,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 6
+      },
+      "feedback": {
+        "Clarity": "The prompt is clear about the main subject and the desired visual elements, but could benefit from more context about the scene's mood or the cat's actions.",
+        "Specificity": "The prompt provides a good amount of detail about the style, lighting, and motion, but lacks information about the location's surroundings or the cat's behavior.",
+        "Technical Feasibility": "Current AI video models can generate 4K aerial footage with bokeh and shallow depth of field, but might struggle to perfectly capture the nuances of golden hour lighting or realistic slow-motion.",
+        "Cinematic Quality": "The use of a cinematic 4K aerial drone shot, bokeh, and shallow depth of field effectively evokes a high-quality cinematic feel, and the golden hour lighting adds to the scene's aesthetic appeal.",
+        "Creativity": "While the combination of elements is visually interesting, the concept of a black cat on a rooftop is not particularly original or unique, and more context or unexpected twists could elevate the prompt's creativity."
+      },
+      "improvements": [
+        "Add more context about the scene's mood or the cat's actions to enhance the prompt's clarity and specificity.",
+        "Consider adding more details about the location's surroundings or the cat's behavior to increase the prompt's specificity and realism.",
+        "Experiment with more unusual or creative elements, such as unexpected camera angles or unusual lighting effects, to boost the prompt's creativity and cinematic quality."
+      ],
+      "edgeCases": [
+        "The AI model may struggle to accurately capture the textures and details of the cat's fur or the rooftop's environment, particularly if the training data lacks similar examples."
+      ]
+    }
+  }
+]

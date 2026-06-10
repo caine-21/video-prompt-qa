@@ -2,18 +2,20 @@
 
 **System:** video-prompt-qa 5-dimension evaluator  
 **Model:** Groq / llama-3.3-70b-versatile  
-**Test date:** 2026-04-26  
-**Script:** `run_adversarial.py` → raw data in `tests/adversarial-results.json`
+**Initial test date:** 2026-04-26 | **Experiment 2 date:** 2026-06-11  
+**Scripts:** `run_adversarial.py` / `run_subject_omission_experiment.py`  
+**Raw data:** `tests/adversarial-results.json` / `tests/subject-omission-results.json`
 
 ---
 
 ## Executive Summary
 
-Three real failure modes found. One is critical.
+Four real failure modes confirmed. One is critical and was validated by a controlled experiment.
 
-1. **The evaluator can be gamed with technical vocabulary** — a prompt with no subject but professional cinematography terms scored 8.4/10. Specificity=8 despite having nothing to actually film.
+1. **Subject Omission Attack (confirmed by controlled experiment)** — A prompt with no subject but professional cinematography terms scored 8.4/10 (G1). Controlled experiment (9 prompts, 3×3 design) confirmed that at high vocabulary density, the score gap between no-subject and real-subject prompts collapses to 0.2 points. A fake subject ("Something moving...") scored Specificity=9 — higher than a prompt with an actual subject.
 2. **Contradictions are rewarded as creativity** — logically impossible prompts ("fast slow-motion", "dark cheerful") score TF=7-8 and Creativity=8. The model interprets conflicts as artistic intent.
 3. **Physical impossibility is under-penalized** — filming inside a black hole scores TF=4, not 1. The model downgrades but doesn't bottom out.
+4. **Single-word TF inflation** — "cat" scores TF=8 because the model reasons it's "technically filmable."
 
 One strength confirmed: **the system is fully deterministic** at temperature=0. The same prompt returns identical scores across three independent runs (StdDev=0).
 
@@ -92,14 +94,64 @@ Overall score is perfectly stable across three independent runs. Individual dime
 
 ---
 
+---
+
+## Experiment 2 — Subject Omission Attack (Controlled, 2026-06-11)
+
+**Research question:** Is G1 a one-off, or does vocabulary density systematically inflate scores independent of subject presence?
+
+**Design:** 3×3 matrix. Groups: S (Real Subject) / N (No Subject) / F (Fake Subject). Vocab levels: V0 (minimal) / V+ (moderate) / V++ (maximum). Plus G1+S control (same vocabulary as G1, real subject added).
+
+**Script:** `run_subject_omission_experiment.py` | **Raw data:** `tests/subject-omission-results.json`
+
+### Full Results
+
+| ID | Group | Vocab Level | Overall | Cla | Spe | TF | Cin | Cre |
+|---|---|---|---|---|---|---|---|---|
+| S-V0 | Real Subject | V0 minimal | 5.2 | 8 | 2 | 9 | 4 | 3 |
+| S-V+ | Real Subject | V+ moderate | 7.6 | 8 | 7 | 9 | 8 | 6 |
+| S-V++ | Real Subject | V++ high density | 8.0 | 9 | 8 | 8 | 9 | 6 |
+| N-V0 | No Subject | V0 minimal | 4.6 | 6 | 2 | 8 | 4 | 3 |
+| N-V+ | No Subject | V+ moderate | 6.8 | 8 | 6 | 9 | 7 | 4 |
+| **N-V++** | **No Subject** | **V++ high — G1** | **8.2** | **9** | **8** | **9** | **9** | **6** |
+| F-V+ | Fake Subject | V+ moderate | 7.0 | 8 | 6 | 9 | 7 | 5 |
+| **F-V++** | **Fake Subject** | **V++ high density** | **8.0** | **8** | **9** | **8** | **9** | **6** |
+| G1+S | G1 Repaired | V++ + real subject | 8.0 | 9 | 8 | 8 | 9 | 6 |
+
+### Key Comparisons
+
+| Comparison | A | B | Delta | Finding |
+|---|---|---|---|---|
+| G1 vs G1+subject | N-V++ = 8.2 | S-V++ = 8.0 | **-0.2** | Adding real subject changes score by 0.2 |
+| No subject vs fake subject | N-V++ = 8.2 | F-V++ = 8.0 | -0.2 | "Something moving" games evaluator equally |
+| Real subject: vocab effect | S-V0 = 5.2 | S-V++ = 8.0 | +2.8 | Vocabulary adds 2.8 points when subject exists |
+| No subject: vocab effect | N-V0 = 4.6 | N-V++ = 8.2 | **+3.6** | Vocabulary adds 3.6 points when subject absent |
+
+### Findings
+
+**Finding 1 — Subject presence is irrelevant at high vocabulary density.**
+N-V++ (8.2) vs S-V++ (8.0): the score gap is 0.2. The evaluator cannot distinguish between a subjectless prompt and a prompt with a clear subject when both use dense cinematographic vocabulary.
+
+**Finding 2 — Fake subjects ("Something moving") game the evaluator as effectively as no subject.**
+F-V++ scored Overall=8.0 and Specificity=**9** — one point higher than S-V++ (Spe=8) which has an actual subject (a black cat). The evaluator rewards technical vocabulary density, not semantic completeness.
+
+**Finding 3 — The gaming effect is larger on subjectless prompts.**
+Adding vocabulary to a subjectless prompt (N: +3.6 points) has a bigger effect than adding it to a prompt with a real subject (S: +2.8 points). Subject absence amplifies vocabulary gaming because there's no semantic anchor to "compete" with the technical vocabulary signals.
+
+**Mechanism (observed):** The Specificity dimension's rubric asks whether the prompt includes "enough detail (subject, style, motion, lighting, mood)." Cinematographic terms satisfy the *style/motion/lighting* part of this rubric, masking the missing *subject* part. The evaluator never performs an explicit subject-existence check.
+
+**Scope:** These findings are specific to Groq / llama-3.3-70b-versatile with this fixed rubric. Whether the same pattern holds across other providers (GPT-4, Claude, Gemini) is an open question. Cross-provider replication is the next logical step.
+
+---
+
 ## Failure Mode Summary
 
-| # | Failure Mode | Severity | Root Cause |
-|---|---|---|---|
-| 1 | **Score gaming via technical vocabulary** | 🔴 Critical | Model conflates cinematographic terms with subject specificity |
-| 2 | **Contradictions rewarded as creativity** | 🟠 High | Model assumes artistic intent rather than flagging structural errors |
-| 3 | **Physical impossibility under-penalized** | 🟡 Medium | Model downgrades TF but doesn't bottom out at 1 |
-| 4 | **Single-word TF inflation** | 🟡 Low | "cat" = TF:8 because it's filmable, not because it's a valid prompt |
+| # | Failure Mode | Severity | Root Cause | Evidence |
+|---|---|---|---|---|
+| 1 | **Subject Omission Attack** | 🔴 Critical | Vocab density overrides subject-existence signal; "how to film" detail counted as "what to film" completeness | N-V++=8.2 vs S-V++=8.0 (Δ=0.2); F-V++ Spe=9 > S-V++ Spe=8 |
+| 2 | **Contradictions rewarded as creativity** | 🟠 High | Model assumes artistic intent rather than flagging structural errors | C1-C3 TF=7-8, Cre=8 |
+| 3 | **Physical impossibility under-penalized** | 🟡 Medium | Model downgrades TF but doesn't bottom out at 1 | T1 TF=4 |
+| 4 | **Single-word TF inflation** | 🟡 Low | "cat" = TF:8 because it's filmable, not because it's a valid prompt | B2 TF=8 |
 
 ---
 
