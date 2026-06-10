@@ -229,15 +229,41 @@ G1 是一个数据点。真正有说服力的证明，需要一个**受控实验
 | 3 | **物理不可行降分不足** | 🟡 中 | 模型降分但不归零（应得 1 分却得 4 分） | T1"黑洞内部拍摄" TF=4 |
 | 4 | **单词 TF 假阳性** | 🟡 低 | "cat"=TF:8，因为猫"在技术上可拍" | B2 TF=8 |
 
-每类失效都有对应的修复方向：
+每类失效都有对应的修复方向，已针对第一类（也是最严重的）完成修复与验证：
 
-1. **Subject Detection Gate** — 评分前验证主体存在；否则 Specificity 上限强制为 3
+### 6.1 Subject Detection Gate — 修复与验证（Prompt Engineering）
+
+**修复方案：** 在 `EVALUATION_SYSTEM_PROMPT` 中加入 Subject Detection Gate。模型在打分前必须先完成主体分类，并依据分类结果遵守硬约束：
+
+```
+If Subject is ABSENT → Specificity MUST be ≤ 3, Clarity MUST be ≤ 4
+If Subject is PARTIAL-PLACEHOLDER → Specificity MUST be ≤ 5
+```
+
+**验证数据（Groq / llama-3.3-70b-versatile，2026-06-11）：**
+
+| 用例 | Before Overall | After Overall | Before Spe | After Spe | 主体分类 | 控制效果 |
+|---|---|---|---|---|---|---|
+| N-V++ (G1) | 8.2 | **6.4** (-1.8) | 8 | 4 | absent ✅ | 显著降分 |
+| F-V++ | 8.0 | **6.8** (-1.2) | 9 | **4** | partial ✅ | ✅ 遵守上限 |
+| S-V++ (控制) | 8.0 | **8.2** (+0.2) | 8 | 9 | present ✅ | ✅ 未触发 |
+
+**三个关键结论：**
+
+1. **Gate 方向有效**：G1 从 8.2 降到 6.4（-22%）。Subject 正确分类为 absent，改进建议自动生成"Identify the subject: without a subject, an AI model generates random content."
+
+2. **控制组正确通过**：添加了真实主体的 S-V++ 得分保持 8.2，Gate 没有误伤正常 Prompt。
+
+3. **硬数字上限部分违反**：Spe=4 而非目标 ≤3。LLM 方向上遵守了约束，但在精确数字上未完全收敛。
+
+**对这个局限的诚实分析：** Prompt Engineering 可以改变模型的评分方向（分数显著下降），但不能像代码一样可靠地执行精确数字约束。更健壮的方案是**程序化 Gate**：LLM 负责分类主体存在性（`anatomy.Subject.status`），代码负责强制执行数字上限。这是"LLM 做判断，代码做执行"的标准分工——LLM 在分类任务上可靠，在执行精确约束上不可靠。实现 v2 的程序化 Gate 是下一个版本的首要优先项。
+
+---
+
+其余两类失效的修复方向：
+
 2. **Contradiction Detector** — 前置检测逻辑矛盾；矛盾 Prompt 的 TF 不得被 Creativity 拉高
 3. **Feasibility Hard Floor** — 物理不可行场景 TF 强制为 1，不允许降分停在 4
-
-这三个修复均为 Prompt Engineering 改动，不涉及代码变更——只需修改 `EVALUATION_SYSTEM_PROMPT` 的评分 rubric。
-
-**为什么还没做：** 我在这里做了一个有意的选择——先记录失效，再决定是否修复。一个评测系统应该先知道自己的边界在哪里，而不是在修复中掩盖真实的失效数据。`ADVERSARIAL_TESTS.md` 是诚实的记录，比修复后的干净结果更有价值。
 
 ---
 

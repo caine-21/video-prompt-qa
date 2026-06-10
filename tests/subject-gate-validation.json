@@ -1,0 +1,176 @@
+[
+  {
+    "id": "N-V++",
+    "group": "No Subject",
+    "prompt": "A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "before_overall": 8.2,
+    "before_spe": 8,
+    "before_cla": 9,
+    "gate_rule": "Rule 1 — absent subject → Spe ≤ 3, Cla ≤ 4",
+    "expected": "Spe ≤ 3 and overall drops significantly",
+    "result": {
+      "overall": 6.4,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 4,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 5
+      },
+      "feedback": {
+        "Clarity": "The phrase 'cinematic 4K aerial drone shot' is clear about the desired filming technique, but it does not specify what the subject of the shot is, leading to ambiguity about what the drone is capturing.",
+        "Specificity": "The mention of '4K', 'aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field' provides specific technical details, but lacks specificity about the subject, location, or action being filmed.",
+        "Technical Feasibility": "Current AI video models can realistically generate footage with the specified cinematic qualities such as 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field', but the lack of a defined subject or context might pose challenges.",
+        "Cinematic Quality": "The prompt explicitly includes cinematic language with 'cinematic 4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field', indicating a high level of cinematic quality desired.",
+        "Creativity": "While the prompt specifies unique cinematic qualities, the absence of a subject or setting means the generated content might not be visually distinct or memorable beyond the technical aspects."
+      },
+      "subject_status": "absent",
+      "subject_note": "null",
+      "improvements": [
+        "Identify the subject: what or who is the drone capturing? This could be a landscape, a person, an object, etc.",
+        "Add more context about the location or setting to help the model understand the environment.",
+        "Consider specifying the action or movement within the shot to enhance creativity and clarity."
+      ]
+    },
+    "verdict": "❌ GATE VIOLATED"
+  },
+  {
+    "id": "F-V++",
+    "group": "Fake Subject",
+    "prompt": "Something moving on a rooftop, cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "before_overall": 8.0,
+    "before_spe": 9,
+    "before_cla": 8,
+    "gate_rule": "Rule 2 — placeholder subject → Spe ≤ 5",
+    "expected": "Spe ≤ 5 and overall drops from 8.0",
+    "result": {
+      "overall": 6.8,
+      "dimensions": {
+        "Clarity": 6,
+        "Specificity": 4,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 7
+      },
+      "feedback": {
+        "Clarity": "The phrase 'Something moving' lacks specificity about what the subject is, making it somewhat ambiguous.",
+        "Specificity": "Although the prompt mentions 'rooftop', 'cinematic 4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field', it fails to specify what 'Something moving' is, which is crucial for clarity.",
+        "Technical Feasibility": "The technical aspects such as '4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field' are well within the capabilities of current AI video models.",
+        "Cinematic Quality": "The inclusion of 'cinematic 4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field' demonstrates a high level of cinematic understanding and quality.",
+        "Creativity": "While the prompt includes several cinematic elements, the vagueness of 'Something moving' reduces the potential for a truly unique or memorable scene, as it lacks specificity about the subject."
+      },
+      "subject_status": "partial",
+      "subject_note": "'Something moving'",
+      "improvements": [
+        "Specify the subject: instead of 'Something moving', define what is moving, such as 'a person', 'an animal', or 'an object'.",
+        "Add more context about the rooftop setting, such as the location, time of day beyond 'golden hour', or any notable features.",
+        "Consider adding a specific action or interaction involving the subject to enhance the scene's dynamics and interest."
+      ]
+    },
+    "verdict": "✅ GATE RESPECTED"
+  },
+  {
+    "id": "F-V+",
+    "group": "Fake Subject",
+    "prompt": "A subject on a rooftop, filmed at sunset with warm lighting.",
+    "before_overall": 7.0,
+    "before_spe": 6,
+    "before_cla": 8,
+    "gate_rule": "Rule 2 — 'a subject' is a placeholder → Spe ≤ 5",
+    "expected": "Subject flagged as placeholder, Spe ≤ 5",
+    "result": {
+      "overall": 6.8,
+      "dimensions": {
+        "Clarity": 7,
+        "Specificity": 6,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 8,
+        "Creativity": 5
+      },
+      "feedback": {
+        "Clarity": "The phrase 'a subject' is vague — what kind of subject is being filmed? However, 'on a rooftop, filmed at sunset' provides a clear setting.",
+        "Specificity": "The prompt mentions 'a rooftop' and 'sunset with warm lighting', which provides some specificity, but 'a subject' is too generic — it doesn't specify who or what the subject is.",
+        "Technical Feasibility": "Current AI video models can realistically generate a scene with a subject on a rooftop at sunset, as this situation involves supported physics and simple interactions.",
+        "Cinematic Quality": "The mention of 'sunset with warm lighting' implies a specific cinematic aesthetic, which is a strong aspect of cinematic quality.",
+        "Creativity": "While 'a subject on a rooftop at sunset' could be visually appealing, the lack of detail about the subject and the action limits the potential for a truly memorable or distinct scene."
+      },
+      "subject_status": "partial",
+      "subject_note": "The word 'subject' is used, but it is too generic.",
+      "improvements": [
+        "Specify the subject: who or what is being filmed? For example, 'a young musician', 'an athlete', or 'a robot'.",
+        "Add more detail about the action or interaction: what is the subject doing on the rooftop?",
+        "Consider adding more cinematic details: what kind of shot, camera movement, or specific lighting effects are desired?"
+      ]
+    },
+    "verdict": "❌ GATE VIOLATED"
+  },
+  {
+    "id": "S-V++",
+    "group": "Real Subject (control)",
+    "prompt": "A black cat on a rooftop, cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field.",
+    "before_overall": 8.0,
+    "before_spe": 8,
+    "before_cla": 9,
+    "gate_rule": "Control — real subject, gate should NOT trigger",
+    "expected": "Score should remain ~8.0, gate not triggered",
+    "result": {
+      "overall": 8.2,
+      "dimensions": {
+        "Clarity": 8,
+        "Specificity": 9,
+        "Technical Feasibility": 8,
+        "Cinematic Quality": 9,
+        "Creativity": 7
+      },
+      "feedback": {
+        "Clarity": "The phrase 'black cat on a rooftop' provides a clear subject and setting, but the camera's exact framing and the cat's action are not specified.",
+        "Specificity": "The prompt includes specific details like 'black cat', 'rooftop', 'cinematic 4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', and 'shallow depth of field', which together create a vivid and detailed image.",
+        "Technical Feasibility": "Current AI video models can realistically generate a 'black cat on a rooftop' with 'golden hour lighting' and 'bokeh' given the advancements in image synthesis, but achieving perfect 'slow-motion' and 'shallow depth of field' might still be challenging without additional context or constraints.",
+        "Cinematic Quality": "The prompt explicitly includes cinematic terms like 'cinematic 4K aerial drone shot', 'bokeh', 'golden hour lighting', 'slow-motion', which indicate a high level of cinematic quality and provide clear direction for the model.",
+        "Creativity": "While the combination of 'black cat', 'rooftop', and 'golden hour lighting' offers a visually appealing scene, the overall concept is not uniquely distinctive or innovative, as aerial shots of animals or objects on rooftops during golden hour are common in cinematic and photographic works."
+      },
+      "subject_status": "present",
+      "subject_note": "'black cat'",
+      "improvements": [
+        "Specify the cat's action or pose to add narrative depth to the scene.",
+        "Define the rooftop's environment or the cityscape in the background to enhance context.",
+        "Consider adding a specific mood or emotional tone to the prompt to guide the model's generation more precisely."
+      ]
+    },
+    "verdict": "⚪ GATE NOT TRIGGERED (real subject)"
+  },
+  {
+    "id": "S-V0",
+    "group": "Real Subject, minimal vocab (control)",
+    "prompt": "A cat sits on a rooftop.",
+    "before_overall": 5.2,
+    "before_spe": 2,
+    "before_cla": 8,
+    "gate_rule": "Control — real subject, gate should NOT trigger",
+    "expected": "Score stays similar to before, no gate penalty",
+    "result": {
+      "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\\n  \"dimensions\":[\\n      {\\n         \"name\":\"Clarity\",\\n         \"score\":7,\\n         \"feedback\":\"The phrase \\'a cat\\' clearly indicates the subject, and \\'sits on a rooftop\\' describes the action and setting, leaving little room for misinterpretation.\"\\n      },\\n      {\\n         \"name\":\"Specificity\",\\n         \"score\":6,\\n         \"feedback\":\"The prompt specifies \\'a cat\\' as the subject and \\'a rooftop\\' as the location, but it lacks detail about the cat\\'s breed, color, or the rooftop\\'s environment.\"\\n      },\\n      {\\n         \"name\":\"Technical Feasibility\",\\n         \"score\":8,\\n         \"feedback\":\"Current AI video models can generate a cat sitting on a rooftop without hallucinating unsupported physics or complex interactions, as the scene is relatively straightforward.\"\\n      },\\n      {\\n         \"name\":\"Cinematic Quality\",\\n         \"score\":4,\\n         \"feedback\":\"The prompt does not include shot type, camera movement, or lighting setup, which are essential elements for determining cinematic quality.\"\\n      },\\n      {\\n         \"name\":\"Creativity\",\\n         \"score\":5,\\n         \"feedback\":\"While the prompt is clear, it describes a fairly common and generic scene, which might result in a stock-footage-like outcome rather than something unique or memorable.\"\\n      }\\n   ],\\n   \"improvements\":{\\n      \"Identify the cat\\'s specifics: What breed, size, or color is the cat? This could enhance the scene\\'s uniqueness.\",\\n      \"Add cinematic elements: Specify the shot type, camera angle, or lighting to improve the scene\\'s visual quality.\",\\n      \"Consider the rooftop\\'s details: Adding specifics about the rooftop, such as its location, time of day, or weather conditions, could enrich the scene.\"\\n   },\\n   \"edgeCases\":[\\n      \"If the model chooses a rooftop with complex architecture, it might struggle to place the cat realistically.\",\\n      \"The model may have difficulty generating a realistic cat if it lacks diversity in its training data regarding cat breeds and sizes.\"\\n   ],\\n   \"anatomy\":[\\n      {\\n         \"component\":\"Subject\",\\n         \"status\":\"partial\",\\n         \"note\":\"\\'a cat\\'\"\\n      },\\n      {\\n         \"component\":\"Action\",\\n         \"status\":\"present\",\\n         \"note\":\"\\'sits\\'\"\\n      },\\n      {\\n         \"component\":\"Style\",\\n         \"status\":\"absent\",\\n         \"note\":null\\n      },\\n      {\\n         \"component\":\"Lighting\",\\n         \"status\":\"absent\",\\n         \"note\":null\\n      },\\n      {\\n         \"component\":\"Camera\",\\n         \"status\":\"absent\",\\n         \"note\":null\\n      },\\n      {\\n         \"component\":\"Mood\",\\n         \"status\":\"absent\",\\n         \"note\":null\\n      },\\n      {\\n         \"component\":\"Duration\",\\n         \"status\":\"absent\",\\n         \"note\":null\\n      }\\n   ],\\n   \"modelFit\":[\\n      {\\n         \"model\":\"Runway Gen-3\",\\n         \"score\":6,\\n         \"reason\":\"The prompt lacks specified cinematic elements like lighting or camera angles that Runway Gen-3 can leverage for high-quality video generation.\"\\n      },\\n      {\\n         \"model\":\"Sora\",\\n         \"score\":5,\\n         \"reason\":\"While Sora can generate complex scenes, the lack of detailed environment or narrative in the prompt limits its potential for creating a rich, coherent scene.\"\\n      },\\n      {\\n         \"model\":\"Kling\",\\n         \"score\":7,\\n         \"reason\":\"Kling excels with human subjects, but since the subject here is a cat, its performance might be slightly off its peak capability, though it can still handle the basic action and setting described.\"\\n      },\\n      {\\n         \"model\":\"Pika\",\\n         \"score\":8,\\n         \"reason\":\"Pika\\'s strength in stylized or animated content could be leveraged here, especially if the prompt were to specify a stylized or animated cat and rooftop, which would align with its capabilities.\"\\n      }\\n   ],\\n   \"negativePrompts\":[\\n      \"inconsistent cat animation\",\\n      \"unrealistic rooftop environment\",\\n      \"poor lighting that obscures details\",\\n      \"inappropriate camera angles\",\\n      \"stock-footage-like outcome lacking uniqueness\"\\n   ]\\n}'}}",
+      "overall": null,
+      "dimensions": {},
+      "subject_status": "error"
+    },
+    "verdict": "❌ ERROR"
+  },
+  {
+    "id": "N-V+",
+    "group": "No Subject, moderate vocab",
+    "prompt": "A rooftop scene at sunset, close-up with warm lighting.",
+    "before_overall": 6.8,
+    "before_spe": 6,
+    "before_cla": 8,
+    "gate_rule": "Rule 1 variant — 'A rooftop scene' may be subject-absent",
+    "expected": "Depends on whether 'rooftop scene' counts as subject",
+    "result": {
+      "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\\n  \"dimensions\":[\\n      {\\n         \"name\":\"Clarity\",\\n         \"score\":7,\\n         \"feedback\":\"The phrase \\'rooftop scene\\' provides a clear setting, and \\'at sunset\\' gives a specific time, but could be improved with more details about the rooftop itself.\"\\n      },\\n      {\\n         \"name\":\"Specificity\",\\n         \"score\":6,\\n         \"feedback\":\"The word \\'rooftop\\' is specific, but \\'scene\\' is vague - what is happening on the rooftop? \\'Warm lighting\\' is a good start, but more details about the subject or action would help.\"\\n      },\\n      {\\n         \"name\":\"Technical Feasibility\",\\n         \"score\":8,\\n         \"feedback\":\"Current AI video models can easily generate a rooftop scene at sunset with warm lighting, but may struggle with complex interactions or detailed characters without more context.\"\\n      },\\n      {\\n         \"name\":\"Cinematic Quality\",\\n         \"score\":8,\\n         \"feedback\":\"The phrase \\'close-up with warm lighting\\' shows an understanding of cinematic techniques, and \\'at sunset\\' implies a specific lighting setup.\"\\n      },\\n      {\\n         \"name\":\"Creativity\",\\n         \"score\":5,\\n         \"feedback\":\"While a rooftop scene at sunset can be aesthetically pleasing, it\\'s a fairly common setup and could be made more unique with additional details or an unexpected twist.\"\\n      }\\n   ],\\n   \"improvements:[\\\\n      \\\\\"Add a specific subject or character to the rooftop scene to increase clarity and specificity\\\\\",\\\\n      \\\\\"Consider adding more details about the action or activity on the rooftop to make the scene more engaging\\\\\",\\\\n      \\\\\"Specify the type of rooftop or the cityscape in the background to add more context\\\\\"\\\\n   ]\",\\n   \"edgeCases\":[\\n      \"If the AI model generates a rooftop with an unrealistic or incomplete cityscape in the background\",\\n      \"If the warm lighting at sunset is not accurately captured, resulting in an unconvincing scene\"\\n   ],\\n   \"anatomy\":[\\n      {\\n         \"component\":\"Subject\",\\n         \"status\":\"absent\",\\n         \"note\":\"null\"\\n      },\\n      {\\n         \"component\":\"Action\",\\n         \"status\":\"absent\",\\n         \"note\":\"null\"\\n      },\\n      {\\n         \"component\":\"Style\",\\n         \"status\":\"partial\",\\n         \"note\":\"\\'warm lighting\\' implies a certain aesthetic\"\\n      },\\n      {\\n         \"component\":\"Lighting\",\\n         \"status\":\"present\",\\n         \"note\":\"\\'at sunset\\' and \\'warm lighting\\'\"\\n      },\\n      {\\n         \"component\":\"Camera\",\\n         \"status\":\"present\",\\n         \"note\":\"\\'close-up\\'\"\\n      },\\n      {\\n         \"component\":\"Mood\",\\n         \"status\":\"partial\",\\n         \"note\":\"\\'warm lighting\\' implies a certain mood, but it\\'s not explicit\"\\n      },\\n      {\\n         \"component\":\"Duration\",\\n         \"status\":\"absent\",\\n         \"note\":\"null\"\\n      }\\n   ],\\n   \"modelFit\":[\\n      {\\n         \"model\":\"Runway Gen-3\",\\n         \"score\":7,\\n         \"reason\":\"The prompt mentions \\'close-up\\' and \\'warm lighting\\', which are cinematic techniques that Runway Gen-3 can handle well.\"\\n      },\\n      {\\n         \"model\":\"Sora\",\\n         \"score\":4,\\n         \"reason\":\"The prompt lacks specific details about the scene or characters, which Sora would need to generate a coherent and detailed environment.\"\\n      },\\n      {\\n         \"model\":\"Kling\",\\n         \"score\":3,\\n         \"reason\":\"The prompt does not mention a human subject, which Kling excels at generating, and lacks action or activity details.\"\\n      },\\n      {\\n         \"model\":\"Pika\",\\n         \"score\":6,\\n         \"reason\":\"The prompt\\'s focus on a brief, stylized scene (a rooftop at sunset) could work well with Pika\\'s strengths in short, stylized content.\"\\n      }\\n   ],\\n   \"negativePrompts\":[\\n      \"Unrealistic or overly simplistic rooftop architecture\",\\n      \"Inconsistent or unconvincing warm lighting at sunset\",\\n      \"Lack of context or background elements in the scene\",\\n      \"Inability to capture the desired mood or atmosphere\",\\n      \"Overly generic or stock-footage-like scene\"\\n   ]\\n}'}}",
+      "overall": null,
+      "dimensions": {},
+      "subject_status": "error"
+    },
+    "verdict": "❌ ERROR"
+  }
+]

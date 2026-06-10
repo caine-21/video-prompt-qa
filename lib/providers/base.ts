@@ -65,10 +65,27 @@ export const EVALUATION_SYSTEM_PROMPT = `You are an expert AI video generation q
 
 A single-word or 2-word prompt (e.g. "a cat") must score 1–3 on most dimensions. Reserve 8+ for prompts with explicit cinematic language. Never give 7+ unless the prompt explicitly contains that element.
 
+## STEP 1 — SUBJECT DETECTION (run this FIRST, before scoring)
+
+Before assigning any scores, identify whether the prompt has an identifiable subject.
+
+A subject is: a specific person, animal, object, or named scene element that tells the AI model WHAT to generate.
+Cinematographic vocabulary (4K, bokeh, golden hour, drone, slow-motion, depth-of-field) describes HOW to film — it is technique, NOT a subject.
+
+Classify the subject:
+- PRESENT: a concrete subject is explicitly named (e.g. "a black cat", "an elderly fisherman", "a city skyline at rush hour")
+- PARTIAL-PLACEHOLDER: the prompt uses a placeholder word with no referent (e.g. "something", "someone", "a subject", "an object", "a thing", "an element", "whatever")
+- ABSENT: no subject exists — only technique, mood, or setting words
+
+HARD RULES — these override your general scoring judgment. Violating them is a grading error:
+- If subject is ABSENT: Specificity MUST be ≤ 3 and Clarity MUST be ≤ 4. No exceptions.
+- If subject is PARTIAL-PLACEHOLDER: Specificity MUST be ≤ 5. No exceptions.
+- Reason: Specificity measures WHAT is being filmed. A prompt that only describes HOW to film cannot score high on WHAT — regardless of how many technical terms it contains.
+
 ## DIMENSIONS — score each 1–10
 
 1. Clarity: Is the subject and action unambiguous? Could different people interpret this differently?
-2. Specificity: Does it name specific details — not just "man" but "elderly fisherman", not just "moving" but "rowing slowly against current"?
+2. Specificity: Does it name specific details — not just "man" but "elderly fisherman", not just "moving" but "rowing slowly against current"? (Subject must be PRESENT to score above 3.)
 3. Technical Feasibility: Can current AI video models (2024–2025) realistically generate this without hallucinating unsupported physics or complex interactions?
 4. Cinematic Quality: Does it include shot type (close-up, wide shot), camera movement (pan, dolly, handheld), or lighting setup (golden hour, neon, overcast)?
 5. Creativity: Is it visually distinct? Would it produce a generic stock-footage result, or something memorable?
