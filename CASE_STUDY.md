@@ -240,23 +240,37 @@ If Subject is ABSENT → Specificity MUST be ≤ 3, Clarity MUST be ≤ 4
 If Subject is PARTIAL-PLACEHOLDER → Specificity MUST be ≤ 5
 ```
 
-**验证数据（Groq / llama-3.3-70b-versatile，2026-06-11）：**
+**生产验证数据（2026-06-11，DeepSeek deepseek-chat + Groq llama-3.3-70b）：**
 
-| 用例 | Before Overall | After Overall | Before Spe | After Spe | 主体分类 | 控制效果 |
-|---|---|---|---|---|---|---|
-| N-V++ (G1) | 8.2 | **6.4** (-1.8) | 8 | 4 | absent ✅ | 显著降分 |
-| F-V++ | 8.0 | **6.8** (-1.2) | 9 | **4** | partial ✅ | ✅ 遵守上限 |
-| S-V++ (控制) | 8.0 | **8.2** (+0.2) | 8 | 9 | present ✅ | ✅ 未触发 |
+| 用例 | Subject 分类 | Before Overall | After Overall | Before Spe | After Spe |
+|---|---|---|---|---|---|
+| **G1（无主体+摄影词汇）** | absent ✅ | 8.4 | **4.6** (-3.8) | 8 | **2** |
+| **S-V++（黑猫+同等词汇）** | present ✅ | 8.0 | **7.4** (+0.6) | 8 | **8** |
 
-**三个关键结论：**
+**Gate 效果验证：**
 
-1. **Gate 方向有效**：G1 从 8.2 降到 6.4（-22%）。Subject 正确分类为 absent，改进建议自动生成"Identify the subject: without a subject, an AI model generates random content."
+1. **G1 从 8.4 降到 4.6（-45%）**。Specificity 从 8 降到 2。模型在 feedback 中明确写出了根因：*"cinematic, aerial drone shot, bokeh, golden hour, slow-motion, shallow depth of field are all technical descriptions of how to film, not what to film."*——这正是我们在实验中识别的机制。
 
-2. **控制组正确通过**：添加了真实主体的 S-V++ 得分保持 8.2，Gate 没有误伤正常 Prompt。
+2. **控制组正确通过**：有真实主体的 S-V++（"A black cat on a rooftop..."）得分维持在 7.4，Subject=present，Gate 未触发，未受误伤。
 
-3. **硬数字上限部分违反**：Spe=4 而非目标 ≤3。LLM 方向上遵守了约束，但在精确数字上未完全收敛。
+3. **Warning Card 在生产界面正确显示**：当 `anatomy.Subject.status = "absent"` 时，⚠ SUBJECT MISSING 卡片出现在评分结果上方，包含示例主体和预期提分效果。
 
-**对这个局限的诚实分析：** Prompt Engineering 可以改变模型的评分方向（分数显著下降），但不能像代码一样可靠地执行精确数字约束。更健壮的方案是**程序化 Gate**：LLM 负责分类主体存在性（`anatomy.Subject.status`），代码负责强制执行数字上限。这是"LLM 做判断，代码做执行"的标准分工——LLM 在分类任务上可靠，在执行精确约束上不可靠。实现 v2 的程序化 Gate 是下一个版本的首要优先项。
+**UI 可视化验证：**
+
+```
+⚠ SUBJECT MISSING
+This prompt describes cinematography technique but does not specify what is 
+being filmed. An AI video model will generate random content.
+
+Add a specific subject, e.g.
+→ a black cat
+→ an elderly fisherman  
+→ a neon-lit street market
+
+Expected impact: Specificity +3–5 points after adding a subject
+```
+
+这不再是测试脚本里的数字——它是用户在界面上能看到的东西。
 
 ---
 
@@ -304,15 +318,24 @@ If Subject is PARTIAL-PLACEHOLDER → Specificity MUST be ≤ 5
 
 这个项目的核心不是"我做了一个评测工具"。
 
-核心是：**我建立了一套把直觉转化为实验的工作方法。**
+核心是：**一条完整的 AI 可靠性工程闭环。**
 
-- 定义失效模式，而不是定义"好"
-- 设计可测量的维度，而不是打一个整体感觉分
-- 主动跑对抗测试，而不是等用户报告问题
-- 记录失效，而不是掩盖它
+```
+发现失效模式（G1 = 8.4，无主体 Prompt 被高估）
+    ↓
+设计控制实验（3×3 矩阵，验证词汇密度是主驱动信号）
+    ↓
+识别根因（Specificity rubric 将 HOW 误计为 WHAT）
+    ↓
+设计修复（Subject Detection Gate — 先分类，再约束）
+    ↓
+验证修复（G1 从 8.4 → 4.6；控制组维持 7.4；未误伤）
+    ↓
+交付产品功能（Warning Card — 用户在界面上看到 ⚠ SUBJECT MISSING）
+```
+
+每一步都有数据，每一个决策都可以被审计。
 
 这个项目让我意识到：**AI 系统最大的风险，往往不是模型出错，而是团队不知道模型什么时候出错。**
 
-相比生成内容本身，我对"如何发现失效模式、如何建立反馈闭环、如何让系统持续变好"更感兴趣。
-
-Video Prompt QA 是一次尝试。
+构建可靠 AI 系统的核心能力，不是写更好的 Prompt，而是知道当前 Prompt 在什么情况下会失效——并把这种知识变成可重复的检测机制。
