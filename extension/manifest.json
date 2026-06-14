@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt QA",
+  "version": "0.1.0",
+  "description": "Evaluate AI video prompts before generation — catch failures before they cost credits.",
+  "permissions": ["storage", "contextMenus"],
+  "host_permissions": [
+    "https://videopromptqa.netlify.app/*",
+    "https://*.netlify.app/*",
+    "http://localhost:3000/*",
+    "http://localhost/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Prompt QA"
+  },
+  "options_page": "options.html"
+}

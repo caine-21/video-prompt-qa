@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt QA — Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 420px;
+      padding: 24px;
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 13px;
+      background: #FFFDF5;
+      color: #000;
+    }
+    h1 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 3px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 9px 10px;
+      border: 2px solid #000;
+      font-family: inherit;
+      font-size: 12px;
+      background: #fff;
+      outline: none;
+    }
+    input[type="text"]:focus { box-shadow: 3px 3px 0 #000; }
+    .hint {
+      font-size: 11px;
+      color: #666;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+    .btn-save {
+      margin-top: 16px;
+      padding: 9px 20px;
+      background: #000;
+      color: #FFD93D;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 2px solid #000;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 #FFD93D;
+    }
+    .btn-save:hover { box-shadow: 2px 2px 0 #FFD93D; }
+    .btn-reset {
+      margin-top: 8px;
+      margin-left: 10px;
+      padding: 9px 14px;
+      background: #fff;
+      color: #000;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 2px solid #000;
+      cursor: pointer;
+    }
+    .saved-msg {
+      display: none;
+      margin-top: 10px;
+      padding: 7px 10px;
+      background: #FFD93D;
+      border: 2px solid #000;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .current-url {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f3f3ec;
+      border: 2px solid #000;
+      font-size: 11px;
+    }
+    .current-url strong { display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+  </style>
+</head>
+<body>
+  <h1>★ Prompt QA — Settings</h1>
+
+  <label for="api-base">API Base URL</label>
+  <input type="text" id="api-base" placeholder="https://videopromptqa.netlify.app" />
+  <div class="hint">
+    Switch between environments without reloading the extension.<br>
+    Default: <code>https://videopromptqa.netlify.app</code><br>
+    Local dev: <code>http://localhost:3000</code>
+  </div>
+
+  <div>
+    <button class="btn-save" id="save-btn">Save</button>
+    <button class="btn-reset" id="reset-btn">Reset to Default</button>
+  </div>
+  <div class="saved-msg" id="saved-msg">✓ Saved</div>
+
+  <div class="current-url">
+    <strong>Current endpoint</strong>
+    <span id="current-display">—</span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
