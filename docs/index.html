@@ -3,377 +3,472 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Prompt QA — AI Prompt Evaluator Demo</title>
+  <title>Video Prompt QA — Demo</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --border: #1e1e2e;
-      --accent: #6366f1;
-      --accent-dim: #4f46e5;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --green: #22c55e;
+      --bg: #060608;
+      --surface: #0f0f13;
+      --card: #141418;
+      --border: rgba(255,255,255,0.07);
+      --border-bright: rgba(255,255,255,0.12);
+      --accent: #818cf8;
+      --accent-glow: rgba(129,140,248,0.15);
+      --text: #f1f5f9;
+      --sub: #94a3b8;
+      --dim: #475569;
+      --gold: #fbbf24;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ── */
-    header {
-      padding: 48px 24px 24px;
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      padding: 80px 24px 56px;
       text-align: center;
-      max-width: 800px;
-      margin: 0 auto;
+      overflow: hidden;
     }
 
-    .badge {
-      display: inline-block;
-      background: rgba(99,102,241,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(99,102,241,0.3);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(99,102,241,0.18) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    h1 {
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 16px;
-    }
+    .hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
 
-    .tagline {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 32px;
-    }
-
-    .cta-row {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 22px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-    .btn:hover { opacity: 0.85; }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    /* ── Video ── */
-    .video-wrap {
-      max-width: 860px;
-      margin: 40px auto;
-      padding: 0 24px;
-    }
-
-    .video-container {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .video-container::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, rgba(99,102,241,0.3), transparent 50%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    video {
-      display: block;
-      width: 100%;
-      border-radius: 12px;
-      outline: none;
-    }
-
-    /* ── Features ── */
-    .section {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 24px 48px;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      border: 1px solid rgba(129,140,248,0.3);
+      background: rgba(129,140,248,0.08);
       color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .pill-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 58px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
       margin-bottom: 20px;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
+    h1 span {
+      background: linear-gradient(135deg, #c7d2fe 0%, #818cf8 50%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .card {
+    .hero-sub {
+      font-size: 17px;
+      color: var(--sub);
+      max-width: 480px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px;
+      border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.18s ease;
+      cursor: pointer; border: none;
+    }
+
+    .btn-primary {
+      background: #6366f1;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(99,102,241,0.35);
+    }
+    .btn-primary:hover { background: #818cf8; box-shadow: 0 0 28px rgba(99,102,241,0.5); }
+
+    .btn-ghost {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border-bright);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.05); }
+
+    /* ─── VIDEO ─── */
+    .video-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 72px;
+    }
+
+    .video-frame {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-bright);
+      box-shadow:
+        0 0 0 1px rgba(99,102,241,0.12),
+        0 24px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(99,102,241,0.08);
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
+      position: relative;
     }
 
-    .card-icon {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-
-    .card h3 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-
-    .card p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    /* ── Key Finding ── */
-    .finding {
-      background: rgba(99,102,241,0.06);
-      border: 1px solid rgba(99,102,241,0.25);
-      border-radius: 10px;
-      padding: 24px 28px;
-      margin-bottom: 48px;
-    }
-
-    .finding .label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .finding blockquote {
-      font-style: italic;
-      color: var(--muted);
-      font-size: 14px;
-      border-left: 3px solid var(--accent);
-      padding-left: 16px;
-      margin-bottom: 14px;
-    }
-
-    .finding p {
-      font-size: 14px;
-      color: var(--text);
-    }
-
-    .finding strong { color: #f59e0b; }
-
-    /* ── Stack ── */
-    .stack-row {
+    .video-topbar {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
     }
 
-    .tag {
-      background: var(--surface);
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .video-url-bar {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 5px 12px;
+      padding: 4px 12px;
       font-size: 12px;
-      color: var(--muted);
+      color: var(--dim);
+      margin: 0 16px;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+
+    video {
+      display: block; width: 100%;
+      outline: none;
+      background: #000;
+    }
+
+    /* ─── FINDING ─── */
+    .finding-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    .finding-card {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(99,102,241,0.03) 100%);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 14px;
+      padding: 32px 36px;
+    }
+
+    .finding-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .finding-quote {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--sub);
+      border-left: 3px solid rgba(129,140,248,0.5);
+      padding-left: 18px;
+      margin-bottom: 18px;
+      line-height: 1.7;
+    }
+
+    .finding-body {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .highlight { color: var(--gold); font-weight: 700; }
+
+    /* ─── DIMENSIONS ─── */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    .section-head {
+      margin-bottom: 24px;
+    }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 24px; font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .dim-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+    .dim-card:hover { border-color: var(--border-bright); }
+
+    .dim-icon { font-size: 24px; margin-bottom: 12px; display: block; }
+
+    .dim-name {
+      font-size: 14px; font-weight: 700;
+      color: var(--text); margin-bottom: 6px;
+    }
+
+    .dim-desc { font-size: 13px; color: var(--sub); line-height: 1.5; }
+
+    /* ─── DECISIONS ─── */
+    .decision-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .decision-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex; gap: 18px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .decision-card:hover { border-color: var(--border-bright); }
+
+    .decision-num {
+      color: var(--accent); font-weight: 800;
+      font-size: 16px; min-width: 20px;
+      margin-top: 2px;
+    }
+
+    .decision-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+    .decision-body { font-size: 13px; color: var(--sub); line-height: 1.55; }
+
+    /* ─── STACK ─── */
+    .stack-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .stack-tag {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--sub);
       font-weight: 500;
     }
 
-    /* ── Divider ── */
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0 24px 40px;
-      max-width: 812px;
-      margin-left: auto;
-      margin-right: auto;
+    /* ─── DIVIDER ─── */
+    .divider {
+      max-width: 812px; margin: 0 auto 56px;
+      border: none; border-top: 1px solid var(--border);
     }
 
-    /* ── Footer ── */
+    /* ─── FOOTER ─── */
     footer {
       text-align: center;
-      padding: 24px;
-      font-size: 13px;
-      color: var(--muted);
+      padding: 28px 24px;
       border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--dim);
     }
-
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: var(--sub); text-decoration: none; }
+    footer a:hover { color: var(--text); }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="badge">Demo · AI Evaluation System</div>
-  <h1>Video Prompt QA</h1>
-  <p class="tagline">
-    Multi-provider prompt evaluator — scores AI video prompts across 5 failure dimensions before generation.
-    Built to find how <em>evaluators</em> fail, not just prompts.
-  </p>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="https://video-prompt-qa.vercel.app" target="_blank">
-      ▶ Try Live Demo
-    </a>
-    <a class="btn btn-secondary" href="https://github.com/caine-21/video-prompt-qa" target="_blank">
-      ⌥ View on GitHub
-    </a>
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="pill"><span class="pill-dot"></span>Live Demo Available</div>
+    <h1>Video Prompt<br><span>Quality Evaluator</span></h1>
+    <p class="hero-sub">
+      Score AI video prompts across 5 failure dimensions before you burn generation credits.
+      Built on 3 providers — Claude, Gemini, Groq.
+    </p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="https://video-prompt-qa.vercel.app" target="_blank">
+        ↗ Try Live Demo
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/caine-21/video-prompt-qa" target="_blank">
+        ⌥ GitHub
+      </a>
+    </div>
   </div>
-</header>
+</section>
 
-<!-- ── Demo Video ── -->
-<div class="video-wrap">
-  <div class="video-container">
-    <video controls preload="metadata" poster="">
+<!-- ── VIDEO ── -->
+<div class="video-section">
+  <div class="video-frame">
+    <div class="video-topbar">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+      <span class="video-url-bar">video-prompt-qa.vercel.app</span>
+    </div>
+    <video controls preload="metadata">
       <source src="https://github.com/caine-21/video-prompt-qa/releases/download/v1.0-demo/video.prompt.QA.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
     </video>
   </div>
 </div>
 
+<!-- ── KEY FINDING ── -->
+<div class="finding-section">
+  <div class="finding-card">
+    <div class="finding-label">Key Finding</div>
+    <div class="finding-quote">
+      "A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field."
+    </div>
+    <div class="finding-body">
+      This prompt has <span class="highlight">no subject</span> — yet scored <span class="highlight">8.4 / 10</span>, Specificity = 8.
+      The evaluator was fooled by cinematography vocabulary alone. This project started as a prompt evaluator;
+      it became an experiment in <strong>evaluator reliability</strong>.
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── DIMENSIONS ── -->
 <div class="section">
-
-  <!-- Key Finding -->
-  <div class="finding">
-    <div class="label">Key Finding</div>
-    <blockquote>"A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field."</blockquote>
-    <p>This prompt has <strong>no subject</strong> — yet scored <strong>8.4 / 10</strong>, Specificity = 8.
-    The evaluator was fooled by cinematography vocabulary. This project started as a prompt evaluator; it became an experiment in <strong>evaluator reliability</strong>.</p>
+  <div class="section-head">
+    <div class="section-label">Evaluation Framework</div>
+    <div class="section-title">5 Orthogonal Failure Dimensions</div>
   </div>
-
-  <!-- What it does -->
-  <p class="section-title">5 Evaluation Dimensions</p>
-  <div class="grid-3" style="margin-bottom: 40px;">
-    <div class="card">
-      <div class="card-icon">🎯</div>
-      <h3>Clarity</h3>
-      <p>Catches ambiguous subjects — model interprets differently each run</p>
+  <div class="dim-grid">
+    <div class="dim-card">
+      <span class="dim-icon">🎯</span>
+      <div class="dim-name">Clarity</div>
+      <div class="dim-desc">Catches ambiguous subjects — model interprets differently each run</div>
     </div>
-    <div class="card">
-      <div class="card-icon">🔍</div>
-      <h3>Specificity</h3>
-      <p>Flags under-specified prompts that produce generic, bland output</p>
+    <div class="dim-card">
+      <span class="dim-icon">🔍</span>
+      <div class="dim-name">Specificity</div>
+      <div class="dim-desc">Flags under-specified prompts that produce generic, bland output</div>
     </div>
-    <div class="card">
-      <div class="card-icon">⚙️</div>
-      <h3>Technical Feasibility</h3>
-      <p>Detects impossible camera moves or physics violations</p>
+    <div class="dim-card">
+      <span class="dim-icon">⚙️</span>
+      <div class="dim-name">Technical Feasibility</div>
+      <div class="dim-desc">Detects impossible camera moves or physics violations</div>
     </div>
-    <div class="card">
-      <div class="card-icon">🎬</div>
-      <h3>Cinematic Quality</h3>
-      <p>Surfaces missing shot language — no framing, lighting, or mood</p>
+    <div class="dim-card">
+      <span class="dim-icon">🎬</span>
+      <div class="dim-name">Cinematic Quality</div>
+      <div class="dim-desc">Surfaces missing shot language — no framing, lighting, mood</div>
     </div>
-    <div class="card">
-      <div class="card-icon">✨</div>
-      <h3>Creativity</h3>
-      <p>Identifies derivative, low visual interest prompts</p>
+    <div class="dim-card">
+      <span class="dim-icon">✨</span>
+      <div class="dim-name">Creativity</div>
+      <div class="dim-desc">Identifies derivative, low visual interest prompts</div>
     </div>
-    <div class="card">
-      <div class="card-icon">⚖️</div>
-      <h3>A/B Comparison</h3>
-      <p>Side-by-side prompt comparison across Claude / Gemini / Groq</p>
+    <div class="dim-card">
+      <span class="dim-icon">⚖️</span>
+      <div class="dim-name">A/B Comparison</div>
+      <div class="dim-desc">Side-by-side prompt scoring across Claude · Gemini · Groq</div>
     </div>
   </div>
+</div>
 
-  <hr style="margin: 0 0 40px;" />
+<hr class="divider" />
 
-  <!-- Design decisions -->
-  <p class="section-title">Design Decisions</p>
-  <div style="display: grid; gap: 12px; margin-bottom: 40px;">
-    <div class="card" style="display: flex; gap: 16px; align-items: flex-start;">
-      <div style="color: var(--accent); font-weight: 700; min-width: 24px;">→</div>
+<!-- ── DECISIONS ── -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-label">Design Decisions</div>
+    <div class="section-title">Why it's built this way</div>
+  </div>
+  <div class="decision-list">
+    <div class="decision-card">
+      <div class="decision-num">→</div>
       <div>
-        <h3>Why 5 orthogonal dimensions, not a single score</h3>
-        <p>Each dimension maps to a distinct failure mode. A single score hides which aspect to fix — this forces addressing the actual root cause.</p>
+        <div class="decision-title">5 orthogonal dimensions, not a single score</div>
+        <div class="decision-body">Each dimension maps to a distinct failure mode. A single score hides which aspect to fix — forcing the user to address the actual root cause.</div>
       </div>
     </div>
-    <div class="card" style="display: flex; gap: 16px; align-items: flex-start;">
-      <div style="color: var(--accent); font-weight: 700; min-width: 24px;">→</div>
+    <div class="decision-card">
+      <div class="decision-num">→</div>
       <div>
-        <h3>Same system prompt across all providers</h3>
-        <p>Scores must be comparable. If Claude gives 7/10 and Groq gives 4/10 on the same prompt, the gap is signal about model calibration — not prompt quality.</p>
+        <div class="decision-title">Same system prompt across all providers</div>
+        <div class="decision-body">Scores must be comparable. If Claude gives 7/10 and Groq gives 4/10 on the same prompt, the gap is signal about model calibration — not prompt quality.</div>
       </div>
     </div>
-    <div class="card" style="display: flex; gap: 16px; align-items: flex-start;">
-      <div style="color: var(--accent); font-weight: 700; min-width: 24px;">→</div>
+    <div class="decision-card">
+      <div class="decision-num">→</div>
       <div>
-        <h3>16 edge case fixtures, not automated tests</h3>
-        <p>Evaluation is inherently subjective. The fixtures define boundary conditions — what the system must get right at the edges. They're the spec, not a test suite.</p>
+        <div class="decision-title">16 edge case fixtures, not automated tests</div>
+        <div class="decision-body">Evaluation is inherently subjective. The fixtures define boundary conditions — what the system must get right at the edges. They're the spec, not a test suite.</div>
       </div>
     </div>
   </div>
+</div>
 
-  <hr style="margin: 0 0 40px;" />
+<hr class="divider" />
 
-  <!-- Stack -->
-  <p class="section-title">Tech Stack</p>
-  <div class="stack-row">
-    <span class="tag">Next.js 16</span>
-    <span class="tag">TypeScript</span>
-    <span class="tag">Tailwind CSS 4</span>
-    <span class="tag">Claude API</span>
-    <span class="tag">Gemini API</span>
-    <span class="tag">Groq API</span>
-    <span class="tag">Supabase</span>
-    <span class="tag">Vercel</span>
+<!-- ── STACK ── -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-label">Tech Stack</div>
+    <div class="section-title">Built with</div>
   </div>
-
+  <div class="stack-wrap">
+    <span class="stack-tag">Next.js 16</span>
+    <span class="stack-tag">TypeScript</span>
+    <span class="stack-tag">Tailwind CSS 4</span>
+    <span class="stack-tag">Claude API</span>
+    <span class="stack-tag">Gemini API</span>
+    <span class="stack-tag">Groq API</span>
+    <span class="stack-tag">Supabase</span>
+    <span class="stack-tag">Vercel</span>
+  </div>
 </div>
 
 <footer>
-  Built by <a href="https://github.com/caine-21" target="_blank">李哲雷</a> ·
-  <a href="https://video-prompt-qa.vercel.app" target="_blank">Live Demo</a> ·
-  <a href="https://github.com/caine-21/video-prompt-qa" target="_blank">GitHub</a>
+  Built by <a href="https://github.com/caine-21" target="_blank">李哲雷</a> &nbsp;·&nbsp;
+  <a href="https://video-prompt-qa.vercel.app" target="_blank">Live Demo</a> &nbsp;·&nbsp;
+  <a href="https://github.com/caine-21/video-prompt-qa" target="_blank">Source</a>
 </footer>
 
 </body>
