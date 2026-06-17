@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Prompt QA — Demo</title>
+  <title>视频提示词质量评估系统 — Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -547,19 +547,19 @@
   <div class="hero-inner">
     <div class="badge">
       <span class="badge-dot" aria-hidden="true"></span>
-      Demo &nbsp;·&nbsp; AI Evaluation System
+      演示 &nbsp;·&nbsp; AI 评估系统
     </div>
 
-    <h1>Video Prompt<br><em>Quality Evaluator</em></h1>
+    <h1>视频提示词<br><em>质量评估系统</em></h1>
 
     <p class="hero-sub">
-      Score AI video prompts across 5 failure dimensions before burning generation credits.
-      Multi-provider — Claude, Gemini, Groq.
+      在消耗生成配额之前，从 5 个失败维度对 AI 视频提示词评分。
+      支持多模型对比 — Claude、Gemini、Groq。
     </p>
 
     <div class="cta-row">
       <a class="btn btn-primary" href="https://video-prompt-qa.vercel.app" target="_blank" rel="noopener">
-        ↗&nbsp; Try Live Demo
+        ↗&nbsp; 在线体验
       </a>
       <a class="btn btn-outline" href="https://github.com/caine-21/video-prompt-qa" target="_blank" rel="noopener">
         ⌥&nbsp; GitHub
@@ -586,15 +586,15 @@
 <!-- ── KEY FINDING ── -->
 <div class="finding-section">
   <div class="finding-card">
-    <div class="finding-label">Key Finding</div>
+    <div class="finding-label">关键发现</div>
     <blockquote class="finding-quote">
       "A cinematic 4K aerial drone shot with bokeh, golden hour lighting, slow-motion, shallow depth of field."
     </blockquote>
     <p class="finding-body">
-      This prompt has <span class="amber">no subject</span> — yet scored <span class="amber">8.4 / 10</span>,
-      Specificity = 8. The evaluator was fooled by cinematography vocabulary alone.
-      This project started as a prompt evaluator. It became an experiment in
-      <strong style="color: var(--fg);">evaluator reliability</strong>.
+      这条提示词<span class="amber">没有主体</span>——却得了 <span class="amber">8.4 / 10</span>，
+      具体性维度评分 = 8。评估器被电影摄影术语迷惑了。
+      这个项目从提示词评估工具出发，最终成为一个研究
+      <strong style="color: var(--fg);">评估器可靠性</strong>的实验。
     </p>
   </div>
 </div>
@@ -603,39 +603,39 @@
 
 <!-- ── 5 DIMENSIONS ── -->
 <div class="content-section">
-  <div class="section-label">Evaluation Framework</div>
-  <h2 class="section-title">5 Orthogonal Failure Dimensions</h2>
+  <div class="section-label">评估框架</div>
+  <h2 class="section-title">5 个正交失败维度</h2>
 
   <div class="dim-grid">
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">🎯</span>
-      <div class="dim-name">Clarity</div>
-      <div class="dim-desc">Catches ambiguous subjects — model interprets differently each run</div>
+      <div class="dim-name">清晰度</div>
+      <div class="dim-desc">捕捉主体模糊的提示词——每次运行模型的解读都不同</div>
     </div>
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">🔍</span>
-      <div class="dim-name">Specificity</div>
-      <div class="dim-desc">Flags under-specified prompts that produce generic, bland output</div>
+      <div class="dim-name">具体性</div>
+      <div class="dim-desc">标记描述不足的提示词——产出泛化、平淡的结果</div>
     </div>
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">⚙️</span>
-      <div class="dim-name">Technical Feasibility</div>
-      <div class="dim-desc">Detects impossible camera moves or physics violations</div>
+      <div class="dim-name">技术可行性</div>
+      <div class="dim-desc">检测不可能实现的镜头运动或违反物理规律的描述</div>
     </div>
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">🎬</span>
-      <div class="dim-name">Cinematic Quality</div>
-      <div class="dim-desc">Surfaces missing shot language — no framing, lighting, mood</div>
+      <div class="dim-name">电影质感</div>
+      <div class="dim-desc">识别缺失的镜头语言——构图、光线、情绪氛围</div>
     </div>
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">✨</span>
-      <div class="dim-name">Creativity</div>
-      <div class="dim-desc">Identifies derivative, low visual interest prompts</div>
+      <div class="dim-name">创意度</div>
+      <div class="dim-desc">识别雷同化、视觉吸引力低的提示词</div>
     </div>
     <div class="dim-card">
       <span class="dim-icon" aria-hidden="true">⚖️</span>
-      <div class="dim-name">A/B Comparison</div>
-      <div class="dim-desc">Side-by-side scoring across Claude · Gemini · Groq</div>
+      <div class="dim-name">A/B 对比</div>
+      <div class="dim-desc">Claude · Gemini · Groq 三模型横向评分对比</div>
     </div>
   </div>
 </div>
@@ -644,29 +644,29 @@
 
 <!-- ── DESIGN DECISIONS ── -->
 <div class="content-section">
-  <div class="section-label">Design Decisions</div>
-  <h2 class="section-title">Why it's built this way</h2>
+  <div class="section-label">设计决策</div>
+  <h2 class="section-title">为什么这样构建</h2>
 
   <div class="decision-list">
     <div class="decision-card">
       <span class="decision-arrow" aria-hidden="true">→</span>
       <div>
-        <div class="decision-title">5 orthogonal dimensions, not a single score</div>
-        <div class="decision-body">Each dimension maps to a distinct failure mode. A single score hides which aspect to fix — forcing the user to address the actual root cause instead of guessing.</div>
+        <div class="decision-title">5 个正交维度，而非单一总分</div>
+        <div class="decision-body">每个维度对应一种独立的失败模式。单一总分会掩盖问题所在——分维度评分迫使用户直面真正的根因，而不是靠猜。</div>
       </div>
     </div>
     <div class="decision-card">
       <span class="decision-arrow" aria-hidden="true">→</span>
       <div>
-        <div class="decision-title">Same system prompt across all providers</div>
-        <div class="decision-body">Scores must be comparable. If Claude gives 7/10 and Groq gives 4/10 on the same prompt, the gap is signal about model calibration — not prompt quality.</div>
+        <div class="decision-title">所有模型共用同一套系统提示词</div>
+        <div class="decision-body">分数必须可横向对比。如果 Claude 给 7 分、Groq 给 4 分，分差是模型校准能力的信号——而不是提示词质量的差异。</div>
       </div>
     </div>
     <div class="decision-card">
       <span class="decision-arrow" aria-hidden="true">→</span>
       <div>
-        <div class="decision-title">16 edge case fixtures, not automated tests</div>
-        <div class="decision-body">Evaluation is inherently subjective. The fixtures define boundary conditions — what the system must classify correctly at the edges. They're the spec, not a test suite.</div>
+        <div class="decision-title">16 个边界用例 Fixtures，而非自动化测试</div>
+        <div class="decision-body">评估本质上是主观的。这些 Fixtures 定义了边界条件——系统在极端情况下必须得出正确结论。它们是规格说明，不是测试套件。</div>
       </div>
     </div>
   </div>
@@ -676,8 +676,8 @@
 
 <!-- ── STACK ── -->
 <div class="content-section" style="padding-bottom: 128px;">
-  <div class="section-label">Tech Stack</div>
-  <h2 class="section-title">Built with</h2>
+  <div class="section-label">技术栈</div>
+  <h2 class="section-title">使用的技术</h2>
   <div class="stack-wrap">
     <span class="stack-tag">Next.js 16</span>
     <span class="stack-tag">TypeScript</span>
@@ -692,11 +692,11 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-  Built by <a href="https://github.com/caine-21" target="_blank" rel="noopener">李哲雷</a>
+  作者 <a href="https://github.com/caine-21" target="_blank" rel="noopener">李哲雷</a>
   <span class="footer-sep">·</span>
-  <a href="https://video-prompt-qa.vercel.app" target="_blank" rel="noopener">Live Demo</a>
+  <a href="https://video-prompt-qa.vercel.app" target="_blank" rel="noopener">在线体验</a>
   <span class="footer-sep">·</span>
-  <a href="https://github.com/caine-21/video-prompt-qa" target="_blank" rel="noopener">Source</a>
+  <a href="https://github.com/caine-21/video-prompt-qa" target="_blank" rel="noopener">源码</a>
 </footer>
 
 </body>
