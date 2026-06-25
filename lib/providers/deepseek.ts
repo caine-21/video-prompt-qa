@@ -21,7 +21,8 @@ function getApiKey(): string {
 async function chatComplete(
   system: string,
   userContent: string,
-  maxTokens: number
+  maxTokens: number,
+  jsonMode = true
 ): Promise<string> {
   const res = await fetch(DEEPSEEK_API_URL, {
     method: "POST",
@@ -36,7 +37,8 @@ async function chatComplete(
         { role: "user",   content: userContent },
       ],
       max_tokens: maxTokens,
-      response_format: { type: "json_object" },
+      // rewrite returns plain text — json_object mode makes DeepSeek reject non-JSON output (invalid_response)
+      ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
     }),
   });
 
@@ -74,7 +76,8 @@ export function rewriteWithDeepSeek(
     const text = await chatComplete(
       REWRITE_SYSTEM_PROMPT,
       buildRewriteUserMessage(prompt, dimensions, improvements),
-      512
+      512,
+      false
     );
     return text.trim();
   }, "deepseek", "rewrite");
