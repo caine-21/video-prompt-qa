@@ -11,7 +11,7 @@ import type {
   TournamentResult,
   Result,
 } from "@/lib/types";
-import { PROVIDER_REGISTRY, fallbackOrder, ALL_PROVIDERS } from "./providers/registry";
+import { PROVIDER_REGISTRY, ALL_PROVIDERS } from "./providers/registry";
 import { recordOperation } from "./metrics";
 
 // Task-aware default strategies — evaluation needs quality, compare needs speed

@@ -15,22 +15,6 @@ const TAG_LABELS: Record<FeedbackTag, string> = {
   too_verbose: "Became too long",
 };
 
-function MetricCard({
-  label, value, sub, color,
-}: {
-  label: string; value: string; sub: string; color: string;
-}) {
-  return (
-    <div style={{ background: color, border: "4px solid #000", padding: "20px 24px", flex: 1, minWidth: 180 }}>
-      <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.6, margin: "0 0 6px" }}>
-        {label}
-      </p>
-      <p style={{ fontSize: 52, fontWeight: 700, lineHeight: 1, margin: "0 0 4px" }}>{value}</p>
-      <p style={{ fontSize: 12, fontWeight: 500, opacity: 0.65, margin: 0, lineHeight: 1.4 }}>{sub}</p>
-    </div>
-  );
-}
-
 export default function CalibrationPanel({ entries }: Props) {
   const rated = entries.filter(e => e.deltaScore !== undefined && e.feedback);
   if (rated.length < 3) return null;
@@ -168,7 +152,7 @@ export default function CalibrationPanel({ entries }: Props) {
           {tagEntries[0] && tagEntries[0][1] / negativeTotal >= 0.5 && tagEntries[0][1] >= 3 && (
             <div style={{ borderTop: "3px solid #000", padding: "14px 24px", background: "#FFD93D" }}>
               <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 4px" }}>
-                Repeated pattern: {Math.round(tagEntries[0][1] / negativeTotal * 100)}% of failures tagged as "{TAG_LABELS[tagEntries[0][0]]}"
+                Repeated pattern: {Math.round(tagEntries[0][1] / negativeTotal * 100)}% of failures tagged as &quot;{TAG_LABELS[tagEntries[0][0]]}&quot;
               </p>
               <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.7, margin: "0 0 6px" }}>
                 {tagEntries[0][0] === "too_verbose"  && "Hypothesis: rewrite is over-adding — consider tightening the length constraint."}

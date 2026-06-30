@@ -166,7 +166,7 @@ export default function PromptDiff({ originalPrompt, newPrompt, originalAnatomy,
                     </span>
                     {d.next.note && (
                       <p style={{ fontSize: 11, fontWeight: 500, color: "rgba(0,0,0,0.55)", margin: "2px 0 0", lineHeight: 1.3 }}>
-                        "{d.next.note}"
+                        &quot;{d.next.note}&quot;
                       </p>
                     )}
                   </div>

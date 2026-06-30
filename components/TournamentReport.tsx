@@ -25,7 +25,6 @@ function ScoreBar({ score }: { score: number }) {
 }
 
 function RankRow({ ranking, pos }: { ranking: TournamentRanking; pos: number }) {
-  const { t } = useLanguage();
   const isChampion = pos === 0;
   const bg = isChampion ? RANK_COLORS[0] : "transparent";
 
@@ -62,7 +61,7 @@ function RankRow({ ranking, pos }: { ranking: TournamentRanking; pos: number }) 
 
 export default function TournamentReport({ result }: Props) {
   const { t } = useLanguage();
-  const { rankings, matchups, prompts, provider } = result;
+  const { rankings, matchups, provider } = result;
   const champion = rankings[0];
 
   const SLOT_COLORS = ["#FF6B6B", "#FFD93D", "#C4B5FD", "#6BFF9E", "#6BB5FF"];
