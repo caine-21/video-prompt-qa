@@ -1,0 +1,137 @@
+{
+  "version": "prompt_case_seed_v0",
+  "purpose": "Seed prompt cases for preflight rubric and validation protocol design. This is not a final model evaluation benchmark.",
+  "schema": {
+    "id": "Stable case identifier.",
+    "prompt": "Input prompt to inspect before generation.",
+    "prompt_side_risk_tags": "Risk tags from docs/research/failure_taxonomy_v0.md.",
+    "expected_output_failure_tags": "Likely failure tags from docs/research/failure_taxonomy_v0.md.",
+    "evidence_ids": "Evidence rows from docs/research/pain_evidence_log.md or empty when the case is hypothesis-only.",
+    "confidence": "low, medium, or high.",
+    "should_generate": "Whether the seed rubric would allow generation after preflight.",
+    "do_not_generate_yet": "Whether the case should pause before spending credits.",
+    "notes": "Short rationale and caveats."
+  },
+  "cases": [
+    {
+      "id": "PC-001",
+      "prompt": "Create a 12-second ad showing a runner jumping over a puddle, spinning in midair, landing beside the product, then smiling at camera while the camera orbits 360 degrees.",
+      "prompt_side_risk_tags": ["too_many_actions", "complex_camera_movement", "physical_motion_risk", "too_much_story_in_one_clip"],
+      "expected_output_failure_tags": ["hand_body_action_artifacts", "camera_not_following_prompt", "prompt_ignored"],
+      "evidence_ids": ["E-001", "E-003", "E-011", "E-014", "E-032"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "medium",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Use as a high-risk physical-motion and camera-complexity case. Suggested preflight behavior is to simplify and split into shots before generation."
+    },
+    {
+      "id": "PC-002",
+      "prompt": "Generate a video of the same woman from three angles across a cafe scene, keeping her exact face, red jacket, hairstyle, and expression consistent without using any reference image.",
+      "prompt_side_risk_tags": ["identity_reference_missing", "no_shot_decomposition"],
+      "expected_output_failure_tags": ["face_character_drift", "identity_style_drift", "continuity_break"],
+      "evidence_ids": ["E-004", "E-027", "E-030"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "medium",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Covers face_character_drift and missing reference prep. The expected preflight behavior is adding reference images or character sheets."
+    },
+    {
+      "id": "PC-003",
+      "prompt": "Create a product launch clip for a matte black smart bottle with the logo HYDR8 printed clearly on the cap and side label while water splashes around it.",
+      "prompt_side_risk_tags": ["product_features_not_locked", "text_logo_risk", "physical_motion_risk"],
+      "expected_output_failure_tags": ["product_deformation", "prompt_ignored", "unusable_for_client_delivery"],
+      "evidence_ids": ["E-010", "E-013", "E-022", "E-030"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "low",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Text/logo risk remains weakly evidenced. Treat this as a hypothesis case requiring more direct ecommerce examples."
+    },
+    {
+      "id": "PC-004",
+      "prompt": "Make the scene look like a realistic handheld documentary but also like a glossy anime commercial, with the camera perfectly locked off and also rapidly zooming through the room.",
+      "prompt_side_risk_tags": ["prompt_conflict", "complex_camera_movement"],
+      "expected_output_failure_tags": ["prompt_ignored", "identity_style_drift", "camera_not_following_prompt"],
+      "evidence_ids": [],
+      "evidence_links": ["docs/research/failure_taxonomy_v0.md"],
+      "confidence": "low",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Hypothesis-only prompt_conflict case. Current evidence log does not directly validate this category."
+    },
+    {
+      "id": "PC-005",
+      "prompt": "Generate a 30-second story where a family enters a store, compares three products, gets advice from a clerk, buys one product, goes home, and uses it at dinner.",
+      "prompt_side_risk_tags": ["duration_too_ambitious", "too_much_story_in_one_clip", "no_shot_decomposition", "too_many_subjects"],
+      "expected_output_failure_tags": ["prompt_ignored", "continuity_break", "high_retry_cost"],
+      "evidence_ids": ["E-006", "E-031", "E-033"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "low",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "duration_too_ambitious is not directly evidenced yet. Use this case to test whether reviewers recommend storyboarding and shot splitting."
+    },
+    {
+      "id": "PC-006",
+      "prompt": "Show five skincare bottles, two models, falling flower petals, a rotating mirror, water droplets, and a city skyline all in one smooth 8-second hero shot.",
+      "prompt_side_risk_tags": ["too_many_subjects", "too_many_actions", "complex_camera_movement"],
+      "expected_output_failure_tags": ["prompt_ignored", "product_deformation", "scene_environment_inconsistency"],
+      "evidence_ids": ["E-006", "E-031", "E-033"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "low",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "too_many_subjects still needs direct prompt cases. Keep this as a hypothesis-heavy overload case."
+    },
+    {
+      "id": "PC-007",
+      "prompt": "Create a single clip from a prepared keyframe of a coffee cup on a table. Keep the product still, use a slow push-in, warm morning light, and no extra objects.",
+      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "expected_output_failure_tags": ["product_deformation"],
+      "evidence_ids": ["E-030", "E-033"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "medium",
+      "should_generate": true,
+      "do_not_generate_yet": false,
+      "notes": "Lower-risk contrast case. It includes reference/keyframe-like prep and a single constrained camera move."
+    },
+    {
+      "id": "PC-008",
+      "prompt": "Use a text-to-video model to recreate an exact client package with legible nutrition text, barcode, and brand logo while the box spins quickly.",
+      "prompt_side_risk_tags": ["model_task_mismatch", "text_logo_risk", "product_features_not_locked", "complex_camera_movement"],
+      "expected_output_failure_tags": ["product_deformation", "prompt_ignored", "unusable_for_client_delivery", "high_retry_cost"],
+      "evidence_ids": ["E-008", "E-010", "E-020", "E-022", "E-028"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "low",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Covers model_task_mismatch, text_logo_risk, high_retry_cost, and client-delivery risk. Needs stronger ecommerce-specific evidence."
+    },
+    {
+      "id": "PC-009",
+      "prompt": "Animate one storyboard panel of a robot hand picking up a glass cube on a plain table. Keep the camera static and generate only this one action.",
+      "prompt_side_risk_tags": ["physical_motion_risk"],
+      "expected_output_failure_tags": ["hand_body_action_artifacts"],
+      "evidence_ids": ["E-003", "E-011", "E-014", "E-033"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "medium",
+      "should_generate": true,
+      "do_not_generate_yet": false,
+      "notes": "A constrained physical-motion case that should still carry risk but may be acceptable after preflight."
+    },
+    {
+      "id": "PC-010",
+      "prompt": "Generate a continuous shot moving from outside a boutique into the store, circling a display table, then following a customer to the checkout without changing the environment layout.",
+      "prompt_side_risk_tags": ["complex_camera_movement", "no_shot_decomposition", "duration_too_ambitious"],
+      "expected_output_failure_tags": ["camera_not_following_prompt", "scene_environment_inconsistency", "continuity_break"],
+      "evidence_ids": ["E-029", "E-031", "E-032", "E-033"],
+      "evidence_links": ["docs/research/pain_evidence_log.md"],
+      "confidence": "medium",
+      "should_generate": false,
+      "do_not_generate_yet": true,
+      "notes": "Covers camera_not_following_prompt and environment continuity risk. Expected behavior is to split into shots or plan environment continuity first."
+    }
+  ]
+}
