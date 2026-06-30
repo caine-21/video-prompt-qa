@@ -54,26 +54,29 @@ function HomeInner() {
   const [fallbackNotice, setFallbackNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(HISTORY_KEY);
-      if (stored) setHistory(JSON.parse(stored));
-    } catch { /* ignore */ }
+    const id = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(HISTORY_KEY);
+        if (stored) setHistory(JSON.parse(stored));
+      } catch { /* ignore */ }
 
-    const shared = readShareFromURL();
-    if (shared) {
-      setProvider(shared.provider);
-      if (shared.improvedResult) {
-        setEvalResult(shared.improvedResult);
-        setDelta({ originalResult: shared.result });
-      } else {
-        setEvalResult(shared.result);
+      const shared = readShareFromURL();
+      if (shared) {
+        setProvider(shared.provider);
+        if (shared.improvedResult) {
+          setEvalResult(shared.improvedResult);
+          setDelta({ originalResult: shared.result });
+        } else {
+          setEvalResult(shared.result);
+        }
+        if (shared.demoMode) {
+          setDemoMode(true);
+          setDemoTitle(shared.demoTitle ?? "Evaluation Pipeline Demo");
+        }
+        setTab("evaluate");
       }
-      if (shared.demoMode) {
-        setDemoMode(true);
-        setDemoTitle(shared.demoTitle ?? "Evaluation Pipeline Demo");
-      }
-      setTab("evaluate");
-    }
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   function saveToHistory(result: EvaluationResult, deltaScore?: number): string {

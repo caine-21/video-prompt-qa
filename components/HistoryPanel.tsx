@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { HistoryEntry, EvaluationResult } from "@/lib/types";
 import { useLanguage } from "@/lib/lang-context";
 
@@ -36,9 +36,16 @@ export default function HistoryPanel({ entries, onSelect, onClear }: Props) {
   const { t, lang } = useLanguage();
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort]     = useState<Sort>("recent");
+  const [now, setNow]       = useState<number | null>(null);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setNow(Date.now()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   function timeAgo(timestamp: string): string {
-    const diff = Date.now() - new Date(timestamp).getTime();
+    if (now === null) return t("hist.ago.now");
+    const diff = now - new Date(timestamp).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 1)  return t("hist.ago.now");
     if (mins < 60) return `${mins}${t("hist.ago.m")}`;

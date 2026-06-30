@@ -22,10 +22,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(LANG_KEY) as Lang | null;
-      if (stored === "en" || stored === "zh") setLang(stored);
-    } catch { /* ignore */ }
+    const id = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(LANG_KEY) as Lang | null;
+        if (stored === "en" || stored === "zh") setLang(stored);
+      } catch { /* ignore */ }
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   function toggleLang() {
