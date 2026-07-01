@@ -1,0 +1,664 @@
+{
+  "version": "preflight_summary_seed_v1",
+  "generated_by": "summarize_preflight_records_v0",
+  "source_file_path": "data/preflight_records_seed_v1.json",
+  "source_version": "preflight_records_seed_v1",
+  "source_run_id": "preflight_seed_v1",
+  "total_record_count": 36,
+  "distributions": {
+    "should_generate_decision": {
+      "needs_review": 21,
+      "revise_first": 15
+    },
+    "confidence": {
+      "low": 19,
+      "medium": 17
+    },
+    "evidence_level": {
+      "hypothesis_heavy": 1,
+      "partially_supported": 34,
+      "workflow_supported": 1
+    },
+    "risk_level": {
+      "status": "not_present_in_current_schema"
+    },
+    "review_pressure": {
+      "status": "not_present_in_current_schema",
+      "proxy_fields": [
+        "should_generate_decision",
+        "confidence",
+        "evidence_level",
+        "hypothesis_flags"
+      ]
+    },
+    "interventions": {
+      "add_reference_image": 22,
+      "choose_better_model_task_mode": 5,
+      "create_storyboard_first": 17,
+      "do_not_generate_yet": 6,
+      "generate_image_keyframe_first": 26,
+      "lock_product_attributes": 19,
+      "reduce_camera_complexity": 7,
+      "reduce_simultaneous_constraints": 24,
+      "simplify_prompt": 25,
+      "split_into_shots": 24
+    }
+  },
+  "top_tags": {
+    "detected_risk_tags": [
+      {
+        "tag": "product_features_not_locked",
+        "count": 17
+      },
+      {
+        "tag": "physical_motion_risk",
+        "count": 12
+      },
+      {
+        "tag": "prompt_conflict",
+        "count": 9
+      },
+      {
+        "tag": "complex_camera_movement",
+        "count": 7
+      },
+      {
+        "tag": "too_many_actions",
+        "count": 7
+      },
+      {
+        "tag": "too_much_story_in_one_clip",
+        "count": 7
+      },
+      {
+        "tag": "duration_too_ambitious",
+        "count": 6
+      },
+      {
+        "tag": "identity_reference_missing",
+        "count": 5
+      },
+      {
+        "tag": "model_task_mismatch",
+        "count": 5
+      },
+      {
+        "tag": "no_shot_decomposition",
+        "count": 5
+      },
+      {
+        "tag": "text_logo_risk",
+        "count": 5
+      },
+      {
+        "tag": "too_many_subjects",
+        "count": 5
+      }
+    ],
+    "hypothesis_flags": [
+      {
+        "tag": "prompt_conflict",
+        "count": 9
+      },
+      {
+        "tag": "duration_too_ambitious",
+        "count": 6
+      },
+      {
+        "tag": "text_logo_risk",
+        "count": 5
+      },
+      {
+        "tag": "too_many_subjects",
+        "count": 5
+      }
+    ],
+    "output_failure_tags": {
+      "status": "not_present_in_preflight_record_schema_v0"
+    }
+  },
+  "weak_evidence": {
+    "record_count": 18,
+    "records": [
+      {
+        "case_id": "PC-003",
+        "record_id": "preflight_seed_v1-PC-003",
+        "hypothesis_flags": [
+          "text_logo_risk"
+        ],
+        "decision": "revise_first"
+      },
+      {
+        "case_id": "PC-004",
+        "record_id": "preflight_seed_v1-PC-004",
+        "hypothesis_flags": [
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-005",
+        "record_id": "preflight_seed_v1-PC-005",
+        "hypothesis_flags": [
+          "duration_too_ambitious",
+          "too_many_subjects"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-006",
+        "record_id": "preflight_seed_v1-PC-006",
+        "hypothesis_flags": [
+          "too_many_subjects"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-008",
+        "record_id": "preflight_seed_v1-PC-008",
+        "hypothesis_flags": [
+          "text_logo_risk"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-010",
+        "record_id": "preflight_seed_v1-PC-010",
+        "hypothesis_flags": [
+          "duration_too_ambitious"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-013",
+        "record_id": "preflight_seed_v1-PC-013",
+        "hypothesis_flags": [
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-014",
+        "record_id": "preflight_seed_v1-PC-014",
+        "hypothesis_flags": [
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-015",
+        "record_id": "preflight_seed_v1-PC-015",
+        "hypothesis_flags": [
+          "duration_too_ambitious",
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-016",
+        "record_id": "preflight_seed_v1-PC-016",
+        "hypothesis_flags": [
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-017",
+        "record_id": "preflight_seed_v1-PC-017",
+        "hypothesis_flags": [
+          "text_logo_risk"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-019",
+        "record_id": "preflight_seed_v1-PC-019",
+        "hypothesis_flags": [
+          "duration_too_ambitious",
+          "too_many_subjects"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-024",
+        "record_id": "preflight_seed_v1-PC-024",
+        "hypothesis_flags": [
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-026",
+        "record_id": "preflight_seed_v1-PC-026",
+        "hypothesis_flags": [
+          "prompt_conflict",
+          "too_many_subjects"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-028",
+        "record_id": "preflight_seed_v1-PC-028",
+        "hypothesis_flags": [
+          "text_logo_risk"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-030",
+        "record_id": "preflight_seed_v1-PC-030",
+        "hypothesis_flags": [
+          "duration_too_ambitious",
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-031",
+        "record_id": "preflight_seed_v1-PC-031",
+        "hypothesis_flags": [
+          "duration_too_ambitious",
+          "prompt_conflict"
+        ],
+        "decision": "needs_review"
+      },
+      {
+        "case_id": "PC-033",
+        "record_id": "preflight_seed_v1-PC-033",
+        "hypothesis_flags": [
+          "text_logo_risk",
+          "too_many_subjects"
+        ],
+        "decision": "needs_review"
+      }
+    ]
+  },
+  "records_by_decision": {
+    "generate_ok": [],
+    "revise_first": [
+      "PC-001",
+      "PC-003",
+      "PC-007",
+      "PC-009",
+      "PC-012",
+      "PC-018",
+      "PC-021",
+      "PC-022",
+      "PC-023",
+      "PC-025",
+      "PC-027",
+      "PC-029",
+      "PC-032",
+      "PC-034",
+      "PC-036"
+    ],
+    "needs_review": [
+      "PC-002",
+      "PC-004",
+      "PC-005",
+      "PC-006",
+      "PC-008",
+      "PC-010",
+      "PC-011",
+      "PC-013",
+      "PC-014",
+      "PC-015",
+      "PC-016",
+      "PC-017",
+      "PC-019",
+      "PC-020",
+      "PC-024",
+      "PC-026",
+      "PC-028",
+      "PC-030",
+      "PC-031",
+      "PC-033",
+      "PC-035"
+    ],
+    "unknown": []
+  },
+  "blocked_or_needs_review": {
+    "blocked_status": "blocked_decision_not_present_in_current_schema",
+    "needs_review": [
+      "PC-002",
+      "PC-004",
+      "PC-005",
+      "PC-006",
+      "PC-008",
+      "PC-010",
+      "PC-011",
+      "PC-013",
+      "PC-014",
+      "PC-015",
+      "PC-016",
+      "PC-017",
+      "PC-019",
+      "PC-020",
+      "PC-024",
+      "PC-026",
+      "PC-028",
+      "PC-030",
+      "PC-031",
+      "PC-033",
+      "PC-035"
+    ]
+  },
+  "calibration_watchlists": {
+    "potential_over_strict_candidates": [
+      {
+        "case_id": "PC-007",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-009",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "physical_motion_risk"
+        ]
+      },
+      {
+        "case_id": "PC-012",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-018",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-021",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-023",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "physical_motion_risk",
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-025",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-027",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "physical_motion_risk",
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-029",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "physical_motion_risk",
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-032",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "physical_motion_risk",
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-034",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      },
+      {
+        "case_id": "PC-036",
+        "decision": "revise_first",
+        "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
+        "detected_risk_tags": [
+          "product_features_not_locked"
+        ]
+      }
+    ],
+    "potential_over_permissive_candidates": [],
+    "detection_notes": [
+      "Over-strict candidates are detected only from record fields and reviewer-note keywords.",
+      "Over-permissive candidates require generate_ok plus hypothesis flags or high-risk reviewer-note signals.",
+      "These watchlists are audit aids, not validation claims."
+    ]
+  },
+  "records_requiring_human_review": [
+    {
+      "case_id": "PC-002",
+      "decision": "needs_review",
+      "hypothesis_flags": []
+    },
+    {
+      "case_id": "PC-003",
+      "decision": "revise_first",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ]
+    },
+    {
+      "case_id": "PC-004",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-005",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "too_many_subjects"
+      ]
+    },
+    {
+      "case_id": "PC-006",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "too_many_subjects"
+      ]
+    },
+    {
+      "case_id": "PC-008",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ]
+    },
+    {
+      "case_id": "PC-010",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious"
+      ]
+    },
+    {
+      "case_id": "PC-011",
+      "decision": "needs_review",
+      "hypothesis_flags": []
+    },
+    {
+      "case_id": "PC-013",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-014",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-015",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-016",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-017",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ]
+    },
+    {
+      "case_id": "PC-019",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "too_many_subjects"
+      ]
+    },
+    {
+      "case_id": "PC-020",
+      "decision": "needs_review",
+      "hypothesis_flags": []
+    },
+    {
+      "case_id": "PC-024",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-026",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "prompt_conflict",
+        "too_many_subjects"
+      ]
+    },
+    {
+      "case_id": "PC-028",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ]
+    },
+    {
+      "case_id": "PC-030",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-031",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "prompt_conflict"
+      ]
+    },
+    {
+      "case_id": "PC-033",
+      "decision": "needs_review",
+      "hypothesis_flags": [
+        "text_logo_risk",
+        "too_many_subjects"
+      ]
+    },
+    {
+      "case_id": "PC-035",
+      "decision": "needs_review",
+      "hypothesis_flags": []
+    }
+  ],
+  "actionability_summary": {
+    "records_with_interventions": 36,
+    "records_with_multiple_interventions": 36,
+    "most_common_interventions": [
+      {
+        "tag": "generate_image_keyframe_first",
+        "count": 26
+      },
+      {
+        "tag": "simplify_prompt",
+        "count": 25
+      },
+      {
+        "tag": "reduce_simultaneous_constraints",
+        "count": 24
+      },
+      {
+        "tag": "split_into_shots",
+        "count": 24
+      },
+      {
+        "tag": "add_reference_image",
+        "count": 22
+      },
+      {
+        "tag": "lock_product_attributes",
+        "count": 19
+      },
+      {
+        "tag": "create_storyboard_first",
+        "count": 17
+      },
+      {
+        "tag": "reduce_camera_complexity",
+        "count": 7
+      },
+      {
+        "tag": "do_not_generate_yet",
+        "count": 6
+      },
+      {
+        "tag": "choose_better_model_task_mode",
+        "count": 5
+      }
+    ],
+    "caveat": "Interventions are categorical recommendations, not automatic rewrites."
+  },
+  "schema_expressiveness_notes": [
+    "Current records do not include explicit risk_level or review_pressure fields.",
+    "Current records do not include output-side observed failure tags because no video generation trial has run.",
+    "Current records do not encode seed-level should_generate labels, so over-strict detection relies on reviewer-note signals.",
+    "Current records do not prove product usefulness or video output quality."
+  ]
+}
