@@ -1,0 +1,158 @@
+{
+  "schema_name": "preflight_record_schema",
+  "schema_version": "v0",
+  "record_type": "preflight_record",
+  "purpose": "Machine-checkable contract for one normalized offline preflight harness output. This is not empirical validation or production scoring.",
+  "required_fields": [
+    "run_id",
+    "record_id",
+    "harness_version",
+    "rubric_version",
+    "case_id",
+    "condition",
+    "created_at",
+    "raw_prompt",
+    "selected_model_or_tool",
+    "target_video_type",
+    "reference_availability",
+    "hard_requirements",
+    "constraints",
+    "expected_risk_tags",
+    "detected_risk_tags",
+    "matched_rule_ids",
+    "confidence",
+    "evidence_level",
+    "hypothesis_flags",
+    "rationale",
+    "recommended_interventions",
+    "intervention_priority",
+    "should_generate_decision",
+    "validation_group",
+    "fixed_budget_ready",
+    "stop_when_usable_ready",
+    "expected_metrics_to_compare",
+    "notes_for_reviewer"
+  ],
+  "field_groups": {
+    "identity_reproducibility": {
+      "required": [
+        "run_id",
+        "record_id",
+        "harness_version",
+        "rubric_version",
+        "case_id",
+        "condition",
+        "created_at"
+      ],
+      "fields": {
+        "run_id": "Stable identifier for a harness execution batch.",
+        "record_id": "Stable identifier for one emitted preflight record.",
+        "harness_version": "Offline harness version used to create the record.",
+        "rubric_version": "Preflight rubric version used for rule matching.",
+        "case_id": "Source prompt case identifier.",
+        "condition": "Validation condition for later comparison.",
+        "created_at": "Record creation timestamp."
+      }
+    },
+    "input_snapshot": {
+      "required": [
+        "raw_prompt",
+        "selected_model_or_tool",
+        "target_video_type",
+        "reference_availability",
+        "hard_requirements",
+        "constraints",
+        "expected_risk_tags"
+      ],
+      "fields": {
+        "raw_prompt": "Prompt text inspected by the harness.",
+        "selected_model_or_tool": "Intended model or video tool.",
+        "target_video_type": "Intended use case, such as ecommerce, ad, social, product demo, or narrative clip.",
+        "reference_availability": "Available reference assets or explicit absence of references.",
+        "hard_requirements": "Non-negotiable requirements, such as exact identity, product fidelity, brand marks, duration, or camera movement.",
+        "constraints": "Additional prompt or workflow constraints supplied to the run.",
+        "expected_risk_tags": "Optional risk tags from seed cases, represented as an array even when empty."
+      }
+    },
+    "detection_output": {
+      "required": [
+        "detected_risk_tags",
+        "matched_rule_ids",
+        "confidence",
+        "evidence_level",
+        "hypothesis_flags",
+        "rationale"
+      ],
+      "fields": {
+        "detected_risk_tags": "Prompt-side risk tags detected by the harness.",
+        "matched_rule_ids": "Rubric rule identifiers or risk tags matched during detection.",
+        "confidence": "Overall confidence for the record.",
+        "evidence_level": "Evidence strength summary for the decision.",
+        "hypothesis_flags": "Weak-evidence or assumption-heavy tags requiring separate audit.",
+        "rationale": "Concise explanation of the detection and decision."
+      }
+    },
+    "intervention_output": {
+      "required": [
+        "recommended_interventions",
+        "intervention_priority",
+        "should_generate_decision"
+      ],
+      "fields": {
+        "recommended_interventions": "Interventions mapped from matched rubric rules.",
+        "intervention_priority": "Ordered list or summary of which intervention should be applied first.",
+        "should_generate_decision": "Normalized pre-generation decision."
+      }
+    },
+    "validation_compatibility": {
+      "required": [
+        "validation_group",
+        "fixed_budget_ready",
+        "stop_when_usable_ready",
+        "expected_metrics_to_compare",
+        "notes_for_reviewer"
+      ],
+      "fields": {
+        "validation_group": "Grouping label for validation runs.",
+        "fixed_budget_ready": "Whether this record has enough information for fixed-budget comparison.",
+        "stop_when_usable_ready": "Whether this record has enough information for stop-when-usable comparison.",
+        "expected_metrics_to_compare": "Metrics the later validation run should compare.",
+        "notes_for_reviewer": "Caveats, audit points, or follow-up questions for reviewer use."
+      }
+    }
+  },
+  "enums": {
+    "condition": ["baseline", "treatment"],
+    "confidence": ["low", "medium", "high"],
+    "evidence_level": ["supported", "partially_supported", "workflow_supported", "hypothesis_heavy", "unknown"],
+    "should_generate_decision": ["generate_ok", "revise_first", "needs_review", "unknown"],
+    "validation_group": ["fixed_budget", "stop_when_usable", "both", "unspecified"],
+    "expected_metrics_to_compare": [
+      "usable_output_yield",
+      "retry_count",
+      "credits_per_usable_clip",
+      "revision_count",
+      "output_side_failure_tags"
+    ]
+  },
+  "conservative_policy": {
+    "preserve_weak_evidence_separately": true,
+    "do_not_encode_as_validated_blockers": true,
+    "weak_evidence_tags": [
+      "prompt_conflict",
+      "duration_too_ambitious",
+      "text_logo_risk",
+      "too_many_subjects"
+    ],
+    "handling": "Weak-evidence tags should be recorded in hypothesis_flags or represented with hypothesis_heavy evidence_level unless paired with stronger supported risks. They must not be treated as empirically validated blockers in v0."
+  },
+  "non_goals": [
+    "json_schema_standard_compliance",
+    "runtime_harness",
+    "llm_judge",
+    "video_generation",
+    "automatic_prompt_rewriting",
+    "benchmark_claims",
+    "production_scoring"
+  ]
+}
