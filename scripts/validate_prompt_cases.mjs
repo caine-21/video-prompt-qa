@@ -40,10 +40,17 @@ function isStringArray(value) {
 
 const data = JSON.parse(readFileSync(file, "utf8"));
 
-if (data.version !== "prompt_case_seed_v0") fail("version must be prompt_case_seed_v0");
+const caseCountByVersion = {
+  prompt_case_seed_v0: { min: 8, max: 12 },
+  prompt_case_seed_v1: { min: 30, max: 50 }
+};
+
+const caseCountRange = caseCountByVersion[data.version];
+
+if (!caseCountRange) fail("version must be prompt_case_seed_v0 or prompt_case_seed_v1");
 if (!Array.isArray(data.cases)) fail("cases must be an array");
-if (Array.isArray(data.cases) && (data.cases.length < 8 || data.cases.length > 12)) {
-  fail("seed dataset should contain 8 to 12 cases");
+if (Array.isArray(data.cases) && caseCountRange && (data.cases.length < caseCountRange.min || data.cases.length > caseCountRange.max)) {
+  fail(`${data.version} dataset should contain ${caseCountRange.min} to ${caseCountRange.max} cases`);
 }
 
 const ids = new Set();
