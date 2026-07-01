@@ -1,0 +1,127 @@
+{
+  "version": "preflight_rubric_v0",
+  "purpose": "Conservative research rubric mapping prompt-side risk tags to preflight interventions. Not validated product logic.",
+  "allowed_should_generate_impacts": ["allow", "warn", "revise_first", "do_not_generate_yet"],
+  "rules": [
+    {
+      "risk_tag": "too_many_subjects",
+      "detection_hint": "Prompt asks the model to coordinate many people, products, props, or background entities in one clip.",
+      "confidence": "low",
+      "likely_failure_tags": ["prompt_ignored", "face_character_drift", "scene_environment_inconsistency"],
+      "suggested_intervention": "simplify_prompt; reduce_simultaneous_constraints; split_into_shots",
+      "should_generate_impact": "warn",
+      "evidence_ids": ["E-006", "E-031", "E-033"],
+      "notes": "Hypothesis-heavy. Do not block on this tag alone."
+    },
+    {
+      "risk_tag": "too_many_actions",
+      "detection_hint": "Prompt chains several simultaneous or sequential actions into one generation.",
+      "confidence": "medium",
+      "likely_failure_tags": ["hand_body_action_artifacts", "prompt_ignored", "camera_not_following_prompt"],
+      "suggested_intervention": "simplify_prompt; split_into_shots; reduce_simultaneous_constraints",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-001", "E-003", "E-011", "E-014"],
+      "notes": "Stronger when actions include body mechanics, transformations, or physics."
+    },
+    {
+      "risk_tag": "complex_camera_movement",
+      "detection_hint": "Prompt depends on orbit, pan, tracking, dolly, zoom, handheld, or 360-degree movement.",
+      "confidence": "medium",
+      "likely_failure_tags": ["camera_not_following_prompt", "scene_environment_inconsistency", "continuity_break"],
+      "suggested_intervention": "reduce_camera_complexity; create_storyboard_first; generate_image_keyframe_first",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-029", "E-031", "E-032", "E-033"],
+      "notes": "Workflow-supported, not a broad model benchmark."
+    },
+    {
+      "risk_tag": "identity_reference_missing",
+      "detection_hint": "Prompt requires stable character, face, costume, or identity without reference assets.",
+      "confidence": "medium",
+      "likely_failure_tags": ["face_character_drift", "identity_style_drift", "continuity_break"],
+      "suggested_intervention": "add_reference_image; generate_image_keyframe_first; create_storyboard_first",
+      "should_generate_impact": "do_not_generate_yet",
+      "evidence_ids": ["E-004", "E-027", "E-030"],
+      "notes": "Pause when identity continuity is central and no reference exists."
+    },
+    {
+      "risk_tag": "product_features_not_locked",
+      "detection_hint": "Prompt requires stable product shape, material, color, logo placement, or package details without locked attributes.",
+      "confidence": "medium",
+      "likely_failure_tags": ["product_deformation", "unusable_for_client_delivery", "prompt_ignored"],
+      "suggested_intervention": "lock_product_attributes; add_reference_image; generate_image_keyframe_first",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-013", "E-022", "E-030"],
+      "notes": "Needs more ecommerce-specific cases."
+    },
+    {
+      "risk_tag": "prompt_conflict",
+      "detection_hint": "Prompt contains incompatible style, camera, subject, lighting, motion, or realism requirements.",
+      "confidence": "low",
+      "likely_failure_tags": ["prompt_ignored", "identity_style_drift", "camera_not_following_prompt"],
+      "suggested_intervention": "simplify_prompt; reduce_simultaneous_constraints",
+      "should_generate_impact": "warn",
+      "evidence_ids": [],
+      "notes": "Hypothesis-heavy and not directly evidenced in the current evidence log."
+    },
+    {
+      "risk_tag": "too_much_story_in_one_clip",
+      "detection_hint": "Prompt compresses a multi-beat story, multiple scene changes, or a long temporal arc into one clip.",
+      "confidence": "medium",
+      "likely_failure_tags": ["prompt_ignored", "continuity_break", "high_retry_cost"],
+      "suggested_intervention": "split_into_shots; create_storyboard_first; simplify_prompt",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-001", "E-006", "E-031", "E-033"],
+      "notes": "Use when the prompt reads like a sequence rather than a single shot."
+    },
+    {
+      "risk_tag": "no_shot_decomposition",
+      "detection_hint": "Prompt lacks a single-shot boundary when it describes a sequence, multiple locations, or multiple camera setups.",
+      "confidence": "medium",
+      "likely_failure_tags": ["continuity_break", "camera_not_following_prompt", "prompt_ignored"],
+      "suggested_intervention": "split_into_shots; create_storyboard_first",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-006", "E-031", "E-033"],
+      "notes": "Treatment should produce shot-level prompts before generation."
+    },
+    {
+      "risk_tag": "model_task_mismatch",
+      "detection_hint": "Requested task appears poorly matched to selected model or mode.",
+      "confidence": "low",
+      "likely_failure_tags": ["prompt_ignored", "unusable_for_client_delivery", "high_retry_cost"],
+      "suggested_intervention": "choose_better_model_task_mode; do_not_generate_yet",
+      "should_generate_impact": "warn",
+      "evidence_ids": ["E-008", "E-028"],
+      "notes": "Weak direct evidence. Use as a routing/checklist prompt until generation trials exist."
+    },
+    {
+      "risk_tag": "duration_too_ambitious",
+      "detection_hint": "Prompt expects more action, continuity, or story than the requested duration can likely support.",
+      "confidence": "low",
+      "likely_failure_tags": ["prompt_ignored", "continuity_break", "high_retry_cost"],
+      "suggested_intervention": "simplify_prompt; split_into_shots",
+      "should_generate_impact": "warn",
+      "evidence_ids": [],
+      "notes": "Hypothesis-heavy and not directly evidenced. Do not block unless paired with stronger supported risks."
+    },
+    {
+      "risk_tag": "physical_motion_risk",
+      "detection_hint": "Prompt depends on complex body mechanics, physics, fluid motion, splashes, machinery, or precise action accuracy.",
+      "confidence": "medium",
+      "likely_failure_tags": ["hand_body_action_artifacts", "prompt_ignored", "unusable_for_client_delivery"],
+      "suggested_intervention": "simplify_prompt; split_into_shots; reduce_simultaneous_constraints",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-003", "E-011", "E-014"],
+      "notes": "Keep action simple or isolate it in one constrained shot."
+    },
+    {
+      "risk_tag": "text_logo_risk",
+      "detection_hint": "Prompt requires legible text, exact typography, logos, barcodes, signage, or brand marks inside generated video.",
+      "confidence": "low",
+      "likely_failure_tags": ["product_deformation", "prompt_ignored", "unusable_for_client_delivery"],
+      "suggested_intervention": "lock_product_attributes; add_reference_image; do_not_generate_yet",
+      "should_generate_impact": "revise_first",
+      "evidence_ids": ["E-010"],
+      "notes": "Weak evidence. Do not overstate until direct generation trials exist."
+    }
+  ]
+}
