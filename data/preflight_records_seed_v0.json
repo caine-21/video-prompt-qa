@@ -1,0 +1,618 @@
+{
+  "version": "preflight_records_seed_v0",
+  "generated_by": "preflight_harness_v0",
+  "run_id": "preflight_seed_v0",
+  "created_at": "2026-07-01T00:00:00.000Z",
+  "inputs": {
+    "prompt_cases": "data/prompt_case_seed_v0.json",
+    "preflight_rubric": "data/preflight_rubric_v0.json",
+    "preflight_record_schema": "data/preflight_record_schema_v0.json"
+  },
+  "notes": "Offline deterministic harness output. Uses seed risk annotations only; no NLP, LLM judge, API calls, or autonomous agent behavior.",
+  "records": [
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-001",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-001",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Create a 12-second ad showing a runner jumping over a puddle, spinning in midair, landing beside the product, then smiling at camera while the camera orbits 360 degrees.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "too_many_actions",
+        "complex_camera_movement",
+        "physical_motion_risk",
+        "too_much_story_in_one_clip"
+      ],
+      "detected_risk_tags": [
+        "too_many_actions",
+        "complex_camera_movement",
+        "physical_motion_risk",
+        "too_much_story_in_one_clip"
+      ],
+      "matched_rule_ids": [
+        "too_many_actions",
+        "complex_camera_movement",
+        "physical_motion_risk",
+        "too_much_story_in_one_clip"
+      ],
+      "confidence": "medium",
+      "evidence_level": "workflow_supported",
+      "hypothesis_flags": [],
+      "rationale": "Used seed risk annotations for PC-001; no NLP or semantic inference was performed.",
+      "recommended_interventions": [
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "intervention_priority": [
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "should_generate_decision": "revise_first",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Use as a high-risk physical-motion and camera-complexity case. Suggested preflight behavior is to simplify and split into shots before generation."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-002",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-002",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Generate a video of the same woman from three angles across a cafe scene, keeping her exact face, red jacket, hairstyle, and expression consistent without using any reference image.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "identity_reference_missing",
+        "no_shot_decomposition"
+      ],
+      "detected_risk_tags": [
+        "identity_reference_missing",
+        "no_shot_decomposition"
+      ],
+      "matched_rule_ids": [
+        "identity_reference_missing",
+        "no_shot_decomposition"
+      ],
+      "confidence": "medium",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [],
+      "rationale": "Used seed risk annotations for PC-002; no NLP or semantic inference was performed.",
+      "recommended_interventions": [
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "create_storyboard_first",
+        "split_into_shots"
+      ],
+      "intervention_priority": [
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "create_storyboard_first",
+        "split_into_shots"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Covers face_character_drift and missing reference prep. The expected preflight behavior is adding reference images or character sheets."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-003",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-003",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Create a product launch clip for a matte black smart bottle with the logo HYDR8 printed clearly on the cap and side label while water splashes around it.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "product_features_not_locked",
+        "text_logo_risk",
+        "physical_motion_risk"
+      ],
+      "detected_risk_tags": [
+        "product_features_not_locked",
+        "text_logo_risk",
+        "physical_motion_risk"
+      ],
+      "matched_rule_ids": [
+        "product_features_not_locked",
+        "text_logo_risk",
+        "physical_motion_risk"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ],
+      "rationale": "Used seed risk annotations for PC-003; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: text_logo_risk.",
+      "recommended_interventions": [
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "do_not_generate_yet",
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints"
+      ],
+      "intervention_priority": [
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "do_not_generate_yet",
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints"
+      ],
+      "should_generate_decision": "revise_first",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Text/logo risk remains weakly evidenced. Treat this as a hypothesis case requiring more direct ecommerce examples."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-004",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-004",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Make the scene look like a realistic handheld documentary but also like a glossy anime commercial, with the camera perfectly locked off and also rapidly zooming through the room.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "prompt_conflict",
+        "complex_camera_movement"
+      ],
+      "detected_risk_tags": [
+        "prompt_conflict",
+        "complex_camera_movement"
+      ],
+      "matched_rule_ids": [
+        "prompt_conflict",
+        "complex_camera_movement"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "prompt_conflict"
+      ],
+      "rationale": "Used seed risk annotations for PC-004; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: prompt_conflict.",
+      "recommended_interventions": [
+        "simplify_prompt",
+        "reduce_simultaneous_constraints",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "intervention_priority": [
+        "simplify_prompt",
+        "reduce_simultaneous_constraints",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Hypothesis-only prompt_conflict case. Current evidence log does not directly validate this category."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-005",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-005",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Generate a 30-second story where a family enters a store, compares three products, gets advice from a clerk, buys one product, goes home, and uses it at dinner.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "duration_too_ambitious",
+        "too_much_story_in_one_clip",
+        "no_shot_decomposition",
+        "too_many_subjects"
+      ],
+      "detected_risk_tags": [
+        "duration_too_ambitious",
+        "too_much_story_in_one_clip",
+        "no_shot_decomposition",
+        "too_many_subjects"
+      ],
+      "matched_rule_ids": [
+        "duration_too_ambitious",
+        "too_much_story_in_one_clip",
+        "no_shot_decomposition",
+        "too_many_subjects"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "duration_too_ambitious",
+        "too_many_subjects"
+      ],
+      "rationale": "Used seed risk annotations for PC-005; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: duration_too_ambitious, too_many_subjects.",
+      "recommended_interventions": [
+        "simplify_prompt",
+        "split_into_shots",
+        "create_storyboard_first",
+        "reduce_simultaneous_constraints"
+      ],
+      "intervention_priority": [
+        "simplify_prompt",
+        "split_into_shots",
+        "create_storyboard_first",
+        "reduce_simultaneous_constraints"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "duration_too_ambitious is not directly evidenced yet. Use this case to test whether reviewers recommend storyboarding and shot splitting."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-006",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-006",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Show five skincare bottles, two models, falling flower petals, a rotating mirror, water droplets, and a city skyline all in one smooth 8-second hero shot.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "too_many_subjects",
+        "too_many_actions",
+        "complex_camera_movement"
+      ],
+      "detected_risk_tags": [
+        "too_many_subjects",
+        "too_many_actions",
+        "complex_camera_movement"
+      ],
+      "matched_rule_ids": [
+        "too_many_subjects",
+        "too_many_actions",
+        "complex_camera_movement"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "too_many_subjects"
+      ],
+      "rationale": "Used seed risk annotations for PC-006; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: too_many_subjects.",
+      "recommended_interventions": [
+        "simplify_prompt",
+        "reduce_simultaneous_constraints",
+        "split_into_shots",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "intervention_priority": [
+        "simplify_prompt",
+        "reduce_simultaneous_constraints",
+        "split_into_shots",
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "too_many_subjects still needs direct prompt cases. Keep this as a hypothesis-heavy overload case."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-007",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-007",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Create a single clip from a prepared keyframe of a coffee cup on a table. Keep the product still, use a slow push-in, warm morning light, and no extra objects.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "product_features_not_locked"
+      ],
+      "detected_risk_tags": [
+        "product_features_not_locked"
+      ],
+      "matched_rule_ids": [
+        "product_features_not_locked"
+      ],
+      "confidence": "medium",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [],
+      "rationale": "Used seed risk annotations for PC-007; no NLP or semantic inference was performed.",
+      "recommended_interventions": [
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first"
+      ],
+      "intervention_priority": [
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first"
+      ],
+      "should_generate_decision": "revise_first",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Lower-risk contrast case. It includes reference/keyframe-like prep and a single constrained camera move."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-008",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-008",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Use a text-to-video model to recreate an exact client package with legible nutrition text, barcode, and brand logo while the box spins quickly.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "model_task_mismatch",
+        "text_logo_risk",
+        "product_features_not_locked",
+        "complex_camera_movement"
+      ],
+      "detected_risk_tags": [
+        "model_task_mismatch",
+        "text_logo_risk",
+        "product_features_not_locked",
+        "complex_camera_movement"
+      ],
+      "matched_rule_ids": [
+        "model_task_mismatch",
+        "text_logo_risk",
+        "product_features_not_locked",
+        "complex_camera_movement"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "text_logo_risk"
+      ],
+      "rationale": "Used seed risk annotations for PC-008; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: text_logo_risk.",
+      "recommended_interventions": [
+        "choose_better_model_task_mode",
+        "do_not_generate_yet",
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "reduce_camera_complexity",
+        "create_storyboard_first"
+      ],
+      "intervention_priority": [
+        "choose_better_model_task_mode",
+        "do_not_generate_yet",
+        "lock_product_attributes",
+        "add_reference_image",
+        "generate_image_keyframe_first",
+        "reduce_camera_complexity",
+        "create_storyboard_first"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Covers model_task_mismatch, text_logo_risk, high_retry_cost, and client-delivery risk. Needs stronger ecommerce-specific evidence."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-009",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-009",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Animate one storyboard panel of a robot hand picking up a glass cube on a plain table. Keep the camera static and generate only this one action.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "physical_motion_risk"
+      ],
+      "detected_risk_tags": [
+        "physical_motion_risk"
+      ],
+      "matched_rule_ids": [
+        "physical_motion_risk"
+      ],
+      "confidence": "medium",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [],
+      "rationale": "Used seed risk annotations for PC-009; no NLP or semantic inference was performed.",
+      "recommended_interventions": [
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints"
+      ],
+      "intervention_priority": [
+        "simplify_prompt",
+        "split_into_shots",
+        "reduce_simultaneous_constraints"
+      ],
+      "should_generate_decision": "revise_first",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "A constrained physical-motion case that should still carry risk but may be acceptable after preflight."
+    },
+    {
+      "run_id": "preflight_seed_v0",
+      "record_id": "preflight_seed_v0-PC-010",
+      "harness_version": "preflight_harness_v0",
+      "rubric_version": "preflight_rubric_v0",
+      "case_id": "PC-010",
+      "condition": "treatment",
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "raw_prompt": "Generate a continuous shot moving from outside a boutique into the store, circling a display table, then following a customer to the checkout without changing the environment layout.",
+      "selected_model_or_tool": "unspecified",
+      "target_video_type": "unspecified",
+      "reference_availability": "unspecified",
+      "hard_requirements": [],
+      "constraints": [],
+      "expected_risk_tags": [
+        "complex_camera_movement",
+        "no_shot_decomposition",
+        "duration_too_ambitious"
+      ],
+      "detected_risk_tags": [
+        "complex_camera_movement",
+        "no_shot_decomposition",
+        "duration_too_ambitious"
+      ],
+      "matched_rule_ids": [
+        "complex_camera_movement",
+        "no_shot_decomposition",
+        "duration_too_ambitious"
+      ],
+      "confidence": "low",
+      "evidence_level": "partially_supported",
+      "hypothesis_flags": [
+        "duration_too_ambitious"
+      ],
+      "rationale": "Used seed risk annotations for PC-010; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: duration_too_ambitious.",
+      "recommended_interventions": [
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first",
+        "split_into_shots",
+        "simplify_prompt"
+      ],
+      "intervention_priority": [
+        "reduce_camera_complexity",
+        "create_storyboard_first",
+        "generate_image_keyframe_first",
+        "split_into_shots",
+        "simplify_prompt"
+      ],
+      "should_generate_decision": "needs_review",
+      "validation_group": "both",
+      "fixed_budget_ready": true,
+      "stop_when_usable_ready": true,
+      "expected_metrics_to_compare": [
+        "usable_output_yield",
+        "retry_count",
+        "credits_per_usable_clip",
+        "revision_count",
+        "output_side_failure_tags"
+      ],
+      "notes_for_reviewer": "Covers camera_not_following_prompt and environment continuity risk. Expected behavior is to split into shots or plan environment continuity first."
+    }
+  ]
+}
