@@ -1,12 +1,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-const CASES_PATH = "data/prompt_case_seed_v0.json";
-const RUBRIC_PATH = "data/preflight_rubric_v0.json";
-const SCHEMA_PATH = "data/preflight_record_schema_v0.json";
-const OUTPUT_PATH = "data/preflight_records_seed_v0.json";
+const CASES_PATH = process.argv[2] ?? "data/prompt_case_seed_v0.json";
+const OUTPUT_PATH = process.argv[3] ?? "data/preflight_records_seed_v0.json";
+const RUBRIC_PATH = process.argv[4] ?? "data/preflight_rubric_v0.json";
+const SCHEMA_PATH = process.argv[5] ?? "data/preflight_record_schema_v0.json";
 
 const HARNESS_VERSION = "preflight_harness_v0";
-const RUN_ID = "preflight_seed_v0";
 const CREATED_AT = "2026-07-01T00:00:00.000Z";
 
 const decisionPriority = {
@@ -93,8 +92,8 @@ function validateRecord(record, schema, weakTags) {
 
 function buildUnknownRecord(item, schema) {
   return {
-    run_id: RUN_ID,
-    record_id: `${RUN_ID}-${item.id}`,
+    run_id: runId,
+    record_id: `${runId}-${item.id}`,
     harness_version: HARNESS_VERSION,
     rubric_version: "preflight_rubric_v0",
     case_id: item.id,
@@ -145,8 +144,8 @@ function buildRecord(item, rulesByTag, schema, weakTags) {
   }
 
   return {
-    run_id: RUN_ID,
-    record_id: `${RUN_ID}-${item.id}`,
+    run_id: runId,
+    record_id: `${runId}-${item.id}`,
     harness_version: HARNESS_VERSION,
     rubric_version: "preflight_rubric_v0",
     case_id: item.id,
@@ -179,6 +178,9 @@ function buildRecord(item, rulesByTag, schema, weakTags) {
 const cases = readJson(CASES_PATH);
 const rubric = readJson(RUBRIC_PATH);
 const schema = readJson(SCHEMA_PATH);
+const seedVersion = cases.version?.match(/prompt_case_seed_(v\d+)/)?.[1] ?? "v0";
+const runId = `preflight_seed_${seedVersion}`;
+const outputVersion = `preflight_records_seed_${seedVersion}`;
 const rulesByTag = new Map(rubric.rules.map(rule => [rule.risk_tag, rule]));
 const weakTags = schema.conservative_policy.weak_evidence_tags;
 
@@ -189,9 +191,9 @@ for (const record of records) {
 }
 
 const output = {
-  version: "preflight_records_seed_v0",
+  version: outputVersion,
   generated_by: HARNESS_VERSION,
-  run_id: RUN_ID,
+  run_id: runId,
   created_at: CREATED_AT,
   inputs: {
     prompt_cases: CASES_PATH,
