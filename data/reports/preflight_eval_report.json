@@ -1,0 +1,373 @@
+{
+  "report_version": "preflight_eval_report_v1",
+  "manifest": {
+    "path": "data\\preflight_records_seed_v1.json",
+    "version": "preflight_records_seed_v1",
+    "record_count": 36,
+    "expected_count": 36
+  },
+  "schema_validation": {
+    "total_errors": 0,
+    "enum_violations": 0
+  },
+  "risk_analysis": {
+    "recompute_matches_stored": 36,
+    "recompute_mismatches": 0,
+    "recomputed_distribution": {
+      "revise_first": 15,
+      "needs_review": 21
+    },
+    "tag_rule_identity_violations": 0,
+    "unknown_rule_tags": {}
+  },
+  "metrics": {
+    "stored_decision_distribution": {
+      "revise_first": 15,
+      "needs_review": 21
+    },
+    "top_risk_tags": {
+      "product_features_not_locked": 17,
+      "physical_motion_risk": 12,
+      "prompt_conflict": 9,
+      "too_many_actions": 7,
+      "complex_camera_movement": 7,
+      "too_much_story_in_one_clip": 7,
+      "duration_too_ambitious": 6,
+      "identity_reference_missing": 5,
+      "no_shot_decomposition": 5,
+      "text_logo_risk": 5
+    }
+  },
+  "invariants": [
+    {
+      "id": "INV-01",
+      "name": "record count",
+      "passed": true,
+      "detail": "36 (expected 36)"
+    },
+    {
+      "id": "INV-02",
+      "name": "schema (required fields + decision enum)",
+      "passed": true,
+      "detail": "0 schema errors"
+    },
+    {
+      "id": "INV-03",
+      "name": "rubric-consistent decision recompute",
+      "passed": true,
+      "detail": "0 recompute mismatches over 36 records"
+    },
+    {
+      "id": "INV-04",
+      "name": "detected_risk_tags == matched_rule_ids",
+      "passed": true,
+      "detail": "0 identity violations"
+    },
+    {
+      "id": "INV-05",
+      "name": "no unknown rubric rule referenced",
+      "passed": true,
+      "detail": "unknown tags: {}"
+    }
+  ],
+  "hard_pass": true,
+  "known_limitations": [
+    "No generate_ok decision in the 36-seed manifest — rubric is over-strict (docs/research/preflight_rubric_calibration_v1.md acknowledges this). Expected for a research seed, but it means no 'allow to generate' case is validated."
+  ],
+  "subject_gate": {
+    "status": "ok",
+    "total_records": 6,
+    "verdicts": {
+      "N-V++": "❌ GATE VIOLATED",
+      "F-V++": "✅ GATE RESPECTED",
+      "F-V+": "❌ GATE VIOLATED",
+      "S-V++": "⚪ GATE NOT TRIGGERED (real subject)",
+      "S-V0": "❌ ERROR",
+      "N-V+": "❌ ERROR"
+    },
+    "gate_violated": [
+      "F-V+",
+      "N-V++"
+    ],
+    "gate_respected": [
+      "F-V++"
+    ],
+    "not_triggered": [
+      "S-V++"
+    ],
+    "error_records": [
+      "N-V+",
+      "S-V0"
+    ],
+    "gate_violation_rate": 0.333,
+    "case_study_conflict": {
+      "finding": "Historical conflict: CASE_STUDY.md claimed G1 dropped to Overall 4.6 / Specificity 2 after the gate, but persisted tests/subject-gate-validation.json records N-V++ (=G1) Overall 6.4 / Specificity 4, verdict GATE VIOLATED. Resolved 2026-08-07 by updating CASE_STUDY.md to the persisted numbers; persisted data + this report are the single source of truth.",
+      "status": "resolved",
+      "persisted_g1_overall": "6.4",
+      "persisted_g1_specificity": "4",
+      "persisted_verdict": "GATE VIOLATED",
+      "historical_case_study_claim": "4.6 / 2"
+    }
+  },
+  "shadow_revision_benchmark": {
+    "status": "future",
+    "reason": "No audited human-revised prompt samples exist in the repo. The shadow revision benchmark (original prompt -> preflight risk -> human revision -> re-preflight -> risk decrease) is listed as FUTURE, not fabricated."
+  },
+  "per_record_summary": {
+    "pass": 36
+  },
+  "per_record": [
+    {
+      "record_id": "preflight_seed_v1-PC-001",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-002",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-003",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-004",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-005",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-006",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-007",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-008",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-009",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-010",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-011",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-012",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-013",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-014",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-015",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-016",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-017",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-018",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-019",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-020",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-021",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-022",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-023",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-024",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-025",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-026",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-027",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-028",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-029",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-030",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-031",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-032",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-033",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-034",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-035",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "needs_review",
+      "stored": "needs_review"
+    },
+    {
+      "record_id": "preflight_seed_v1-PC-036",
+      "status": "pass",
+      "schema_errors": [],
+      "recompute": "revise_first",
+      "stored": "revise_first"
+    }
+  ]
+}

@@ -240,18 +240,25 @@ If Subject is ABSENT → Specificity MUST be ≤ 3, Clarity MUST be ≤ 4
 If Subject is PARTIAL-PLACEHOLDER → Specificity MUST be ≤ 5
 ```
 
-**生产验证数据（2026-06-11，DeepSeek deepseek-chat + Groq llama-3.3-70b）：**
+**Gate 验证持久数据（`tests/subject-gate-validation.json`，canonical）：**
 
-| 用例 | Subject 分类 | Before Overall | After Overall | Before Spe | After Spe |
+| 用例 | Subject 分类 | Before Overall | After Overall | After Spe | Verdict |
 |---|---|---|---|---|---|
-| **G1（无主体+摄影词汇）** | absent ✅ | 8.4 | **4.6** (-3.8) | 8 | **2** |
-| **S-V++（黑猫+同等词汇）** | present ✅ | 8.0 | **7.4** (+0.6) | 8 | **8** |
+| **N-V++（=G1，无主体+摄影词汇）** | absent | 8.2 | **6.4** | **4** | **❌ GATE VIOLATED** |
+| **F-V+** | partial | — | **6.8** | **6** | **❌ GATE VIOLATED** |
+| **F-V++** | partial | — | **6.8** | **4** | ✅ GATE RESPECTED |
+| **S-V++（黑猫+同等词汇，control）** | present | 8.2 | **8.2** | **9** | ⚪ GATE NOT TRIGGERED |
+| S-V0 / N-V+ | — | — | API 400 `json_validate_failed` | — | ❌ ERROR |
 
-**Gate 效果验证：**
+**Gate 效果诚实结论（口径修正）：**
 
-1. **G1 从 8.4 降到 4.6（-45%）**。Specificity 从 8 降到 2。模型在 feedback 中明确写出了根因：*"cinematic, aerial drone shot, bokeh, golden hour, slow-motion, shallow depth of field are all technical descriptions of how to film, not what to film."*——这正是我们在实验中识别的机制。
+1. **Gate 生效但未达标**：N-V++（即 G1）从 8.4/8 降到 **6.4/4**，direction 正确（Specificity 8→4，-50%），但**仍违反硬约束**（absent 要求 Spe ≤ 3）——`tests/subject-gate-validation.json` 明确记录 **GATE VIOLATED**。模型在 feedback 中写出了根因：*"cinematic, aerial drone shot, bokeh, golden hour, slow-motion, shallow depth of field are all technical descriptions of how to film, not what to film."*
 
-2. **控制组正确通过**：有真实主体的 S-V++（"A black cat on a rooftop..."）得分维持在 7.4，Subject=present，Gate 未触发，未受误伤。
+2. **Gate 是 prompt 级软约束，不是代码强制**：生产链路（`lib/providers/groq.ts`）只做 JSON parse + 均值聚合，没有把超限分数 clamp 下来。修复方向是代码侧对 `anatomy.Subject.status` 做硬性 clamp（当门没守住时强制降分）。
+
+3. **控制组正确通过**：有真实主体的 S-V++ 保持 8.2，Subject=present，Gate 未触发，未受误伤。
+
+> ⚠️ 早期文档曾称「G1 降到 4.6 / Spe 2」，该数字与持久化数据矛盾，已作废。**所有数字以 `tests/subject-gate-validation.json` 和 `evaluate_preflight.py` 生成的 `data/reports/preflight_eval_report.json` 为准。**
 
 3. **Warning Card 在生产界面正确显示**：当 `anatomy.Subject.status = "absent"` 时，⚠ SUBJECT MISSING 卡片出现在评分结果上方，包含示例主体和预期提分效果。
 
