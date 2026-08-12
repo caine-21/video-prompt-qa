@@ -88,7 +88,7 @@
     {
       "id": "PC-007",
       "prompt": "Create a single clip from a prepared keyframe of a coffee cup on a table. Keep the product still, use a slow push-in, warm morning light, and no extra objects.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-030", "E-033"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -112,7 +112,7 @@
     {
       "id": "PC-009",
       "prompt": "Animate one storyboard panel of a robot hand picking up a glass cube on a plain table. Keep the camera static and generate only this one action.",
-      "prompt_side_risk_tags": ["physical_motion_risk"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["hand_body_action_artifacts"],
       "evidence_ids": ["E-003", "E-011", "E-014", "E-033"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -148,7 +148,7 @@
     {
       "id": "PC-012",
       "prompt": "Show a perfume bottle on a marble counter with a locked reference image, one slow left-to-right pan, no people, no text, and soft window light for a 5-second ecommerce clip.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -196,7 +196,7 @@
     {
       "id": "PC-016",
       "prompt": "Make a product video in the style of premium minimal studio photography but also vintage VHS skate footage, with no guidance on which style should dominate.",
-      "prompt_side_risk_tags": ["prompt_conflict"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["identity_style_drift", "prompt_ignored"],
       "evidence_ids": [],
       "evidence_links": ["docs/research/failure_taxonomy_v0.md"],
@@ -220,7 +220,7 @@
     {
       "id": "PC-018",
       "prompt": "Generate a 6-second clip of one candle on a table, using a provided product photo, static camera, soft shadows, and no visible text or people.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -256,7 +256,7 @@
     {
       "id": "PC-021",
       "prompt": "Animate a storyboard panel of a packaged snack sliding two inches across a clean table, with static camera, provided product reference, and no text legibility requirement.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-022", "E-030", "E-033"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -280,7 +280,7 @@
     {
       "id": "PC-023",
       "prompt": "Create a 4-second overhead shot of two hands placing one phone case beside one phone, with a static camera and a provided product photo.",
-      "prompt_side_risk_tags": ["physical_motion_risk", "product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["hand_body_action_artifacts", "product_deformation"],
       "evidence_ids": ["E-003", "E-011", "E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -304,7 +304,7 @@
     {
       "id": "PC-025",
       "prompt": "Create a premium watch ad with a provided product reference, macro close-up, one slow rotating turntable move, black background, and no text.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -328,7 +328,7 @@
     {
       "id": "PC-027",
       "prompt": "Make a clean unboxing video of one pair of shoes from a supplied reference image, 6 seconds, static camera, hands open the box once, no logo close-up.",
-      "prompt_side_risk_tags": ["physical_motion_risk", "product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["hand_body_action_artifacts", "product_deformation"],
       "evidence_ids": ["E-003", "E-011", "E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -352,7 +352,7 @@
     {
       "id": "PC-029",
       "prompt": "Generate a lifestyle clip of a water bottle on a desk with one person reaching in to pick it up, no face visible, static camera, 5 seconds, product reference supplied.",
-      "prompt_side_risk_tags": ["physical_motion_risk", "product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["hand_body_action_artifacts", "product_deformation"],
       "evidence_ids": ["E-003", "E-011", "E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -388,7 +388,7 @@
     {
       "id": "PC-032",
       "prompt": "Show one ceramic mug on a table, provided reference image, 5-second locked-off shot, steam rising gently, no people, no camera move, no text.",
-      "prompt_side_risk_tags": ["product_features_not_locked", "physical_motion_risk"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation", "prompt_ignored"],
       "evidence_ids": ["E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
@@ -412,14 +412,14 @@
     {
       "id": "PC-034",
       "prompt": "Create a moody cafe ambience clip with one latte, one pastry, no people, static camera, warm light, 6 seconds, and no product accuracy requirement.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],
       "confidence": "medium",
       "should_generate": true,
       "do_not_generate_yet": false,
-      "notes": "Safe-pass non-critical product case. The schema requires a risk tag, so product_features_not_locked is used even though the actual risk is mild."
+      "notes": "Safe-pass non-critical product case. No prompt-side risk tag is assigned because the actual risk is mild and the benchmark now allows safe cases without synthetic risk labels."
     },
     {
       "id": "PC-035",
@@ -436,7 +436,7 @@
     {
       "id": "PC-036",
       "prompt": "Create a single 5-second shot of a sunscreen tube on sand with a provided product image, one slow push-in, natural sunlight, and no legible text requirement.",
-      "prompt_side_risk_tags": ["product_features_not_locked"],
+      "prompt_side_risk_tags": [],
       "expected_output_failure_tags": ["product_deformation"],
       "evidence_ids": ["E-022", "E-030"],
       "evidence_links": ["docs/research/pain_evidence_log.md"],

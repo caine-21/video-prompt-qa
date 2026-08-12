@@ -25,11 +25,7 @@ if os.path.exists(".env"):
 elif os.path.exists("../rag-demo/.env"):
     load_dotenv("../rag-demo/.env")
 
-from groq import Groq
-
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found.")
+from deepseek_client import deepseek_chat_json
 
 # Full production EVALUATION_SYSTEM_PROMPT with Subject Detection Gate
 # Copied verbatim from lib/providers/base.ts
@@ -87,13 +83,13 @@ Step 2: Enforce these hard constraints based on Subject status:
 
 ## MODEL FIT — rate 1–10 for each model
 
-Base your score on what THIS specific prompt contains or lacks — not general model reputation.
-- Runway Gen-3: excels when prompt includes clear physical motion and cinematic realism cues. Score high if action + lighting + camera are all present. Score low if any are absent.
-- Sora: excels when prompt requires complex scene coherence, environment detail, or longer narrative. Score high if subject + style + mood are richly specified. Score low for simple/short prompts.
-- Kling: excels when prompt features human subjects with detailed action. Score high if Subject involves a person + Action is explicit. Score low for non-human or static subjects.
-- Pika: excels for short, stylized, or animated content. Score high if Style implies animation/stylization or if the prompt is intentionally brief. Score lower for long narrative prompts.
+Score task fit from THIS prompt, not general model reputation. Each reason must quote exact prompt evidence.
+- 9–10: explicit match to the model profile and the prompt's constraints.
+- 7–8: good fit with one meaningful omission.
+- 4–6: plausible, but the prompt is underspecified for the model profile.
+- 1–3: clear mismatch or unsupported constraint.
 
-Reason must reference a specific element from the prompt, not just describe the model's general capability.
+Profiles: Sora 2 = rich dynamics and multi-shot continuity; Veo 3.1 = bounded reference-oriented shots; Runway Gen-4.5 = cinematic motion and visual treatment; MiniMax Hailuo 2.3 = compact 6/10-second shots, explicit motion, and camera commands.
 
 ## NEGATIVE PROMPTS — list exactly 5 terms
 
@@ -131,10 +127,10 @@ Respond ONLY with valid JSON:
     { "component": "Duration", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" }
   ],
   "modelFit": [
-    { "model": "Runway Gen-3", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Sora", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Kling", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Pika", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" }
+    { "model": "Sora 2", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "Veo 3.1", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "Runway Gen-4.5", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "MiniMax Hailuo 2.3", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" }
   ],
   "negativePrompts": ["<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>"]
 }"""
@@ -205,17 +201,12 @@ VALIDATION_CASES = [
 ]
 
 
-def evaluate(prompt: str, client: Groq) -> dict:
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f'Evaluate this video generation prompt:\n\n"{prompt}"'},
-        ],
-        response_format={"type": "json_object"},
+def evaluate(prompt: str) -> dict:
+    text = deepseek_chat_json(
+        SYSTEM_PROMPT,
+        f'Evaluate this video generation prompt:\n\n"{prompt}"',
         max_tokens=2048,
     )
-    text = completion.choices[0].message.content or "{}"
     parsed = json.loads(text)
 
     dims = parsed.get("dimensions", [])
@@ -239,12 +230,11 @@ def evaluate(prompt: str, client: Groq) -> dict:
 
 
 def run_validation(output_path: str | None = None):
-    client = Groq(api_key=GROQ_API_KEY)
     results = []
 
     print(f"\n{'='*70}")
     print("  Subject Detection Gate — Validation Run")
-    print("  Model: Groq / llama-3.3-70b-versatile (production system prompt)")
+    print("  Model: DeepSeek / deepseek-v4-flash (production system prompt)")
     print(f"{'='*70}\n")
 
     for case in VALIDATION_CASES:
@@ -255,7 +245,7 @@ def run_validation(output_path: str | None = None):
         print(f"  Before    : Overall={case['before_overall']} Spe={case['before_spe']} Cla={case['before_cla']}")
 
         try:
-            result = evaluate(case["prompt"], client)
+            result = evaluate(case["prompt"])
             overall = result["overall"]
             spe = result["dimensions"].get("Specificity", "?")
             cla = result["dimensions"].get("Clarity", "?")

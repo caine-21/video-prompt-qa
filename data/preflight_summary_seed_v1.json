@@ -7,16 +7,17 @@
   "total_record_count": 36,
   "distributions": {
     "should_generate_decision": {
-      "needs_review": 21,
-      "revise_first": 15
+      "needs_review": 20,
+      "revise_first": 3,
+      "unknown": 13
     },
     "confidence": {
-      "low": 19,
-      "medium": 17
+      "low": 31,
+      "medium": 5
     },
     "evidence_level": {
-      "hypothesis_heavy": 1,
-      "partially_supported": 34,
+      "partially_supported": 22,
+      "unknown": 13,
       "workflow_supported": 1
     },
     "risk_level": {
@@ -32,34 +33,30 @@
       ]
     },
     "interventions": {
-      "add_reference_image": 22,
+      "add_reference_image": 11,
       "choose_better_model_task_mode": 5,
       "create_storyboard_first": 17,
       "do_not_generate_yet": 6,
-      "generate_image_keyframe_first": 26,
-      "lock_product_attributes": 19,
+      "generate_image_keyframe_first": 15,
+      "lock_product_attributes": 8,
       "reduce_camera_complexity": 7,
-      "reduce_simultaneous_constraints": 24,
-      "simplify_prompt": 25,
-      "split_into_shots": 24
+      "reduce_simultaneous_constraints": 18,
+      "simplify_prompt": 19,
+      "split_into_shots": 19
     }
   },
   "top_tags": {
     "detected_risk_tags": [
       {
-        "tag": "product_features_not_locked",
-        "count": 17
-      },
-      {
-        "tag": "physical_motion_risk",
-        "count": 12
-      },
-      {
         "tag": "prompt_conflict",
-        "count": 9
+        "count": 8
       },
       {
         "tag": "complex_camera_movement",
+        "count": 7
+      },
+      {
+        "tag": "physical_motion_risk",
         "count": 7
       },
       {
@@ -72,6 +69,10 @@
       },
       {
         "tag": "duration_too_ambitious",
+        "count": 6
+      },
+      {
+        "tag": "product_features_not_locked",
         "count": 6
       },
       {
@@ -98,7 +99,7 @@
     "hypothesis_flags": [
       {
         "tag": "prompt_conflict",
-        "count": 9
+        "count": 8
       },
       {
         "tag": "duration_too_ambitious",
@@ -118,7 +119,7 @@
     }
   },
   "weak_evidence": {
-    "record_count": 18,
+    "record_count": 17,
     "records": [
       {
         "case_id": "PC-003",
@@ -190,14 +191,6 @@
         "record_id": "preflight_seed_v1-PC-015",
         "hypothesis_flags": [
           "duration_too_ambitious",
-          "prompt_conflict"
-        ],
-        "decision": "needs_review"
-      },
-      {
-        "case_id": "PC-016",
-        "record_id": "preflight_seed_v1-PC-016",
-        "hypothesis_flags": [
           "prompt_conflict"
         ],
         "decision": "needs_review"
@@ -278,19 +271,7 @@
     "revise_first": [
       "PC-001",
       "PC-003",
-      "PC-007",
-      "PC-009",
-      "PC-012",
-      "PC-018",
-      "PC-021",
-      "PC-022",
-      "PC-023",
-      "PC-025",
-      "PC-027",
-      "PC-029",
-      "PC-032",
-      "PC-034",
-      "PC-036"
+      "PC-022"
     ],
     "needs_review": [
       "PC-002",
@@ -303,7 +284,6 @@
       "PC-013",
       "PC-014",
       "PC-015",
-      "PC-016",
       "PC-017",
       "PC-019",
       "PC-020",
@@ -315,7 +295,21 @@
       "PC-033",
       "PC-035"
     ],
-    "unknown": []
+    "unknown": [
+      "PC-007",
+      "PC-009",
+      "PC-012",
+      "PC-016",
+      "PC-018",
+      "PC-021",
+      "PC-023",
+      "PC-025",
+      "PC-027",
+      "PC-029",
+      "PC-032",
+      "PC-034",
+      "PC-036"
+    ]
   },
   "blocked_or_needs_review": {
     "blocked_status": "blocked_decision_not_present_in_current_schema",
@@ -330,7 +324,6 @@
       "PC-013",
       "PC-014",
       "PC-015",
-      "PC-016",
       "PC-017",
       "PC-019",
       "PC-020",
@@ -347,103 +340,75 @@
     "potential_over_strict_candidates": [
       {
         "case_id": "PC-007",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-009",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "physical_motion_risk"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-012",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-018",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-021",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-023",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "physical_motion_risk",
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-025",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-027",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "physical_motion_risk",
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-029",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "physical_motion_risk",
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-032",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "physical_motion_risk",
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-034",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       },
       {
         "case_id": "PC-036",
-        "decision": "revise_first",
+        "decision": "unknown",
         "reason": "Reviewer notes contain safe-pass, lower-risk, constrained, static-camera, or reference-support signals.",
-        "detected_risk_tags": [
-          "product_features_not_locked"
-        ]
+        "detected_risk_tags": []
       }
     ],
     "potential_over_permissive_candidates": [],
@@ -530,13 +495,6 @@
       ]
     },
     {
-      "case_id": "PC-016",
-      "decision": "needs_review",
-      "hypothesis_flags": [
-        "prompt_conflict"
-      ]
-    },
-    {
       "case_id": "PC-017",
       "decision": "needs_review",
       "hypothesis_flags": [
@@ -609,36 +567,36 @@
     }
   ],
   "actionability_summary": {
-    "records_with_interventions": 36,
-    "records_with_multiple_interventions": 36,
+    "records_with_interventions": 23,
+    "records_with_multiple_interventions": 23,
     "most_common_interventions": [
       {
-        "tag": "generate_image_keyframe_first",
-        "count": 26
-      },
-      {
         "tag": "simplify_prompt",
-        "count": 25
-      },
-      {
-        "tag": "reduce_simultaneous_constraints",
-        "count": 24
+        "count": 19
       },
       {
         "tag": "split_into_shots",
-        "count": 24
-      },
-      {
-        "tag": "add_reference_image",
-        "count": 22
-      },
-      {
-        "tag": "lock_product_attributes",
         "count": 19
+      },
+      {
+        "tag": "reduce_simultaneous_constraints",
+        "count": 18
       },
       {
         "tag": "create_storyboard_first",
         "count": 17
+      },
+      {
+        "tag": "generate_image_keyframe_first",
+        "count": 15
+      },
+      {
+        "tag": "add_reference_image",
+        "count": 11
+      },
+      {
+        "tag": "lock_product_attributes",
+        "count": 8
       },
       {
         "tag": "reduce_camera_complexity",

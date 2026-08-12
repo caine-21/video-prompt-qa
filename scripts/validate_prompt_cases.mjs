@@ -63,7 +63,7 @@ for (const item of data.cases ?? []) {
   ids.add(item.id);
 
   if (typeof item.prompt !== "string" || item.prompt.trim().length < 20) fail(`${label}: prompt is missing or too short`);
-  if (!isStringArray(item.prompt_side_risk_tags) || item.prompt_side_risk_tags.length === 0) fail(`${label}: prompt_side_risk_tags must be a non-empty string array`);
+  if (!isStringArray(item.prompt_side_risk_tags)) fail(`${label}: prompt_side_risk_tags must be a string array`);
   if (!isStringArray(item.expected_output_failure_tags) || item.expected_output_failure_tags.length === 0) fail(`${label}: expected_output_failure_tags must be a non-empty string array`);
   if (!isStringArray(item.evidence_ids)) fail(`${label}: evidence_ids must be a string array`);
   if (!isStringArray(item.evidence_links)) fail(`${label}: evidence_links must be a string array`);

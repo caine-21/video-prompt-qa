@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logFeedback } from "@/lib/db";
+import { withApiObservability } from "@/lib/observability";
 
-export async function POST(req: NextRequest) {
+async function handlePost(req: NextRequest) {
   try {
     const { evaluationId, rating, tags, deltaScore } = await req.json();
     if (!evaluationId || !rating) {
@@ -13,4 +14,11 @@ export async function POST(req: NextRequest) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export function POST(req: NextRequest) {
+  return withApiObservability(req, {
+    route: "/api/feedback",
+    feature: "feedback",
+  }, () => handlePost(req));
 }

@@ -11,11 +11,20 @@ function scoreColors(score: number) {
   return "#FF6B6B";
 }
 
-const MODEL_ICONS: Record<string, string> = {
+const LEGACY_MODEL_ICONS: Record<string, string> = {
   "Runway Gen-3": "🎬",
   "Sora":         "🌊",
   "Kling":        "⚡",
   "Pika":         "✨",
+};
+
+void LEGACY_MODEL_ICONS;
+
+const MODEL_ICONS: Record<string, string> = {
+  "Sora 2": "S",
+  "Veo 3.1": "V",
+  "Runway Gen-4.5": "R",
+  "MiniMax Hailuo 2.3": "M",
 };
 
 export default function ModelFit({ modelFit }: Props) {

@@ -1,19 +1,43 @@
 import type { EvaluationResult, CompareResult, AIProvider, ProviderError, ProviderErrorType, Result } from "@/lib/types";
+import { z } from "zod";
 
 const ERROR_META: Record<ProviderErrorType, { retryable: boolean; message: (provider: string) => string }> = {
-  network:               { retryable: true,  message: (p) => `Network error: unable to reach ${p}` },
-  timeout:               { retryable: true,  message: (p) => `${p} request timed out` },
-  rate_limit:            { retryable: true,  message: (p) => `Rate limit exceeded for ${p}` },
-  auth:                  { retryable: false, message: (p) => `${p} API key is invalid or missing` },
-  missing_config:        { retryable: false, message: (p) => `${p} provider configuration is missing` },
-  insufficient_balance: { retryable: false, message: (p) => `${p} balance or quota is insufficient` },
-  invalid_model:         { retryable: false, message: (p) => `${p} model configuration is invalid` },
-  upstream_4xx:          { retryable: false, message: (p) => `${p} upstream request was rejected` },
-  upstream_5xx:          { retryable: true,  message: (p) => `${p} upstream service failed` },
-  invalid_response:      { retryable: true,  message: (p) => `${p} returned an invalid response` },
-  runtime:               { retryable: false, message: (p) => `${p} runtime error` },
-  unknown:               { retryable: false, message: (p) => `${p} provider error` },
+  network:             { retryable: true,  message: (p) => `Network error: unable to reach ${p}` },
+  timeout:             { retryable: true,  message: (p) => `${p} request timed out` },
+  rate_limit:          { retryable: true,  message: (p) => `Rate limit exceeded for ${p}` },
+  auth:                { retryable: false, message: (p) => `${p} API key is invalid or missing` },
+  missing_config:      { retryable: false, message: (p) => `${p} provider configuration is missing` },
+  insufficient_balance:{ retryable: false, message: (p) => `${p} balance or quota is insufficient` },
+  invalid_model:       { retryable: false, message: (p) => `${p} model configuration is invalid` },
+  upstream_4xx:        { retryable: false, message: (p) => `${p} upstream request was rejected` },
+  upstream_5xx:        { retryable: true,  message: (p) => `${p} upstream service failed` },
+  invalid_response:    { retryable: true,  message: (p) => `${p} returned an invalid response` },
+  runtime:             { retryable: false, message: (p) => `${p} runtime error` },
+  unknown:             { retryable: false, message: (p) => `${p} provider error` },
 };
+
+export type ProviderAttemptEvent = {
+  event: "provider_attempt_started" | "provider_attempt_succeeded" | "provider_attempt_failed" | "provider_retry_scheduled";
+  provider: string;
+  context: string;
+  attempt: number;
+  latency_ms?: number;
+  error_type?: ProviderErrorType;
+  retryable?: boolean;
+  retries_remaining?: number;
+};
+
+let providerEventObserver: ((event: ProviderAttemptEvent) => void) | undefined;
+
+/** Subscribe to redacted provider-attempt events for incident drills and logs. */
+export function setProviderEventObserver(observer: ((event: ProviderAttemptEvent) => void) | undefined): void {
+  providerEventObserver = observer;
+}
+
+function emitProviderEvent(event: ProviderAttemptEvent): void {
+  providerEventObserver?.(event);
+  console.info(JSON.stringify({ type: "provider_attempt", ...event }));
+}
 
 function classifyError(err: unknown): ProviderErrorType {
   const status = (err as { status?: number })?.status;
@@ -23,14 +47,17 @@ function classifyError(err: unknown): ProviderErrorType {
   if (name === "syntaxerror" || name === "zoderror" || msg.includes("no json found") || msg.includes("invalid response") || msg.includes("unexpected token") || msg.includes("cannot read properties of undefined") || msg.includes("not iterable")) return "invalid_response";
   if (msg.includes("api_key is not set") || msg.includes("api key is not set") || msg.includes("missing configuration")) return "missing_config";
   if (name === "aborterror" || msg.includes("timeout") || msg.includes("timed out") || msg.includes("etimedout") || msg.includes("connect_timeout")) return "timeout";
-  if (status === 429 || msg.includes("429") || msg.includes("rate limit") || msg.includes("resource_exhausted")) return "rate_limit";
-  if (status === 401 || status === 403 || msg.includes("401") || msg.includes("403") || msg.includes("api key") || msg.includes("invalid_api_key")) return "auth";
+  if (status === 429) return "rate_limit";
+  if (status === 401 || status === 403) return "auth";
   if (msg.includes("insufficient") || msg.includes("balance") || msg.includes("quota") || msg.includes("credits")) return "insufficient_balance";
   if (msg.includes("model") && (msg.includes("invalid") || msg.includes("not found") || msg.includes("unsupported"))) return "invalid_model";
   if (status && status >= 500) return "upstream_5xx";
   if (status && status >= 400) return "upstream_4xx";
+
   if (msg.includes("fetch") || msg.includes("network") || msg.includes("econnrefused")) return "network";
-  if (msg.includes("json") || msg.includes("json_validate_failed")) return "invalid_response";
+  if (msg.includes("json") || msg.includes("json_validate_failed") || msg.includes("invalid response")) return "invalid_response";
+  if (msg.includes("429") || msg.includes("rate limit") || msg.includes("resource_exhausted")) return "rate_limit";
+  if (msg.includes("401") || msg.includes("403") || msg.includes("api key") || msg.includes("invalid_api_key")) return "auth";
   if (msg.includes("runtime")) return "runtime";
   return "unknown";
 }
@@ -49,20 +76,84 @@ function sleep(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
 }
 
+export const DEFAULT_PROVIDER_TIMEOUT_MS = 9_000;
+export const DEFAULT_PROVIDER_RETRIES = 1;
+
+/** Abort one upstream request before a serverless function deadline does it for us. */
+export async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit,
+  timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function runWithProviderDeadline<T>(fn: () => Promise<T>, timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      const error = new Error("provider request timed out");
+      error.name = "AbortError";
+      reject(error);
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([Promise.resolve().then(fn), timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
 export async function safeProviderCall<T>(
   fn: () => Promise<T>,
   provider: AIProvider,
   context: string,
-  retries = 2
+  retries = DEFAULT_PROVIDER_RETRIES,
+  attempt = 1,
+  timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS,
 ): Promise<Result<T>> {
+  const startedAt = Date.now();
+  emitProviderEvent({ event: "provider_attempt_started", provider, context, attempt });
   try {
-    return { success: true, data: await fn(), provider };
+    const data = await runWithProviderDeadline(fn, timeoutMs);
+    emitProviderEvent({
+      event: "provider_attempt_succeeded",
+      provider,
+      context,
+      attempt,
+      latency_ms: Date.now() - startedAt,
+    });
+    return { success: true, data, provider };
   } catch (err) {
     const error = normalizeProviderError(err, provider, context);
     console.warn("[ProviderError]", { provider, context, type: error.type, message: error.message, retryable: error.retryable });
+    emitProviderEvent({
+      event: "provider_attempt_failed",
+      provider,
+      context,
+      attempt,
+      latency_ms: Date.now() - startedAt,
+      error_type: error.type,
+      retryable: error.retryable,
+      retries_remaining: retries,
+    });
     if (error.retryable && retries > 0) {
+      emitProviderEvent({
+        event: "provider_retry_scheduled",
+        provider,
+        context,
+        attempt,
+        error_type: error.type,
+        retries_remaining: retries - 1,
+      });
       await sleep(300 * Math.pow(2, 2 - retries));
-      return safeProviderCall(fn, provider, context, retries - 1);
+      return safeProviderCall(fn, provider, context, retries - 1, attempt + 1, timeoutMs);
     }
     return { success: false, error, provider };
   }
@@ -123,15 +214,23 @@ Components:
 
 For the note field: if present/partial, quote the exact words from the prompt that triggered this status. If absent, write null.
 
-## MODEL FIT — rate 1–10 for each model
+## MODEL FIT — evidence-based task fit, rate 1–10 for each model
 
-Base your score on what THIS specific prompt contains or lacks — not general model reputation.
-- Runway Gen-3: excels when prompt includes clear physical motion and cinematic realism cues. Score high if action + lighting + camera are all present. Score low if any are absent.
-- Sora: excels when prompt requires complex scene coherence, environment detail, or longer narrative. Score high if subject + style + mood are richly specified. Score low for simple/short prompts.
-- Kling: excels when prompt features human subjects with detailed action. Score high if Subject involves a person + Action is explicit. Score low for non-human or static subjects.
-- Pika: excels for short, stylized, or animated content. Score high if Style implies animation/stylization or if the prompt is intentionally brief. Score lower for long narrative prompts.
+This is a recommendation score, not a benchmark score and not a claim that the app generated a video with the model. Score the fit between THIS prompt and the model's documented task shape. Do not reward a model merely because it is famous.
 
-Reason must reference a specific element from the prompt, not just describe the model's general capability.
+Use this rubric:
+- 9–10: The prompt explicitly matches the model's supported mode and includes strong evidence for its useful strengths; no material capability gap is visible.
+- 7–8: Good fit with one meaningful omission, such as missing reference material, shot boundary, duration, or camera constraint.
+- 4–6: Plausible fit, but the prompt is underspecified or the requested workflow is only partially aligned.
+- 1–3: Clear task mismatch, unsupported mode/constraint, or a prompt too incomplete to justify a recommendation.
+
+Reference profiles (checked 2026-08):
+- Sora 2: general text/image-to-video with synced audio; use when the prompt needs rich scene dynamics, multi-shot continuity, or realistic physical interactions. Do not assume every complex action will succeed.
+- Veo 3.1: text/image/reference-oriented generation with documented 4/6/8-second outputs and 16:9 or 9:16 framing; use when the prompt provides a bounded shot and explicit reference/mode constraints.
+- Runway Gen-4.5: strong prompt adherence, motion quality, visual fidelity, and controllable generation workflows; use when the prompt specifies cinematic motion, camera intent, or visual treatment.
+- MiniMax Hailuo 2.3: text-to-video and image-to-video with documented 6/10-second options and explicit camera-command support; use when the prompt has a compact shot, clear motion, or a first-frame workflow.
+
+If the prompt does not contain enough evidence, score conservatively. Every reason MUST quote or directly reference a specific phrase from the prompt and explain the matching or missing capability. Do not invent a model-specific limitation that is not in the profile above.
 
 ## NEGATIVE PROMPTS — list exactly 5 terms
 
@@ -169,10 +268,10 @@ Respond ONLY with valid JSON:
     { "component": "Duration", "status": "present|partial|absent", "note": "<quote exact words from prompt, or null if absent>" }
   ],
   "modelFit": [
-    { "model": "Runway Gen-3", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Sora", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Kling", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" },
-    { "model": "Pika", "score": <number 1-10>, "reason": "<reference a specific element from this prompt>" }
+    { "model": "Sora 2", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "Veo 3.1", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "Runway Gen-4.5", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" },
+    { "model": "MiniMax Hailuo 2.3", "score": <number 1-10>, "reason": "<quote prompt evidence and explain the fit or gap>" }
   ],
   "negativePrompts": ["<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>", "<prompt-specific failure term>"]
 }`;
@@ -231,19 +330,32 @@ Respond ONLY with valid JSON matching this exact structure:
 export function buildEvaluationResult(
   prompt: string,
   provider: AIProvider,
-  parsed: {
-    dimensions: Array<{ name: string; score: number; feedback: string }>;
-    improvements: string[];
-    edgeCases: string[];
-    anatomy?: Array<{ component: string; status: string; note: string | null }>;
-    modelFit?: Array<{ model: string; score: number; reason: string }>;
-    negativePrompts?: string[];
-  }
+  parsed: unknown
 ): EvaluationResult {
+  const validated = z.object({
+    dimensions: z.array(z.object({
+      name: z.enum(["Clarity", "Specificity", "Technical Feasibility", "Cinematic Quality", "Creativity"]),
+      score: z.number().min(1).max(10),
+      feedback: z.string().min(1)
+    })).length(5),
+    improvements: z.array(z.string().min(1)).max(10),
+    edgeCases: z.array(z.string().min(1)).max(10),
+    anatomy: z.array(z.object({
+      component: z.string().min(1),
+      status: z.enum(["present", "partial", "absent"]),
+      note: z.string().nullable()
+    })).optional(),
+    modelFit: z.array(z.object({
+      model: z.string().min(1),
+      score: z.number().min(1).max(10),
+      reason: z.string().min(1)
+    })).optional(),
+    negativePrompts: z.array(z.string().min(1)).optional()
+  }).parse(parsed);
   const overallScore =
     Math.round(
-      (parsed.dimensions.reduce((sum, d) => sum + d.score, 0) /
-        parsed.dimensions.length) *
+      (validated.dimensions.reduce((sum, d) => sum + d.score, 0) /
+        validated.dimensions.length) *
         10
     ) / 10;
 
@@ -251,12 +363,12 @@ export function buildEvaluationResult(
     prompt,
     provider,
     overallScore,
-    dimensions: parsed.dimensions,
-    improvements: parsed.improvements,
-    edgeCases: parsed.edgeCases,
-    anatomy: (parsed.anatomy ?? []) as import("@/lib/types").AnatomyComponent[],
-    modelFit: parsed.modelFit ?? [],
-    negativePrompts: parsed.negativePrompts ?? [],
+    dimensions: validated.dimensions,
+    improvements: validated.improvements,
+    edgeCases: validated.edgeCases,
+    anatomy: validated.anatomy ?? [],
+    modelFit: validated.modelFit ?? [],
+    negativePrompts: validated.negativePrompts ?? [],
     timestamp: new Date().toISOString(),
   };
 }
@@ -265,16 +377,26 @@ export function buildCompareResult(
   promptA: string,
   promptB: string,
   provider: AIProvider,
-  parsed: { winner: string; scoreA: number; scoreB: number; reasoning: string }
+  parsed: unknown
 ): CompareResult {
+  const validated = z.object({
+    winner: z.enum(["A", "B", "tie"]),
+    scoreA: z.number().min(1).max(10),
+    scoreB: z.number().min(1).max(10),
+    reasoning: z.string().min(1)
+  }).parse(parsed);
   return {
     promptA,
     promptB,
     provider,
-    winner: parsed.winner as "A" | "B" | "tie",
-    reasoning: parsed.reasoning,
-    scoreA: Math.min(10, Math.max(0, Number(parsed.scoreA) || 0)),
-    scoreB: Math.min(10, Math.max(0, Number(parsed.scoreB) || 0)),
+    winner: validated.winner,
+    reasoning: validated.reasoning,
+    scoreA: validated.scoreA,
+    scoreB: validated.scoreB,
     timestamp: new Date().toISOString(),
   };
+}
+
+export function parseRewriteResult(value: unknown): string {
+  return z.string().trim().min(1).max(8000).parse(value);
 }

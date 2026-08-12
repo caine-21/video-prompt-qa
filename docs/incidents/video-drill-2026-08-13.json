@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "suite": "video-incident-drill",
+  "generated_at": "2026-08-13",
+  "evidence_boundary": "synthetic provider functions; no provider credits or network egress",
+  "production_provider_boundary": "current registry contains DeepSeek only; no second-provider fallback is claimed",
+  "incidents": [
+    {
+      "incident_id": "VID-INC-001",
+      "failure": "timeout then recovery",
+      "observed": {"success": true, "error_type": null, "attempt_count": 2, "failure_types": ["timeout"], "retries_scheduled": 1}
+    },
+    {
+      "incident_id": "VID-INC-002",
+      "failure": "persistent HTTP 429",
+      "observed": {"success": false, "error_type": "rate_limit", "attempt_count": 2, "failure_types": ["rate_limit", "rate_limit"], "retries_scheduled": 1}
+    },
+    {
+      "incident_id": "VID-INC-003",
+      "failure": "malformed structured output",
+      "observed": {"success": false, "error_type": "invalid_response", "attempt_count": 1, "failure_types": ["invalid_response"], "retries_scheduled": 0}
+    }
+  ]
+}

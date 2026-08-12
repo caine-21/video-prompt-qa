@@ -24,15 +24,17 @@ const MAX_RECORDS = 500;
 export function recordOperation(op: OperationRecord): void {
   records.push(op);
   if (records.length > MAX_RECORDS) records.shift();
-  console.info("[Metrics]", {
+  console.info(JSON.stringify({
+    type:       "provider_operation",
     provider:   op.provider,
     task:       op.task,
     strategy:   op.strategy,
-    latencyMs:  op.latencyMs,
+    latency_ms: op.latencyMs,
     success:    op.success,
-    errorType:  op.errorType,
+    error_type: op.errorType,
     score:      op.score,
-  });
+    timestamp:  new Date(op.timestamp).toISOString(),
+  }));
 }
 
 export function getProviderStats(): Partial<Record<AIProvider, ProviderStats>> {

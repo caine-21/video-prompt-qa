@@ -13,7 +13,7 @@ async function evaluatePrompt(prompt) {
   const res = await fetch(`${apiBase}/api/evaluate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, provider: "groq" }),
+    body: JSON.stringify({ prompt, provider: "deepseek" }),
   });
   const json = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
   if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);

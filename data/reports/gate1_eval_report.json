@@ -1,0 +1,167 @@
+{
+  "report_version": "gate1_eval_report_v1",
+  "benchmark_version": "preflight_benchmark_v1",
+  "generated_at": "2026-08-09T18:33:42.682Z",
+  "claim_status": "PROVISIONAL_BENCHMARK",
+  "comparability": {
+    "B1": "Comparable on all 36 provisional decision labels, but uses seed risk annotations as oracle inputs.",
+    "B2": "N/A: no stored 36-case outputs from the current LLM evaluator exist.",
+    "T": "Comparable only as a deterministic decision-policy replay. Frozen semantic annotations replace live semantic detection."
+  },
+  "systems": {
+    "B1_offline_rule_baseline": {
+      "description": "Frozen preflight_records_seed_v1 output from the deterministic rubric harness.",
+      "input_warning": "The harness copies human-authored seed risk tags; this is not end-to-end risk detection.",
+      "evaluated_cases": 36,
+      "missing_predictions": 0,
+      "decision_distribution": {
+        "READY_TO_GENERATE": 0,
+        "NEEDS_REVISION": 3,
+        "NEEDS_USER_DECISION": 33
+      },
+      "false_block_rate": {
+        "numerator": 13,
+        "denominator": 13,
+        "value": 1
+      },
+      "unsafe_pass_rate": {
+        "numerator": 0,
+        "denominator": 23,
+        "value": 0
+      },
+      "preventable_failure_recall": {
+        "numerator": 13,
+        "denominator": 13,
+        "value": 1
+      },
+      "structured_output_validity": {
+        "numerator": 36,
+        "denominator": 36,
+        "value": 1
+      },
+      "evidence_coverage": {
+        "numerator": 23,
+        "denominator": 36,
+        "value": 0.6388888888888888
+      },
+      "provider_calls": 0,
+      "latency_ms": null,
+      "latency_reason": "Historical offline records do not contain per-case latency.",
+      "failure_slices": {
+        "false_blocks": [
+          "PC-007",
+          "PC-009",
+          "PC-012",
+          "PC-016",
+          "PC-018",
+          "PC-021",
+          "PC-023",
+          "PC-025",
+          "PC-027",
+          "PC-029",
+          "PC-032",
+          "PC-034",
+          "PC-036"
+        ],
+        "unsafe_passes": [],
+        "decision_mismatches": [
+          "PC-003",
+          "PC-005",
+          "PC-006",
+          "PC-007",
+          "PC-009",
+          "PC-010",
+          "PC-012",
+          "PC-013",
+          "PC-014",
+          "PC-015",
+          "PC-016",
+          "PC-018",
+          "PC-019",
+          "PC-021",
+          "PC-023",
+          "PC-024",
+          "PC-025",
+          "PC-027",
+          "PC-029",
+          "PC-030",
+          "PC-031",
+          "PC-032",
+          "PC-034",
+          "PC-035",
+          "PC-036"
+        ]
+      }
+    },
+    "B2_current_llm_evaluator": {
+      "status": "N/A",
+      "reason": "No comparable stored run exists for all 36 benchmark cases; live provider calls are intentionally not fabricated or silently triggered.",
+      "decision_distribution": null,
+      "false_block_rate": null,
+      "unsafe_pass_rate": null,
+      "preventable_failure_recall": null,
+      "structured_output_validity": null,
+      "evidence_coverage": null,
+      "provider_calls": null,
+      "latency_ms": null,
+      "failure_slices": null
+    },
+    "T_hybrid_preflight": {
+      "status": "DECISION_POLICY_REPLAY_ONLY",
+      "description": "Real PreflightSession, capability registry, typed tools, deterministic policy, evidence and trace; frozen semantic findings at the LLM boundary.",
+      "input_warning": "Expected decisions and semantic severity share provisional label provenance. Semantic detection quality is N/A and these results are not an independent end-to-end benchmark.",
+      "evaluated_cases": 36,
+      "missing_predictions": 0,
+      "decision_distribution": {
+        "READY_TO_GENERATE": 13,
+        "NEEDS_REVISION": 13,
+        "NEEDS_USER_DECISION": 10
+      },
+      "false_block_rate": {
+        "numerator": 0,
+        "denominator": 13,
+        "value": 0
+      },
+      "unsafe_pass_rate": {
+        "numerator": 0,
+        "denominator": 23,
+        "value": 0
+      },
+      "preventable_failure_recall": {
+        "numerator": 13,
+        "denominator": 13,
+        "value": 1
+      },
+      "structured_output_validity": {
+        "numerator": 36,
+        "denominator": 36,
+        "value": 1
+      },
+      "evidence_coverage": {
+        "numerator": 36,
+        "denominator": 36,
+        "value": 1
+      },
+      "decision_consistency": {
+        "numerator": 36,
+        "denominator": 36,
+        "value": 1
+      },
+      "semantic_detection_metrics": null,
+      "semantic_detection_reason": "Frozen findings bypass semantic detection; an independently adjudicated provider run is required.",
+      "provider_calls": 0,
+      "latency": {
+        "mean": 1.0555555555555556,
+        "p50": 1,
+        "p95": 4,
+        "unit": "ms",
+        "scope": "local offline replay; excludes network provider latency"
+      },
+      "failure_slices": {
+        "false_blocks": [],
+        "unsafe_passes": [],
+        "decision_mismatches": []
+      }
+    }
+  }
+}

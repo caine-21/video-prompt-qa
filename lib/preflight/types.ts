@@ -1,4 +1,4 @@
-export type PreflightDecision = "generate_ok" | "revise_first" | "needs_review" | "unknown";
+export type LegacyPreflightDecision = "generate_ok" | "revise_first" | "needs_review" | "unknown";
 
 export type PreflightDecisionBucket =
   | "ready_to_try"
@@ -29,7 +29,7 @@ export interface RawPreflightRecordLike {
 }
 
 export interface PreflightUserFacingResult {
-  decision: PreflightDecision;
+  decision: LegacyPreflightDecision;
   decision_bucket: PreflightDecisionBucket;
   display_label: string;
   plain_language_summary: string;

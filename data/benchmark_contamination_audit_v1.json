@@ -1,0 +1,51 @@
+{
+  "version": "benchmark_contamination_audit_v1",
+  "audited_at": "2026-08-10",
+  "scope": [
+    "semantic system prompt",
+    "semantic provider prompt",
+    "failure pattern catalog",
+    "preflight rubric",
+    "Gate 1 fixtures and frozen replay",
+    "Gate 2 dataset and matching labels"
+  ],
+  "verdict": "ACCEPTABLE_WITH_ENFORCED_BOUNDARIES",
+  "sources": [
+    {
+      "source": "Gate 2 expected_findings dataset",
+      "possible_contamination": "Contains case prompts and ground-truth findings.",
+      "severity": "CRITICAL",
+      "mitigation": "Evaluation builds a fresh PreflightRequest containing only prompt and neutral generation fields. Labels, case IDs, slices, and expected findings are never passed to the SemanticProvider interface."
+    },
+    {
+      "source": "Gate 1 frozen semantic replay",
+      "possible_contamination": "Constructs findings from benchmark labels and must never be reused as LIVE_SEMANTIC.",
+      "severity": "CRITICAL",
+      "mitigation": "Gate 2 uses a separate script, manifest, report namespace, and single real provider. POLICY_REPLAY and LIVE_SEMANTIC remain separate report sections."
+    },
+    {
+      "source": "prompt_case_seed_v1 legacy risk tags",
+      "possible_contamination": "Risk tags could disclose expected failure categories if the whole seed record reached the provider.",
+      "severity": "HIGH",
+      "mitigation": "Gate 2 dataset copies prompt text before the first run and contains no legacy risk-tag field. The live runner does not load prompt_case_seed_v1."
+    },
+    {
+      "source": "failure pattern catalog and preflight rubric",
+      "possible_contamination": "Pattern descriptions can resemble expected semantic findings.",
+      "severity": "MEDIUM",
+      "mitigation": "No tools or patterns are available during semantic detection. Pattern retrieval may run only after the model has returned findings and is not used by the finding matcher."
+    },
+    {
+      "source": "semantic system prompt categories",
+      "possible_contamination": "Lists general categories such as ambiguity and continuity.",
+      "severity": "LOW",
+      "mitigation": "The prompt contains no case ID, benchmark text, expected evidence span, finding description, or case-specific example. Generic task categories are part of the public task contract."
+    },
+    {
+      "source": "tests and fixtures",
+      "possible_contamination": "Synthetic test prompts could become few-shot answers if embedded in the runtime prompt.",
+      "severity": "MEDIUM",
+      "mitigation": "Runtime prompts contain no few-shot examples. Tests exercise providers through injected boundary implementations and are not imported by production runtime."
+    }
+  ]
+}

@@ -61,7 +61,7 @@ function renderResult(prompt, data) {
     <div class="dimensions">${dimsHtml}</div>
     ${improvementsHtml}
     <div class="footer">
-      <span>${data.provider?.toUpperCase() ?? "GROQ"} · ${new Date(data.timestamp).toLocaleTimeString()}</span>
+      <span>${data.provider?.toUpperCase() ?? "DEEPSEEK"} · ${new Date(data.timestamp).toLocaleTimeString()}</span>
       <a href="https://videopromptqa.netlify.app" target="_blank">Open full app ↗</a>
     </div>`;
 }

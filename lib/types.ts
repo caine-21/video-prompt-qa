@@ -1,4 +1,4 @@
-export type AIProvider = "groq" | "deepseek";
+export type AIProvider = "deepseek";
 
 export interface EvaluationDimension {
   name: string;
@@ -110,7 +110,7 @@ export type ProviderCompareResult = Result<CompareResult>;
 export type ProviderRewriteResult = Result<string>;
 
 export type TaskType = "evaluation" | "rewrite" | "compare" | "tournament";
-export type OrchestratorStrategy = "fallback" | "race" | "consensus";
+export type OrchestratorStrategy = "fallback" | "race" | "max_score_experiment";
 
 export interface TournamentMatchup {
   indexA: number;

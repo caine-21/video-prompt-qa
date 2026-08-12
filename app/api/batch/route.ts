@@ -3,17 +3,18 @@ import { evaluate } from "@/lib/evaluator";
 import { logEvaluation } from "@/lib/db";
 import type { AIProvider } from "@/lib/types";
 import { maxLength, rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
 const MAX_BATCH = 10;
 
-export async function POST(req: NextRequest) {
+async function handlePost(req: NextRequest) {
   try {
     const limited = rateLimit(req, "batch", 2);
     if (limited) return limited;
 
     const body = await req.json();
     const prompts: string[] = body.prompts;
-    const provider: AIProvider = body.provider ?? "groq";
+    const provider: AIProvider = "deepseek";
 
     if (!Array.isArray(prompts) || prompts.length === 0) {
       return NextResponse.json({ error: "prompts must be a non-empty array" }, { status: 400 });
@@ -57,4 +58,13 @@ export async function POST(req: NextRequest) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export function POST(req: NextRequest) {
+  return withApiObservability(req, {
+    route: "/api/batch",
+    feature: "batch",
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+  }, () => handlePost(req));
 }

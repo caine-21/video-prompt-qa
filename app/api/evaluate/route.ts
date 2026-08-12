@@ -3,8 +3,9 @@ import { evaluate } from "@/lib/evaluator";
 import { logEvaluation } from "@/lib/db";
 import type { EvaluateRequest, AIProvider } from "@/lib/types";
 import { maxLength, rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
-export async function POST(req: NextRequest) {
+async function handlePost(req: NextRequest) {
   try {
     const limited = rateLimit(req, "evaluate", 10);
     if (limited) return limited;
@@ -18,33 +19,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
-    const provider: AIProvider = body.provider ?? "groq";
+    const provider: AIProvider = "deepseek";
     const result = await evaluate(body.prompt.trim(), provider);
 
     if (!result.success) {
-      const fallback = result.provider !== provider;
       return NextResponse.json({
         error: result.error.message,
         errorType: result.error.type,
-        requested_provider: provider,
-        actual_provider: result.provider,
-        fallback,
-        ...(fallback ? { fallback_reason_code: result.fallbackReasonCode ?? result.error.type } : {}),
+        provider: result.provider,
       }, { status: 503 });
     }
 
     const dbId = await logEvaluation(result.data);
-    const fallback = result.provider !== provider;
-    const diagnostic = {
-      requested_provider: provider,
-      actual_provider: result.provider,
-      fallback,
-      ...(fallback ? { fallback_reason_code: result.fallbackReasonCode ?? "unknown" } : {}),
-    };
-    const response = dbId ? { ...result.data, dbId, ...diagnostic } : { ...result.data, ...diagnostic };
+    const response = dbId ? { ...result.data, dbId } : result.data;
     return NextResponse.json(response);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export function POST(req: NextRequest) {
+  return withApiObservability(req, {
+    route: "/api/evaluate",
+    feature: "evaluate",
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+  }, () => handlePost(req));
 }

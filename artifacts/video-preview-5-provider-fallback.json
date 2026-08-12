@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "suite": "video-provider-fallback-observation",
+  "base_url": "https://deploy-preview-2--videopromptqa.netlify.app",
+  "evidence_boundary": "real HTTP requests with synthetic prompts; no credentials or raw prompt text stored",
+  "health": {
+    "http_status": 200,
+    "provider": "groq",
+    "fallback_provider": "deepseek",
+    "model": "llama-3.3-70b-versatile"
+  },
+  "observations": [
+    {
+      "request": 1,
+      "http_status": 200,
+      "latency_ms": 4420,
+      "requested_provider": "groq",
+      "actual_provider": "groq",
+      "fallback": false
+    },
+    {
+      "request": 2,
+      "http_status": 503,
+      "latency_ms": 20583,
+      "requested_provider": "groq",
+      "actual_provider": "deepseek",
+      "fallback": true,
+      "fallback_reason_code": "rate_limit",
+      "error_type": "timeout"
+    }
+  ],
+  "six_request_soak": {
+    "count": 6,
+    "passed": 0,
+    "failed": 6,
+    "fallback_observed": 5,
+    "p95_ms": 25079,
+    "client_transport_timeout": 1
+  }
+}

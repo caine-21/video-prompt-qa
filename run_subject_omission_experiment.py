@@ -15,7 +15,7 @@ Vocab levels:
   V+  = moderate cinematic vocab
   V++ = maximum vocabulary density (G1 territory)
 
-Runs each prompt once through Groq / llama-3.3-70b-versatile.
+Runs each prompt once through DeepSeek / deepseek-v4-flash.
 Records ALL 5 dimension scores + overall + raw feedback text for each dimension.
 
 Usage:
@@ -33,11 +33,7 @@ if os.path.exists(".env"):
 elif os.path.exists("../rag-demo/.env"):
     load_dotenv("../rag-demo/.env")
 
-from groq import Groq
-
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found. Add it to .env in this directory.")
+from deepseek_client import deepseek_chat_json
 
 # Same system prompt as production evaluator (lib/providers/base.ts EVALUATION_SYSTEM_PROMPT)
 SYSTEM_PROMPT = """You are an expert AI video generation quality engineer.
@@ -146,17 +142,12 @@ EXPERIMENT_CASES = [
 
 # ── Runner ──────────────────────────────────────────────────────────────────────
 
-def evaluate(prompt: str, client: Groq) -> dict:
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f'Evaluate this video generation prompt:\n\n"{prompt}"'},
-        ],
-        response_format={"type": "json_object"},
+def evaluate(prompt: str) -> dict:
+    text = deepseek_chat_json(
+        SYSTEM_PROMPT,
+        f'Evaluate this video generation prompt:\n\n"{prompt}"',
         max_tokens=1024,
     )
-    text = completion.choices[0].message.content or "{}"
     parsed = json.loads(text)
 
     dims = parsed.get("dimensions", [])
@@ -173,12 +164,11 @@ def evaluate(prompt: str, client: Groq) -> dict:
 
 
 def run_experiment(output_path: str | None = None):
-    client = Groq(api_key=GROQ_API_KEY)
     results = []
 
     print(f"\n{'='*70}")
     print("  Subject Omission Attack Experiment — video-prompt-qa")
-    print("  Model: Groq / llama-3.3-70b-versatile")
+    print("  Model: DeepSeek / deepseek-v4-flash")
     print(f"{'='*70}\n")
     print("  Research question: Does vocabulary density inflate scores")
     print("  even when the subject is absent or fake?\n")
@@ -194,7 +184,7 @@ def run_experiment(output_path: str | None = None):
         print(f"  Hypothesis : {case['hypothesis']}")
 
         try:
-            result = evaluate(case["prompt"], client)
+            result = evaluate(case["prompt"])
             overall = result["overall"]
             dims = result["dimensions"]
             feedback = result["feedback"]

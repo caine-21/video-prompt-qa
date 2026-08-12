@@ -5,8 +5,11 @@ import {
   buildEvaluationResult,
   buildCompareResult,
   buildRewriteUserMessage,
+  parseRewriteResult,
+  fetchWithTimeout,
+  DEFAULT_PROVIDER_TIMEOUT_MS,
   safeProviderCall,
-} from "./base";
+} from "./base.ts";
 import type { ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult } from "@/lib/types";
 
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
@@ -24,7 +27,7 @@ async function chatComplete(
   maxTokens: number,
   jsonMode = true
 ): Promise<string> {
-  const res = await fetch(DEEPSEEK_API_URL, {
+  const res = await fetchWithTimeout(DEEPSEEK_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +43,7 @@ async function chatComplete(
       // rewrite returns plain text — json_object mode makes DeepSeek reject non-JSON output (invalid_response)
       ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
     }),
-  });
+  }, DEFAULT_PROVIDER_TIMEOUT_MS);
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
@@ -61,9 +64,7 @@ export function evaluateWithDeepSeek(prompt: string): Promise<ProviderEvaluation
       `Evaluate this video generation prompt:\n\n"${prompt}"`,
       4096
     );
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON found in DeepSeek response");
-    return buildEvaluationResult(prompt, "deepseek", JSON.parse(jsonMatch[0]));
+    return buildEvaluationResult(prompt, "deepseek", JSON.parse(text));
   }, "deepseek", "evaluation");
 }
 
@@ -79,7 +80,7 @@ export function rewriteWithDeepSeek(
       512,
       false
     );
-    return text.trim();
+    return parseRewriteResult(text);
   }, "deepseek", "rewrite");
 }
 
@@ -90,8 +91,6 @@ export function compareWithDeepSeek(promptA: string, promptB: string): Promise<P
       `Compare these two video generation prompts:\n\nPrompt A: "${promptA}"\n\nPrompt B: "${promptB}"`,
       512
     );
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON found in DeepSeek response");
-    return buildCompareResult(promptA, promptB, "deepseek", JSON.parse(jsonMatch[0]));
+    return buildCompareResult(promptA, promptB, "deepseek", JSON.parse(text));
   }, "deepseek", "compare");
 }

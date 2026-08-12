@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getStats } from "@/lib/db";
+import { withApiObservability } from "@/lib/observability";
 
-export async function GET() {
+async function handleGet() {
   const stats = await getStats();
   if (!stats) {
     return NextResponse.json(
@@ -10,4 +11,11 @@ export async function GET() {
     );
   }
   return NextResponse.json(stats);
+}
+
+export function GET(request: Request) {
+  return withApiObservability(request, {
+    route: "/api/stats",
+    feature: "stats",
+  }, handleGet);
 }

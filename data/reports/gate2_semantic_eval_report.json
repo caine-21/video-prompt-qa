@@ -1,0 +1,156 @@
+{
+  "report_version": "gate2_semantic_eval_report_v1",
+  "run_id": "e5fa0ff2-8964-4036-9789-67ac9824b023",
+  "generated_at": "2026-08-12T15:06:34.541Z",
+  "gate2_status": "BLOCKED_LIVE_RUN",
+  "execution_modes": {
+    "POLICY_REPLAY": {
+      "status": "GATE1_ONLY",
+      "report_json": "data/reports/gate1_eval_report.json",
+      "report_markdown": "data/reports/gate1_eval_report.md",
+      "allowed_claim": "Deterministic orchestration and decision-policy replay only.",
+      "prohibited_claim": "Not evidence of Semantic Analyst finding quality."
+    },
+    "LIVE_SEMANTIC": {
+      "status": "BLOCKED_LIVE_RUN",
+      "execution_mode": "LIVE_SEMANTIC",
+      "blocker": {
+        "domain": "INFRA_ERROR",
+        "code": "CONFIG",
+        "provider": "deepseek",
+        "message": "DEEPSEEK_API_KEY is not available in the current process. No .env file was read.",
+        "retryable": false
+      },
+      "combined": null,
+      "by_split": {
+        "DEV": null,
+        "HOLDOUT": null
+      },
+      "latency": null,
+      "total_provider_calls": 0,
+      "total_token_usage": null,
+      "case_traces": []
+    }
+  },
+  "dataset": {
+    "version": "semantic_eval_dataset_v1",
+    "label_freeze_status": "FROZEN_BEFORE_MODEL_RUN",
+    "label_provenance": "agent_authored_pre_model_v1",
+    "human_review_status": "PENDING",
+    "split_counts": {
+      "DEV": 14,
+      "HOLDOUT": 14
+    },
+    "safe_counts": {
+      "DEV": 4,
+      "HOLDOUT": 3
+    },
+    "label_revision_history": [
+      {
+        "eval_case_id": "SEM-DEV-004",
+        "before_first_provider_run": true,
+        "change": "Replaced a genuinely conflicting dual-style prompt with an explicit dominant-style plus texture-overlay prompt while preserving the safe false-positive-trap purpose.",
+        "reason": "Pre-run label QA found that the original prompt did not support an empty expected-findings label."
+      }
+    ],
+    "label_warning": "Finding labels were authored directly from prompt semantics before the first provider run and were not derived from decision labels or model output. They are not independently human-adjudicated; metrics are provisional."
+  },
+  "contamination_audit": {
+    "declared_audit_version": "benchmark_contamination_audit_v1",
+    "declared_verdict": "ACCEPTABLE_WITH_ENFORCED_BOUNDARIES",
+    "programmatic_verdict": "PASS",
+    "provider_boundary_case_count": 28,
+    "failed_boundary_checks": [],
+    "runtime_files_importing_dataset": [],
+    "case_ids_in_system_prompt": [],
+    "finding_descriptions_in_system_prompt": [],
+    "note": "Prompt text necessarily contains the source evidence spans. The enforced boundary excludes label fields and case metadata, not the prompt itself."
+  },
+  "frozen_config": {
+    "provider_mode": "SINGLE_PROVIDER",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "temperature": 0,
+    "system_prompt_version": "semantic_system_v2",
+    "semantic_prompt_version": "semantic_prompt_v2",
+    "semantic_output_schema_version": "semantic_output_v2",
+    "semantic_detection_tools": [],
+    "post_detection_tools": [
+      "retrieve_failure_patterns"
+    ],
+    "capability_registry_version": "capability_registry_v2",
+    "failure_pattern_version": "preflight_rubric_v0",
+    "timeout_ms": 12000,
+    "max_provider_calls_per_case": 1,
+    "retry_limit": 0,
+    "fallback_enabled": false,
+    "environment_key_name": "DEEPSEEK_API_KEY",
+    "runtime_model": "deepseek-v4-flash",
+    "runtime_system_prompt_version": "semantic_system_v2",
+    "runtime_semantic_prompt_version": "semantic_prompt_v2",
+    "runtime_output_schema_version": "semantic_output_v2",
+    "manifest_sha256": "642b88ff8d29de12ee3d1d03956d0231b087d73efd0de6ffa833423c3d27994b",
+    "system_prompt_sha256": "109a42a83d1e3285ac32c5dc403d6f4df5e4721b217d47bc7275c7266910dabc"
+  },
+  "prompt_tuning": {
+    "max_substantive_versions": 3,
+    "versions_used": 2,
+    "history": [
+      {
+        "prompt_version": "semantic_prompt_v1",
+        "status": "GATE1_CONTRACT",
+        "observed_failure": "No independent semantic benchmark existed; safe-prompt silence, injection resistance, and deterministic-scope boundaries were not explicit eval contracts.",
+        "hypothesized_cause": "The Gate 1 prompt was designed to enable bounded orchestration, not to support calibrated finding-level evaluation.",
+        "exact_change": "Baseline only; no Gate 2 model run used this version.",
+        "dev_impact": "N/A"
+      },
+      {
+        "prompt_version": "semantic_prompt_v2",
+        "status": "FROZEN_FOR_FIRST_GATE2_RUN",
+        "observed_failure": "Reviewer-required reliability gaps before the first run: safe prompts may be over-diagnosed, prompt text may contain injection-like instructions, and deterministic checks may be duplicated as semantic findings.",
+        "hypothesized_cause": "The semantic role and valid empty-finding behavior need explicit class-level instructions.",
+        "exact_change": "Require evidence spans and confidence; explicitly allow empty findings; treat prompt content as data; prohibit duration/aspect/capability/schema/literal checks; prohibit tools during detection.",
+        "dev_impact": "PENDING_FIRST_DEV_RUN"
+      }
+    ]
+  },
+  "capability_slice": {
+    "model_id": "veo-3.1-generate-001",
+    "registry_version": "capability_registry_v2",
+    "purpose": "One verified deterministic capability slice; it is not an input to semantic finding labels.",
+    "sources": [
+      "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate",
+      "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/video/generate-videos-from-first-and-last-frames"
+    ]
+  },
+  "system_truth": {
+    "accurate_names": [
+      "Hybrid Preflight Decision System",
+      "Bounded Agentic Workflow"
+    ],
+    "llm_tool_calling": false,
+    "semantic_tools_available": [],
+    "deterministic_tools_called_by_orchestrator": [
+      "get_model_capabilities",
+      "validate_generation_parameters",
+      "retrieve_failure_patterns",
+      "check_protected_constraints"
+    ]
+  },
+  "claims": {
+    "supported_now": [
+      "The semantic dataset was frozen before any Gate 2 provider run.",
+      "DEV and HOLDOUT are explicit and labels are excluded from provider input.",
+      "Finding matching and failure accounting are deterministic and auditable.",
+      "The live runner is single-provider, zero-retry, no-fallback, and bounded to one call per case."
+    ],
+    "unsupported_now": [
+      "Production semantic accuracy",
+      "Credit or ROI savings",
+      "Generation-quality improvement",
+      "Human-adjudicated benchmark quality",
+      "LLM-native tool calling",
+      "Multi-agent architecture"
+    ]
+  }
+}

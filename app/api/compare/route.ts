@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { compare } from "@/lib/evaluator";
 import type { CompareRequest, AIProvider } from "@/lib/types";
 import { maxLength, rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
-export async function POST(req: NextRequest) {
+async function handlePost(req: NextRequest) {
   try {
     const limited = rateLimit(req, "compare", 8);
     if (limited) return limited;
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Each prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
-    const provider: AIProvider = body.provider ?? "groq";
+    const provider: AIProvider = "deepseek";
     const result = await compare(body.promptA.trim(), body.promptB.trim(), provider);
 
     if (!result.success) {
@@ -36,4 +37,13 @@ export async function POST(req: NextRequest) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export function POST(req: NextRequest) {
+  return withApiObservability(req, {
+    route: "/api/compare",
+    feature: "compare",
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+  }, () => handlePost(req));
 }

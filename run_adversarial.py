@@ -9,7 +9,7 @@ Usage:
   python run_adversarial.py
   python run_adversarial.py --output results.json
 
-Reads GROQ_API_KEY from .env in this directory, or falls back to ../rag-demo/.env
+Reads DEEPSEEK_API_KEY from .env in this directory, or falls back to ../rag-demo/.env
 """
 
 import sys, os, json, time, argparse, statistics
@@ -23,11 +23,7 @@ if os.path.exists(".env"):
 elif os.path.exists("../rag-demo/.env"):
     load_dotenv("../rag-demo/.env")
 
-from groq import Groq
-
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found. Add it to .env in this directory.")
+from deepseek_client import deepseek_chat_json
 
 SYSTEM_PROMPT = """You are an expert AI video generation quality engineer.
 Evaluate video generation prompts across these dimensions:
@@ -141,21 +137,12 @@ TEST_CASES = [
 
 # ── Runner ─────────────────────────────────────────────────────────────────────
 
-def evaluate(prompt: str, client: Groq) -> dict:
+def evaluate(prompt: str) -> dict:
     # Empty prompt guard — send a placeholder so the API doesn't reject it
     user_content = f'Evaluate this video generation prompt:\n\n"{prompt}"' if prompt.strip() \
         else 'Evaluate this video generation prompt:\n\n"[EMPTY PROMPT]"'
 
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_content},
-        ],
-        response_format={"type": "json_object"},
-        max_tokens=1024,
-    )
-    text = completion.choices[0].message.content or "{}"
+    text = deepseek_chat_json(SYSTEM_PROMPT, user_content, max_tokens=1024)
     parsed = json.loads(text)
 
     scores = [d["score"] for d in parsed.get("dimensions", [])]
@@ -171,11 +158,10 @@ def evaluate(prompt: str, client: Groq) -> dict:
 
 
 def run_all(output_path: str | None = None):
-    client = Groq(api_key=GROQ_API_KEY)
     results = []
 
     print(f"\n{'='*65}")
-    print("  Adversarial Evaluation — video-prompt-qa  (Groq / llama-3.3-70b)")
+    print("  Adversarial Evaluation — video-prompt-qa  (DeepSeek / deepseek-v4-flash)")
     print(f"{'='*65}\n")
 
     for case in TEST_CASES:
@@ -184,7 +170,7 @@ def run_all(output_path: str | None = None):
         print(f"  Expect   : {case['expectation']}")
 
         try:
-            result = evaluate(case["prompt"], client)
+            result = evaluate(case["prompt"])
             print(f"  Overall  : {result['overall']}/10")
             dim_str = "  ".join(f"{k[:3]}={v}" for k, v in result["dimensions"].items())
             print(f"  Dims     : {dim_str}")
