@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import type { EvaluationResult, CompareResult, TournamentResult, AIProvider, HistoryEntry, HumanFeedback } from "@/lib/types";
+import { trackBetaEvent, type BetaMode } from "@/lib/beta-telemetry";
 import { useLanguage } from "@/lib/lang-context";
 import { readShareFromURL } from "@/lib/share";
 import EvaluatePanel from "@/components/EvaluatePanel";
@@ -56,14 +57,16 @@ export default function ModernWorkspace() {
         const storedHistory = localStorage.getItem(HISTORY_KEY);
         if (storedHistory) setHistory(JSON.parse(storedHistory));
         const storedUses = Number(localStorage.getItem(FREE_TRIAL_KEY) ?? "0");
-        if (Number.isFinite(storedUses)) setFreeUses(Math.min(FREE_TRIAL_LIMIT, Math.max(0, storedUses)));
+        const initialUses = Number.isFinite(storedUses) ? Math.min(FREE_TRIAL_LIMIT, Math.max(0, storedUses)) : 0;
+        setFreeUses(initialUses);
         const storedAccount = localStorage.getItem(ACCOUNT_KEY);
         if (storedAccount) setAccountEmail(storedAccount);
+        trackBetaEvent("beta_landed", { trial_remaining: FREE_TRIAL_LIMIT - initialUses });
       } catch { /* ignore local browser storage failures */ }
 
       const shared = readShareFromURL();
       if (!shared) return;
-      setProvider(shared.provider);
+      setProvider("deepseek");
       setEvalResult(shared.improvedResult ?? shared.result);
       if (shared.improvedResult) setDelta({ originalResult: shared.result });
       if (shared.demoMode) {
@@ -98,6 +101,7 @@ export default function ModernWorkspace() {
 
   function ensureRunAccess() {
     if (hasAccount || freeUses < FREE_TRIAL_LIMIT) return true;
+    trackBetaEvent("beta_gate_shown", { trial_remaining: 0 });
     setShowAccountGate(true);
     return false;
   }
@@ -109,7 +113,38 @@ export default function ModernWorkspace() {
     setAccountEmail(email);
     setAccountEmailInput("");
     setShowAccountGate(false);
+    trackBetaEvent("beta_gate_submitted", { trial_remaining: remainingFreeRuns });
     try { localStorage.setItem(ACCOUNT_KEY, email); } catch { /* ignore */ }
+  }
+
+  function startBetaRun(mode: BetaMode): number {
+    trackBetaEvent("beta_run_started", { mode, provider, trial_remaining: remainingFreeRuns });
+    return Date.now();
+  }
+
+  function completeBetaRun(mode: BetaMode, startedAt: number, data: { actual_provider?: string; provider?: string; fallback?: boolean; overallScore?: number }) {
+    trackBetaEvent("beta_run_completed", {
+      mode,
+      provider,
+      actual_provider: data.actual_provider ?? data.provider,
+      fallback: data.fallback,
+      latency_ms: Date.now() - startedAt,
+      trial_remaining: Math.max(0, remainingFreeRuns - 1),
+      score: data.overallScore,
+      http_status: 200,
+    });
+  }
+
+  function failBetaRun(mode: BetaMode, startedAt: number, status: number, errorType?: string) {
+    const safeErrorType = errorType && /^[a-zA-Z0-9_:-]{1,50}$/.test(errorType) ? errorType : undefined;
+    trackBetaEvent("beta_run_failed", {
+      mode,
+      provider,
+      latency_ms: Date.now() - startedAt,
+      trial_remaining: remainingFreeRuns,
+      http_status: status,
+      error_type: safeErrorType ?? (status === 429 ? "rate_limit" : status >= 500 ? "provider_failure" : "request_failed"),
+    });
   }
 
   function handleFeedback(feedback: HumanFeedback) {
@@ -144,7 +179,7 @@ export default function ModernWorkspace() {
     URL.revokeObjectURL(url);
   }
 
-  function setProviderNotice(data: { provider?: AIProvider; actual_provider?: AIProvider }) {
+  function setProviderNotice(data: { provider?: string; actual_provider?: string }) {
     const actualProvider = data.actual_provider ?? data.provider;
     if (actualProvider && actualProvider !== provider) {
       setFallbackNotice(`${provider.toUpperCase()} unavailable — result from ${actualProvider.toUpperCase()}`);
@@ -153,53 +188,65 @@ export default function ModernWorkspace() {
 
   async function handleEvaluate(prompt: string) {
     if (!ensureRunAccess()) return;
+    const startedAt = startBetaRun("evaluate");
+    let failureTracked = false;
     setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null); setFallbackNotice(null);
     try {
       const res = await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, provider }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Request failed");
+      if (!res.ok) { failureTracked = true; failBetaRun("evaluate", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
       setProviderNotice(data); setEvalResult(data); saveToHistory(data); consumeFreeRun();
-    } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
+      completeBetaRun("evaluate", startedAt, data);
+    } catch (e) { if (!failureTracked) failBetaRun("evaluate", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
   }
 
   async function handleCompare(promptA: string, promptB: string) {
     if (!ensureRunAccess()) return;
+    const startedAt = startBetaRun("compare");
+    let failureTracked = false;
     setLoading(true); setError(null); setCompareResult(null); setFallbackNotice(null);
     try {
       const res = await fetch("/api/compare", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ promptA, promptB, provider }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Request failed");
+      if (!res.ok) { failureTracked = true; failBetaRun("compare", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
       setProviderNotice(data); setCompareResult(data); consumeFreeRun();
-    } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
+      completeBetaRun("compare", startedAt, data);
+    } catch (e) { if (!failureTracked) failBetaRun("compare", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
   }
 
   async function handleTournament(prompts: string[]) {
     if (!ensureRunAccess()) return;
+    const startedAt = startBetaRun("tournament");
+    let failureTracked = false;
     setLoading(true); setError(null); setTournamentResult(null); setFallbackNotice(null);
     try {
       const res = await fetch("/api/tournament", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompts, provider }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Request failed");
+      if (!res.ok) { failureTracked = true; failBetaRun("tournament", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
       setProviderNotice(data); setTournamentResult(data); consumeFreeRun();
-    } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
+      completeBetaRun("tournament", startedAt, data);
+    } catch (e) { if (!failureTracked) failBetaRun("tournament", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
   }
 
   async function handleImprove(result: EvaluationResult) {
     if (!ensureRunAccess()) return;
+    const startedAt = startBetaRun("rewrite");
+    let failureTracked = false;
     setImproving(true); setError(null);
     try {
       const rr = await fetch("/api/rewrite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: result.prompt, dimensions: result.dimensions, improvements: result.improvements, provider }) });
       const rd = await rr.json();
-      if (!rr.ok) throw new Error(rd.error);
+      if (!rr.ok) { failureTracked = true; failBetaRun("rewrite", startedAt, rr.status, rd.errorType); throw new Error(rd.error); }
       const er = await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: rd.improvedPrompt, provider }) });
       const newResult = await er.json();
-      if (!er.ok) throw new Error(newResult.error);
+      if (!er.ok) { failureTracked = true; failBetaRun("rewrite", startedAt, er.status, newResult.errorType); throw new Error(newResult.error); }
       const deltaScore = Math.round((newResult.overallScore - result.overallScore) * 10) / 10;
       setDelta({ originalResult: result }); setEvalResult(newResult); setPendingFeedbackId(saveToHistory(newResult, deltaScore)); consumeFreeRun();
-    } catch (e) { setError(e instanceof Error ? e.message : "Improvement failed"); }
+      completeBetaRun("rewrite", startedAt, newResult);
+    } catch (e) { if (!failureTracked) failBetaRun("rewrite", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Improvement failed"); }
     finally { setImproving(false); }
   }
 
