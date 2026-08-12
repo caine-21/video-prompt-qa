@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { normalizeProviderError } from "../lib/providers/base.ts";
-import { buildDeepSeekRequestBody } from "../lib/providers/deepseek.ts";
+import {
+  buildDeepSeekRequestBody,
+  DEEPSEEK_PROVIDER_RETRIES,
+  DEEPSEEK_PROVIDER_TIMEOUT_MS,
+} from "../lib/providers/deepseek.ts";
 
 function errorWithStatus(message, status) {
   return Object.assign(new Error(message), { status });
@@ -33,4 +37,6 @@ test("DeepSeek bounded requests explicitly disable V4 Flash thinking", () => {
   assert.deepEqual(body.thinking, { type: "disabled" });
   assert.equal("response_format" in body, false);
   assert.equal(JSON.stringify(body).includes("DEEPSEEK_API_KEY"), false);
+  assert.equal(DEEPSEEK_PROVIDER_TIMEOUT_MS, 20_000);
+  assert.equal(DEEPSEEK_PROVIDER_RETRIES, 0);
 });

@@ -7,13 +7,14 @@ import {
   buildRewriteUserMessage,
   parseRewriteResult,
   fetchWithTimeout,
-  DEFAULT_PROVIDER_TIMEOUT_MS,
   safeProviderCall,
 } from "./base.ts";
 import type { ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult } from "@/lib/types";
 
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 const DEEPSEEK_MODEL   = "deepseek-v4-flash";
+export const DEEPSEEK_PROVIDER_TIMEOUT_MS = 20_000;
+export const DEEPSEEK_PROVIDER_RETRIES = 0;
 
 export function buildDeepSeekRequestBody(
   system: string,
@@ -55,7 +56,7 @@ async function chatComplete(
       Authorization: `Bearer ${getApiKey()}`,
     },
     body: JSON.stringify(buildDeepSeekRequestBody(system, userContent, maxTokens, jsonMode)),
-  }, DEFAULT_PROVIDER_TIMEOUT_MS);
+  }, DEEPSEEK_PROVIDER_TIMEOUT_MS);
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
@@ -77,7 +78,7 @@ export function evaluateWithDeepSeek(prompt: string): Promise<ProviderEvaluation
       4096
     );
     return buildEvaluationResult(prompt, "deepseek", JSON.parse(text));
-  }, "deepseek", "evaluation");
+  }, "deepseek", "evaluation", DEEPSEEK_PROVIDER_RETRIES, 1, DEEPSEEK_PROVIDER_TIMEOUT_MS);
 }
 
 export function rewriteWithDeepSeek(
@@ -93,7 +94,7 @@ export function rewriteWithDeepSeek(
       false
     );
     return parseRewriteResult(text);
-  }, "deepseek", "rewrite");
+  }, "deepseek", "rewrite", DEEPSEEK_PROVIDER_RETRIES, 1, DEEPSEEK_PROVIDER_TIMEOUT_MS);
 }
 
 export function compareWithDeepSeek(promptA: string, promptB: string): Promise<ProviderCompareResult> {
@@ -104,5 +105,5 @@ export function compareWithDeepSeek(promptA: string, promptB: string): Promise<P
       512
     );
     return buildCompareResult(promptA, promptB, "deepseek", JSON.parse(text));
-  }, "deepseek", "compare");
+  }, "deepseek", "compare", DEEPSEEK_PROVIDER_RETRIES, 1, DEEPSEEK_PROVIDER_TIMEOUT_MS);
 }
