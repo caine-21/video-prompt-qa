@@ -19,26 +19,27 @@ import ShareButton from "@/components/ShareButton";
 import DemoModeBanner from "@/components/DemoModeBanner";
 import HistoryPanel from "@/components/HistoryPanel";
 import CalibrationPanel from "@/components/CalibrationPanel";
+import ModernWorkspace from "@/components/ModernWorkspace";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
+const PROVIDERS: AIProvider[] = ["deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const MAX_HISTORY = 20;
 
 export default function Home() {
   return (
     <ClientProviders>
-      <HomeInner />
+      <ModernWorkspace />
     </ClientProviders>
   );
 }
 
-function HomeInner() {
+export function HomeInner() {
   const { t, lang, toggleLang } = useLanguage();
 
   const [tab, setTab]                     = useState<Tab>("evaluate");
-  const [provider, setProvider]           = useState<AIProvider>("groq");
+  const [provider, setProvider]           = useState<AIProvider>("deepseek");
   const [evalResult, setEvalResult]       = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult]       = useState<CompareResult | null>(null);
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);
