@@ -16,7 +16,7 @@
 | 字段 | 值 |
 |---|---|
 | Project | video-prompt-qa（视频 prompt 质量评估器） |
-| Canonical commit | `3362021`（branch `master`，HEAD = "feat: add preflight core adapter"） |
+| Canonical commit | `c775cefc`（branch `master`，merged PR #2: public-beta observability；INC-008 mitigation is pending in a follow-up branch） |
 | Verified date | 2026-08-07 |
 | Repository status | 工作树干净（`git status` 为空） |
 | Current architecture label | LLM scoring pipeline（单次 LLM 打分 + 确定性聚合） |
@@ -131,7 +131,7 @@
 - 无 CI 与真实视频生成对照；`npm run test:preflight` 已提供本地回归测试，部分 `tests/` 目录仍是结果与 fixtures。
 - 无真实视频生成对照：系统完全不调用 Sora/Kling/Pika 等，modelFit 判断无真实验证。
 - Subject Gate 是 prompt 指令非代码强制；持久验证显示未达标 + JSON 契约脆弱（400 崩溃）。
-- 历史 canonical 记录曾捕获 README 与代码漂移；当前 runtime 已在 `037a465` 收敛为 DeepSeek-only，旧 Groq 记录保留为 historical evidence。
+- 历史 canonical 记录曾捕获 README 与代码漂移；当前 runtime 已在 `037a465` 收敛为 DeepSeek-only，`c775cefc` 将 public-beta observability 合入 `master`，旧 Groq 记录保留为 historical evidence。
 - preflight（风险分类/生成前检查）是离线研究轨，未接入 UI/API。
 - 36 条 seed 中 generate_ok=0——研究轨里没有一条「可以尝试」的样本，需要更广校准（UNRESOLVED 的校准缺口）。
 - 当前指标只能说明：在固定 prompt 上模型评分的行为模式（词汇密度主导）与 gate 的局部效果。

@@ -15,6 +15,27 @@ import type { ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteRe
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 const DEEPSEEK_MODEL   = "deepseek-v4-flash";
 
+export function buildDeepSeekRequestBody(
+  system: string,
+  userContent: string,
+  maxTokens: number,
+  jsonMode = true,
+): Record<string, unknown> {
+  return {
+    model: DEEPSEEK_MODEL,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: userContent },
+    ],
+    max_tokens: maxTokens,
+    // This is a bounded scoring/rewrite pipeline, not an open-ended reasoning task.
+    // Explicitly disable V4 Flash thinking to keep the provider within the route budget.
+    thinking: { type: "disabled" },
+    // rewrite returns plain text — json_object mode makes DeepSeek reject non-JSON output
+    ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
+  };
+}
+
 function getApiKey(): string {
   const key = process.env.DEEPSEEK_API_KEY;
   if (!key) throw new Error("DEEPSEEK_API_KEY is not set");
@@ -33,16 +54,7 @@ async function chatComplete(
       "Content-Type": "application/json",
       Authorization: `Bearer ${getApiKey()}`,
     },
-    body: JSON.stringify({
-      model: DEEPSEEK_MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user",   content: userContent },
-      ],
-      max_tokens: maxTokens,
-      // rewrite returns plain text — json_object mode makes DeepSeek reject non-JSON output (invalid_response)
-      ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
-    }),
+    body: JSON.stringify(buildDeepSeekRequestBody(system, userContent, maxTokens, jsonMode)),
   }, DEFAULT_PROVIDER_TIMEOUT_MS);
 
   if (!res.ok) {
