@@ -10,7 +10,7 @@ import {
 import type { ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult } from "@/lib/types";
 
 const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
-const DEEPSEEK_MODEL   = "deepseek-chat";
+const DEEPSEEK_MODEL   = "deepseek-v4-flash";
 
 function getApiKey(): string {
   const key = process.env.DEEPSEEK_API_KEY;
