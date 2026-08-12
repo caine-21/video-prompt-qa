@@ -1,25 +1,41 @@
 export type BetaMode = "evaluate" | "compare" | "tournament" | "rewrite";
 
 export type BetaEventName =
-  | "beta_landed"
-  | "beta_run_started"
-  | "beta_run_completed"
-  | "beta_run_failed"
+  | "beta_session_start"
+  | "preflight_started"
+  | "preflight_succeeded"
+  | "preflight_failed"
+  | "compare_started"
+  | "compare_completed"
+  | "compare_failed"
+  | "tournament_started"
+  | "tournament_completed"
+  | "tournament_failed"
+  | "rewrite_requested"
+  | "rewrite_copied"
+  | "rewrite_re_evaluated"
+  | "rewrite_failed"
   | "beta_gate_shown"
-  | "beta_gate_submitted"
-  | "beta_history_opened";
+  | "beta_gate_completed"
+  | "beta_history_opened"
+  | "feedback_submitted";
 
 export interface BetaEventProperties {
   mode?: BetaMode;
+  operation?: BetaMode | "feedback";
   provider?: string;
-  latency_ms?: number;
+  request_id?: string;
+  duration_ms?: number;
   trial_remaining?: number;
   http_status?: number;
   error_type?: string;
-  score?: number;
+  score_bucket?: "0-4" | "5-6" | "7-8" | "9-10";
+  prompt_length_bucket?: "0" | "1-120" | "121-500" | "501-1000" | "1001-2000" | "2001-8000";
+  feedback?: "yes" | "no";
 }
 
 const SESSION_KEY = "vpqa_beta_session_v1";
+const CLIENT_VERSION = "web-v1.4";
 
 function getSessionId(): string {
   try {
@@ -42,6 +58,7 @@ export function trackBetaEvent(event: BetaEventName, properties: BetaEventProper
   const payload = JSON.stringify({
     event,
     session_id: getSessionId(),
+    client_version: CLIENT_VERSION,
     client_timestamp: new Date().toISOString(),
     ...properties,
   });

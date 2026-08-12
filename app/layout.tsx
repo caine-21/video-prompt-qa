@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VideoPromptQA — Replace prompt intuition with repeatable experiments",
-  description: "Discover prompt failures before generation. An experiment in AI evaluation reliability.",
+  title: "VideoPromptQA — Preflight checks for video prompts",
+  description: "Check video-generation prompts for clarity, motion, consistency and feasibility before spending generation credits.",
+  openGraph: {
+    title: "VideoPromptQA — Preflight checks for video prompts",
+    description: "Check video-generation prompts before spending generation credits.",
+    type: "website",
+    url: "https://videopromptqa.netlify.app/",
+  },
 };
 
 export default function RootLayout({

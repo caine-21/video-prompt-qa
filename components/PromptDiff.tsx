@@ -44,6 +44,7 @@ interface Props {
   newPrompt: string;
   originalAnatomy?: AnatomyComponent[];
   newAnatomy?: AnatomyComponent[];
+  onCopy?: () => void;
 }
 
 const STATUS_COLOR: Record<string, string> = {
@@ -64,7 +65,7 @@ const STATUS_ARROW: Record<string, string> = {
   "absent→absent":   "✗ still missing",
 };
 
-export default function PromptDiff({ originalPrompt, newPrompt, originalAnatomy, newAnatomy }: Props) {
+export default function PromptDiff({ originalPrompt, newPrompt, originalAnatomy, newAnatomy, onCopy }: Props) {
   const tokens = diffWords(originalPrompt, newPrompt);
   const addedCount   = tokens.filter(t => t.type === "added").length;
   const removedCount = tokens.filter(t => t.type === "removed").length;
@@ -87,9 +88,10 @@ export default function PromptDiff({ originalPrompt, newPrompt, originalAnatomy,
     <div className="neo-card">
       <div className="neo-bar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span>Prompt Diff — What Changed</span>
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", opacity: 0.7 }}>
-          +{addedCount} words · -{removedCount} words
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", opacity: 0.7 }}>+{addedCount} words · -{removedCount} words</span>
+          <button type="button" className="text-action" onClick={() => { void navigator.clipboard?.writeText(newPrompt); onCopy?.(); }}>Copy rewrite</button>
+        </div>
       </div>
 
       {/* Word-level diff */}

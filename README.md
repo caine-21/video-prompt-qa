@@ -24,7 +24,7 @@ It became an experiment in evaluator reliability.
 
 **[Try it live → https://videopromptqa.netlify.app/](https://videopromptqa.netlify.app/)**
 
-> ⚠️ Note: This demo calls real LLM APIs. First response takes 5–10 seconds. No signup required. Public requests are rate-limited to protect the free provider budget.
+> ⚠️ Note: This beta calls a real DeepSeek API. A first response can take roughly 10–20 seconds. No account or payment is required; the anonymous preview is rate-limited to protect the free provider budget.
 
 ## Who this is for
 
@@ -36,7 +36,7 @@ It became an experiment in evaluator reliability.
 
 1. Paste any video prompt
 2. Submit the prompt to the DeepSeek evaluator, then compare it with a second prompt head-to-head
-3. Get a score across 5 dimensions + specific rewrite suggestions in ~6 seconds
+3. Get a score across 5 dimensions + specific rewrite suggestions in one bounded DeepSeek request
 
 **5 evaluation dimensions:**
 
@@ -52,7 +52,7 @@ It became an experiment in evaluator reliability.
 
 - **Why 5 orthogonal dimensions, not a single score:** Each dimension maps to a distinct failure mode. A single score hides which aspect to fix. This forces the user to address the actual root cause.
 - **Why model fit is evidence-based:** The evaluator scores prompt-to-model fit against a fixed profile of Sora 2, Veo 3.1, Runway Gen-4.5, and MiniMax Hailuo 2.3. It is a recommendation layer, not a claim that this app calls those generation APIs.
-- **Why 18 edge case fixtures instead of automated tests:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges. They're the spec, not a test suite.
+- **Why 18 edge case fixtures:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges — and are complemented by automated preflight, observability, and contract tests.
 
 ## Quick start
 

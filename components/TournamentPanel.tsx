@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useLanguage } from "@/lib/lang-context";
 
 interface Props {
   onSubmit: (prompts: string[]) => void;
@@ -18,7 +17,6 @@ const MAX_PROMPTS = 5;
 const MIN_PROMPTS = 2;
 
 export default function TournamentPanel({ onSubmit, loading }: Props) {
-  const { t } = useLanguage();
   const [prompts, setPrompts] = useState<string[]>(DEFAULTS);
 
   function update(i: number, val: string) {
@@ -35,68 +33,26 @@ export default function TournamentPanel({ onSubmit, loading }: Props) {
 
   const canSubmit = !loading && prompts.filter((p) => p.trim()).length >= MIN_PROMPTS;
 
-  const SLOT_COLORS = ["#FF6B6B", "#FFD93D", "#C4B5FD", "#6BFF9E", "#6BB5FF"];
-
   return (
-    <div className="space-y-4">
-      <p style={{ fontSize: 13, fontWeight: 500, color: "rgba(0,0,0,0.5)", margin: 0 }}>
-        {t("trn.ui.subtitle")}
-      </p>
-
-      <div className="space-y-3">
+    <div className="tournament-editor">
+      <p className="editor-description">Rank 2–5 directions through pairwise evaluation. Use it when several prompts are close enough that a single score is not useful.</p>
+      <div className="tournament-list">
         {prompts.map((prompt, i) => (
-          <div key={i} className="neo-card" style={{ overflow: "hidden" }}>
-            <div
-              className="neo-bar"
-              style={{ background: SLOT_COLORS[i % SLOT_COLORS.length], display: "flex", alignItems: "center", justifyContent: "space-between" }}
-            >
-              <span>{t("trn.ui.promptlabel")} {String.fromCharCode(65 + i)}</span>
+          <div key={i} className="tournament-row">
+            <div className="tournament-row-meta"><span className="compare-letter">{String.fromCharCode(65 + i)}</span><div><strong>Prompt {String.fromCharCode(65 + i)}</strong><span>{prompt.length.toLocaleString()} characters</span></div>
               {prompts.length > MIN_PROMPTS && (
-                <button
-                  onClick={() => remove(i)}
-                  style={{ background: "transparent", border: "none", fontWeight: 700, fontSize: 13, cursor: "pointer", padding: "0 4px" }}
-                >
-                  {t("trn.ui.removeprompt")} ×
-                </button>
+                <button type="button" className="text-action" onClick={() => remove(i)}>Remove</button>
               )}
             </div>
-            <div className="p-4">
-              <textarea
-                value={prompt}
-                onChange={(e) => update(i, e.target.value)}
-                rows={4}
-                className="neo-input"
-                style={{ fontSize: 14 }}
-                placeholder={`${t("trn.ui.promptlabel")} ${String.fromCharCode(65 + i)}...`}
-              />
-            </div>
-            <div className="px-4 pb-3" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}>
-              {prompt.length} {t("eval.ui.chars")}
-            </div>
+            <label className="sr-only" htmlFor={`tournament-prompt-${i}`}>Prompt {String.fromCharCode(65 + i)}</label><textarea id={`tournament-prompt-${i}`} value={prompt} onChange={(e) => update(i, e.target.value)} rows={4} className="prompt-textarea" placeholder={`Enter prompt ${String.fromCharCode(65 + i)}`} />
           </div>
         ))}
       </div>
-
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="editor-footer editor-footer-standalone">
         {prompts.length < MAX_PROMPTS ? (
-          <button
-            onClick={add}
-            className="neo-btn neo-btn-outline"
-            style={{ fontSize: 13, fontWeight: 700 }}
-          >
-            {t("trn.ui.addprompt")}
-          </button>
-        ) : (
-          <div />
-        )}
-        <button
-          onClick={() => onSubmit(prompts)}
-          disabled={!canSubmit}
-          className="neo-btn neo-btn-primary"
-          style={{ minWidth: 220 }}
-        >
-          {loading ? t("trn.ui.loading") : t("trn.ui.submit")}
-        </button>
+          <button type="button" onClick={add} className="secondary-action">+ Add prompt</button>
+        ) : <span className="editor-hint">Up to five prompts per tournament.</span>}
+        <button type="button" onClick={() => onSubmit(prompts)} disabled={!canSubmit} className="primary-action">{loading ? "Running evaluation…" : "Run tournament"} {!loading && <span aria-hidden="true">→</span>}</button>
       </div>
     </div>
   );

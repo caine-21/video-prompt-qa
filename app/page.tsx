@@ -1,31 +1,5 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import type { EvaluationResult, CompareResult, TournamentResult, AIProvider, HistoryEntry, HumanFeedback } from "@/lib/types";
-import { useLanguage } from "@/lib/lang-context";
 import ClientProviders from "@/components/ClientProviders";
-import { readShareFromURL } from "@/lib/share";
-import EvaluatePanel from "@/components/EvaluatePanel";
-import ComparePanel from "@/components/ComparePanel";
-import TournamentPanel from "@/components/TournamentPanel";
-import EvaluationReport from "@/components/EvaluationReport";
-import CompareReport from "@/components/CompareReport";
-import TournamentReport from "@/components/TournamentReport";
-import DeltaBanner from "@/components/DeltaBanner";
-import FeedbackWidget from "@/components/FeedbackWidget";
-import PromptDiff from "@/components/PromptDiff";
-import StabilityCheck from "@/components/StabilityCheck";
-import ShareButton from "@/components/ShareButton";
-import DemoModeBanner from "@/components/DemoModeBanner";
-import HistoryPanel from "@/components/HistoryPanel";
-import CalibrationPanel from "@/components/CalibrationPanel";
 import ModernWorkspace from "@/components/ModernWorkspace";
-
-type Tab = "evaluate" | "compare" | "tournament";
-
-const PROVIDERS: AIProvider[] = ["deepseek"];
-const HISTORY_KEY = "vpqa_history";
-const MAX_HISTORY = 20;
 
 export default function Home() {
   return (
@@ -36,29 +10,14 @@ export default function Home() {
 }
 
 export function HomeInner() {
-  const { t, lang, toggleLang } = useLanguage();
-
-  const [tab, setTab]                     = useState<Tab>("evaluate");
-  const [provider, setProvider]           = useState<AIProvider>("deepseek");
-  const [evalResult, setEvalResult]       = useState<EvaluationResult | null>(null);
-  const [compareResult, setCompareResult]       = useState<CompareResult | null>(null);
-  const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);
-  const [loading, setLoading]             = useState(false);
-  const [improving, setImproving]         = useState(false);
-  const [error, setError]                 = useState<string | null>(null);
-  const [delta, setDelta]                 = useState<{ originalResult: EvaluationResult } | null>(null);
-  const [history, setHistory]             = useState<HistoryEntry[]>([]);
-  const [showHistory, setShowHistory]     = useState(false);
-  const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
-  const [demoMode, setDemoMode]           = useState(false);
-  const [demoTitle, setDemoTitle]         = useState<string>("");
-
+  return <ModernWorkspace />;
+/*
   useEffect(() => {
     const id = window.setTimeout(() => {
       try {
         const stored = localStorage.getItem(HISTORY_KEY);
         if (stored) setHistory(JSON.parse(stored));
-      } catch { /* ignore */ }
+      } catch { }
 
       const shared = readShareFromURL();
       if (shared) {
@@ -83,7 +42,7 @@ export function HomeInner() {
     const entry: HistoryEntry = { id: `${Date.now()}-${Math.random()}`, result, deltaScore };
     setHistory(prev => {
       const next = [entry, ...prev].slice(0, MAX_HISTORY);
-      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { }
       return next;
     });
     return entry.id;
@@ -98,10 +57,10 @@ export function HomeInner() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ evaluationId: entry.result.dbId, rating: feedback.rating, tags: feedback.tags ?? [], deltaScore: entry.deltaScore }),
-        }).catch(() => { /* non-fatal */ });
+        }).catch(() => { });
       }
       const next = prev.map(e => e.id === pendingFeedbackId ? { ...e, feedback } : e);
-      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { }
       return next;
     });
     setPendingFeedbackId(null);
@@ -109,7 +68,7 @@ export function HomeInner() {
 
   function clearHistory() {
     setHistory([]);
-    try { localStorage.removeItem(HISTORY_KEY); } catch { /* ignore */ }
+    try { localStorage.removeItem(HISTORY_KEY); } catch { }
   }
 
   function exportJSON(result: EvaluationResult) {
@@ -176,7 +135,7 @@ export function HomeInner() {
   return (
     <div style={{ minHeight: "100vh", background: "#FFFDF5" }}>
 
-      {/* ── Header ── */}
+
       <header style={{ borderBottom: "4px solid #000", background: "#FFFDF5" }}>
         <div className="max-w-6xl mx-auto px-6 pt-6 pb-0">
 
@@ -258,7 +217,7 @@ export function HomeInner() {
         </div>
       </header>
 
-      {/* ── Main ── */}
+
       <main className="neo-grid" style={{ minHeight: "calc(100vh - 200px)" }}>
         <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
 
@@ -275,11 +234,11 @@ export function HomeInner() {
             </>
           )}
 
-          {/* ── Landing Hero: visible only before first evaluation ── */}
+
           {tab === "evaluate" && !evalResult && !loading && !improving && (
             <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingBottom: 4 }}>
 
-              {/* Statement */}
+
               <div style={{ maxWidth: 620 }}>
                 {t("hero.statement").split("\n").map((line, i) => (
                   <p key={i} style={{ fontSize: i === 0 ? 16 : 14, fontWeight: i === 0 ? 800 : 600, margin: i === 0 ? "0 0 6px" : 0, lineHeight: 1.55, color: i === 0 ? "#000" : "rgba(0,0,0,0.65)" }}>
@@ -288,7 +247,7 @@ export function HomeInner() {
                 ))}
               </div>
 
-              {/* Methodology — horizontal compact */}
+
               <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", border: "3px solid #000", boxShadow: "4px 4px 0 #000", background: "#FFFDF5", overflow: "hidden", width: "fit-content" }}>
                 {([
                   t("hero.step.find"),
@@ -314,7 +273,7 @@ export function HomeInner() {
                 ))}
               </div>
 
-              {/* Proof badges */}
+
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {[t("hero.badge.cases"), t("hero.badge.experiment"), t("hero.badge.gate")].map(badge => (
                   <span key={badge} style={{ border: "2px solid #000", fontSize: 11, fontWeight: 700, padding: "3px 10px", letterSpacing: "0.04em", background: "transparent" }}>
@@ -323,7 +282,7 @@ export function HomeInner() {
                 ))}
               </div>
 
-              {/* Divider */}
+
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
                 <div style={{ flex: 1, height: 2, background: "#000", opacity: 0.1 }} />
                 <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.35 }}>{t("hero.divider")}</span>
@@ -401,7 +360,7 @@ export function HomeInner() {
         </div>
       </main>
 
-      {/* ── Footer ── */}
+
       <footer style={{ background: "#FFD93D", borderTop: "4px solid #000", padding: "16px 24px" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <span style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -418,5 +377,5 @@ export function HomeInner() {
         </div>
       </footer>
     </div>
-  );
+  ); */
 }

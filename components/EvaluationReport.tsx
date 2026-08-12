@@ -15,23 +15,23 @@ interface Props {
 }
 
 function scoreColors(score: number) {
-  if (score >= 8) return { bg: "#FFD93D", text: "#000" };
-  if (score >= 5) return { bg: "#C4B5FD", text: "#000" };
-  return { bg: "#FF6B6B", text: "#000" };
+  if (score >= 8) return { bg: "#e8f1ea", text: "#2f6b45" };
+  if (score >= 5) return { bg: "#f4efe2", text: "#87611e" };
+  return { bg: "#fae9e6", text: "#a43c34" };
 }
 
 function ScoreBar({ score, onColoredBg = false }: { score: number; onColoredBg?: boolean }) {
   const { bg } = scoreColors(score);
-  const fillColor   = onColoredBg ? "#000" : bg;
-  const trackColor  = onColoredBg ? "rgba(0,0,0,0.12)" : "#FFFDF5";
-  const badgeBg     = onColoredBg ? "rgba(0,0,0,0.15)" : bg;
-  const badgeBorder = onColoredBg ? "2px solid rgba(0,0,0,0.5)" : "2px solid #000";
+  const fillColor   = onColoredBg ? "#2457a6" : bg;
+  const trackColor  = "#ecece8";
+  const badgeBg     = bg;
+  const badgeBorder = "1px solid #d8d8d2";
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <div style={{ width: 120, height: 16, border: `3px solid ${onColoredBg ? "rgba(0,0,0,0.4)" : "#000"}`, background: trackColor, position: "relative", overflow: "hidden", flexShrink: 0 }}>
+      <div style={{ width: 120, height: 6, border: "0", borderRadius: 2, background: trackColor, position: "relative", overflow: "hidden", flexShrink: 0 }}>
         <div style={{ position: "absolute", top: 0, left: 0, height: "100%", width: `${score * 10}%`, background: fillColor }} />
       </div>
-      <span style={{ fontWeight: 700, fontSize: 13, background: badgeBg, border: badgeBorder, padding: "1px 8px", minWidth: 44, textAlign: "center", display: "inline-block" }}>
+      <span style={{ fontWeight: 700, fontSize: 12, color: scoreColors(score).text, background: badgeBg, border: badgeBorder, borderRadius: 4, padding: "2px 7px", minWidth: 40, textAlign: "center", display: "inline-block" }}>
         {score.toFixed(1)}
       </span>
     </div>
@@ -55,14 +55,14 @@ function NegativePrompts({ prompts }: { prompts: string[] }) {
         <span>{t("eval.report.negprompts")}</span>
         <button
           onClick={copyAll}
-          style={{ background: copied ? "#FFD93D" : "transparent", border: "2px solid rgba(255,255,255,0.5)", color: copied ? "#000" : "#fff", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "2px 10px", cursor: "pointer", fontFamily: "var(--font-space-grotesk), sans-serif", transition: "background 150ms, color 150ms" }}
+          style={{ background: copied ? "#e8f1ea" : "transparent", border: "1px solid #d8d8d2", color: copied ? "#2f6b45" : "#666862", fontSize: 11, fontWeight: 600, padding: "5px 9px", cursor: "pointer" }}
         >
           {copied ? t("eval.report.copied") : t("eval.report.copyall")}
         </button>
       </div>
       <div className="px-6 py-5" style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
         {prompts.map((term, i) => (
-          <span key={i} style={{ border: "3px solid #000", background: "#FFFDF5", padding: "6px 14px", fontWeight: 700, fontSize: 13, boxShadow: "3px 3px 0 #000" }}>
+          <span key={i} style={{ border: "1px solid #d8d8d2", borderRadius: 4, background: "#fff", padding: "5px 9px", fontWeight: 500, fontSize: 12 }}>
             {term}
           </span>
         ))}
@@ -85,25 +85,25 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
     <div className="space-y-5">
 
       {/* ── Overall score ── */}
-      <div className="neo-card" style={{ background: overallColors.bg }}>
+      <div className="neo-card score-summary" style={{ background: overallColors.bg }}>
         <div className="flex items-center justify-between flex-wrap gap-4 px-6 py-5">
           <div>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", opacity: 0.6, margin: "0 0 6px" }}>
-              {t("eval.report.overall")} {result.provider.toUpperCase()}
+              Overall score
             </p>
             <div className="flex items-baseline gap-2">
-              <span style={{ fontSize: 80, fontWeight: 700, lineHeight: 1 }}>{result.overallScore}</span>
-              <span style={{ fontSize: 28, fontWeight: 700, opacity: 0.5 }}>/10</span>
+              <span style={{ fontSize: 70, fontWeight: 650, lineHeight: 1 }}>{result.overallScore}</span>
+              <span style={{ fontSize: 20, fontWeight: 600, opacity: 0.55 }}>/10</span>
             </div>
             <p style={{ fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", margin: "6px 0 0" }}>
-              {scoreLabel(result.overallScore)}
+              {scoreLabel(result.overallScore)} · {result.overallScore >= 8 ? "Low review risk" : result.overallScore >= 5 ? "Needs work" : "High review risk"}
             </p>
           </div>
 
           <div style={{ minWidth: 280 }}>
             {result.dimensions.map((d) => (
               <div key={d.name} className="flex items-center justify-between mb-2">
-                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", minWidth: 130 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, minWidth: 130 }}>
                   {resolve(`dimension.${d.name}`, lang)}
                 </span>
                 <ScoreBar score={d.score} onColoredBg />
@@ -121,8 +121,8 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
       {/* ── Evaluated Prompt ── */}
       <div className="neo-card">
         <div className="neo-bar">{t("eval.report.prompt")}</div>
-        <div className="px-6 py-4" style={{ fontSize: 15, lineHeight: 1.6, fontWeight: 500 }}>
-          &ldquo;{result.prompt}&rdquo;
+        <div className="px-6 py-4 prompt-result-text">
+          {result.prompt}
         </div>
       </div>
 
@@ -136,21 +136,21 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
         <div className="neo-bar">{t("eval.report.dimensions")}</div>
         <div>
           {result.dimensions.map((dim, i) => {
-            const colors = scoreColors(dim.score);
+              const colors = scoreColors(dim.score);
             return (
-              <div key={dim.name} className="px-6 py-5" style={{ borderBottom: i < result.dimensions.length - 1 ? "3px solid #000" : "none" }}>
+              <div key={dim.name} className="px-6 py-5" style={{ borderBottom: i < result.dimensions.length - 1 ? "1px solid #d8d8d2" : "none" }}>
                 <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <span style={{ background: colors.bg, border: "3px solid #000", padding: "3px 12px", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    <span style={{ color: colors.text, background: colors.bg, border: "1px solid #d8d8d2", borderRadius: 4, padding: "4px 8px", fontSize: 12, fontWeight: 600 }}>
                       {resolve(`dimension.${dim.name}`, lang)}
                     </span>
-                    <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.5 }}>
+                    <span style={{ fontSize: 11, fontWeight: 500, color: colors.text }}>
                       {scoreLabel(dim.score)}
                     </span>
                   </div>
                   <ScoreBar score={dim.score} />
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 500, color: "rgba(0,0,0,0.7)", margin: 0, lineHeight: 1.55 }}>
+                <p style={{ fontSize: 14, fontWeight: 400, color: "#666862", margin: 0, lineHeight: 1.6 }}>
                   {dim.feedback}
                 </p>
               </div>
@@ -159,15 +159,15 @@ export default function EvaluationReport({ result, onImprove, improving }: Props
         </div>
       </div>
 
-      {/* ── AI Improve CTA ── */}
+      {/* ── Suggested rewrite CTA ── */}
       {onImprove && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000", padding: "20px 24px" }}>
+        <div className="rewrite-cta">
           <div>
-            <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 4px" }}>{t("eval.report.improve.cta")}</p>
-            <p style={{ fontWeight: 500, fontSize: 13, opacity: 0.55, margin: 0 }}>{t("eval.report.improve.sub")}</p>
+            <p style={{ fontWeight: 600, fontSize: 15, margin: "0 0 4px" }}>Suggested rewrite</p>
+            <p style={{ fontWeight: 400, fontSize: 13, color: "#666862", margin: 0 }}>Apply the findings, then run another preflight to compare the result.</p>
           </div>
           <button onClick={() => onImprove(result)} disabled={improving} className="neo-btn neo-btn-secondary" style={{ minWidth: 200 }}>
-            {improving ? <span className="animate-neo-blink">{t("eval.report.improve.busy")}</span> : t("eval.report.improve.btn")}
+            {improving ? "Rewriting…" : "Generate rewrite"}
           </button>
         </div>
       )}
