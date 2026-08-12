@@ -11,10 +11,10 @@ low-rate run, Groq returned a rate-limit failure and the request moved to
 DeepSeek; DeepSeek then exceeded its bounded provider budget and the route
 returned HTTP 503 with a typed `timeout`.
 
-The six-request evidence run recorded five explicit
+The final six-request evidence run recorded six explicit
 `requested_provider=groq`, `actual_provider=deepseek`, `fallback=true`,
-`error_type=timeout` responses and one client-side connection timeout. No
-fabricated evaluation score was returned.
+`error_type=timeout` responses, with no client-side deadline masking the
+application response. No fabricated evaluation score was returned.
 
 ## Diagnosis
 
@@ -48,8 +48,9 @@ are outside this public smoke test.
 - Single request: Groq success, HTTP 200, about 4.4 seconds.
 - Follow-up single request after cooldown: Groq rate limit → DeepSeek timeout,
   HTTP 503 in about 20.6 seconds.
-- Six-request soak: no unsafe or fabricated result; fallback path observed in
-  five responses, but no successful result during that window.
+- Six-request soak after the harness deadline fix: 0/6 successful evaluations,
+  fallback path observed in all six responses, p95 approximately 22.6 seconds;
+  no unsafe or fabricated result.
 
 ## Follow-up
 

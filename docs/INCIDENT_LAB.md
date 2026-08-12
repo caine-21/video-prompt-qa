@@ -58,3 +58,8 @@ deployed runtime. The shared provider-call deadline now enforces the budget at
 the orchestration seam. The next verification uses the previously observed
 Groq-primary / DeepSeek-fallback deployment shape, with the same deadline and
 typed events.
+
+The latest preview run is recorded in `docs/incidents/INC-006-preview-provider-rate-limit.md`:
+the route is now bounded and diagnosable, but the provider pair was unavailable
+for that observation window, so the PR is not presented as a stable availability
+claim.

@@ -5,7 +5,9 @@ const baseUrl = process.argv[2] ?? "https://videopromptqa.netlify.app";
 const count = Math.max(1, Math.min(20, Number(process.argv[3] ?? 6)));
 const delayMs = Math.max(250, Math.min(30_000, Number(process.argv[4] ?? 1500)));
 const output = process.argv[5];
-const requestTimeoutMs = 20_000;
+// Keep this above the two-attempt provider budget so the harness observes the
+// route's typed 503 instead of converting it into its own transport timeout.
+const requestTimeoutMs = 25_000;
 const fixtures = [
   "A black cat walks through a sunlit kitchen, locked medium shot, soft daylight, no text.",
   "4K drone shot, golden hour, bokeh, slow motion.",
@@ -65,6 +67,7 @@ const report = {
   schema_version: 1,
   suite: "video-http-soak",
   base_url: baseUrl,
+  client_timeout_ms: requestTimeoutMs,
   evidence_boundary: "real HTTP requests with public prompts; provider billing/availability is not inferred from a 200 alone",
   summary: {
     count: samples.length,
