@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Evaluation context is required" }, { status: 400 });
     }
 
-    const provider: AIProvider = body.provider ?? "groq";
+    const provider: AIProvider = "deepseek";
     const result = await rewrite(body.prompt.trim(), body.dimensions, body.improvements, provider);
 
     if (!result.success) {

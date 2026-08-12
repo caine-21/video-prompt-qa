@@ -32,6 +32,5 @@ that resolves after the deadline.
   single-provider path retried once.
 - Local regression test: must prove a non-cooperative provider call returns a
   typed `timeout` within the deadline.
-- Required next step: verify the restored Groq-primary / DeepSeek-fallback path
-  in a fresh preview/public soak. Do not treat a typed timeout alone as a
-  healthy user experience.
+- Required next step: verify the DeepSeek-only path in a fresh preview/public
+  soak. Do not treat a typed timeout alone as a healthy user experience.

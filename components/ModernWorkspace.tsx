@@ -22,7 +22,7 @@ import CalibrationPanel from "@/components/CalibrationPanel";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
+const PROVIDERS: AIProvider[] = ["deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const FREE_TRIAL_KEY = "vpqa_free_runs_v1";
 const ACCOUNT_KEY = "vpqa_beta_account_v1";
@@ -32,7 +32,7 @@ const FREE_TRIAL_LIMIT = 3;
 export default function ModernWorkspace() {
   const { lang, toggleLang } = useLanguage();
   const [tab, setTab] = useState<Tab>("evaluate");
-  const [provider, setProvider] = useState<AIProvider>("groq");
+  const [provider, setProvider] = useState<AIProvider>("deepseek");
   const [evalResult, setEvalResult] = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);
@@ -45,7 +45,6 @@ export default function ModernWorkspace() {
   const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [demoTitle, setDemoTitle] = useState("");
-  const [fallbackNotice, setFallbackNotice] = useState<string | null>(null);
   const [freeUses, setFreeUses] = useState(0);
   const [accountEmail, setAccountEmail] = useState<string | null>(null);
   const [accountEmailInput, setAccountEmailInput] = useState("");
@@ -122,12 +121,10 @@ export default function ModernWorkspace() {
     return Date.now();
   }
 
-  function completeBetaRun(mode: BetaMode, startedAt: number, data: { actual_provider?: string; provider?: string; fallback?: boolean; overallScore?: number }) {
+  function completeBetaRun(mode: BetaMode, startedAt: number, data: { provider?: string; overallScore?: number }) {
     trackBetaEvent("beta_run_completed", {
       mode,
-      provider,
-      actual_provider: data.actual_provider ?? data.provider,
-      fallback: data.fallback,
+      provider: data.provider ?? provider,
       latency_ms: Date.now() - startedAt,
       trial_remaining: Math.max(0, remainingFreeRuns - 1),
       score: data.overallScore,
@@ -179,23 +176,16 @@ export default function ModernWorkspace() {
     URL.revokeObjectURL(url);
   }
 
-  function setProviderNotice(data: { provider?: string; actual_provider?: string }) {
-    const actualProvider = data.actual_provider ?? data.provider;
-    if (actualProvider && actualProvider !== provider) {
-      setFallbackNotice(`${provider.toUpperCase()} unavailable — result from ${actualProvider.toUpperCase()}`);
-    }
-  }
-
   async function handleEvaluate(prompt: string) {
     if (!ensureRunAccess()) return;
     const startedAt = startBetaRun("evaluate");
     let failureTracked = false;
-    setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null);
     try {
       const res = await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, provider }) });
       const data = await res.json();
       if (!res.ok) { failureTracked = true; failBetaRun("evaluate", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
-      setProviderNotice(data); setEvalResult(data); saveToHistory(data); consumeFreeRun();
+      setEvalResult(data); saveToHistory(data); consumeFreeRun();
       completeBetaRun("evaluate", startedAt, data);
     } catch (e) { if (!failureTracked) failBetaRun("evaluate", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
@@ -205,12 +195,12 @@ export default function ModernWorkspace() {
     if (!ensureRunAccess()) return;
     const startedAt = startBetaRun("compare");
     let failureTracked = false;
-    setLoading(true); setError(null); setCompareResult(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setCompareResult(null);
     try {
       const res = await fetch("/api/compare", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ promptA, promptB, provider }) });
       const data = await res.json();
       if (!res.ok) { failureTracked = true; failBetaRun("compare", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
-      setProviderNotice(data); setCompareResult(data); consumeFreeRun();
+      setCompareResult(data); consumeFreeRun();
       completeBetaRun("compare", startedAt, data);
     } catch (e) { if (!failureTracked) failBetaRun("compare", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
@@ -220,12 +210,12 @@ export default function ModernWorkspace() {
     if (!ensureRunAccess()) return;
     const startedAt = startBetaRun("tournament");
     let failureTracked = false;
-    setLoading(true); setError(null); setTournamentResult(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setTournamentResult(null);
     try {
       const res = await fetch("/api/tournament", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompts, provider }) });
       const data = await res.json();
       if (!res.ok) { failureTracked = true; failBetaRun("tournament", startedAt, res.status, data.errorType); throw new Error(data.error ?? "Request failed"); }
-      setProviderNotice(data); setTournamentResult(data); consumeFreeRun();
+      setTournamentResult(data); consumeFreeRun();
       completeBetaRun("tournament", startedAt, data);
     } catch (e) { if (!failureTracked) failBetaRun("tournament", startedAt, 0, "network"); setError(e instanceof Error ? e.message : "Request failed"); }
     finally { setLoading(false); }
@@ -299,7 +289,6 @@ export default function ModernWorkspace() {
             {tab === "tournament" && <TournamentPanel onSubmit={handleTournament} loading={loading} />}
           </div></section>
 
-          {fallbackNotice && <div className="notice notice-warning" role="status"><span><strong>Provider fallback.</strong> {fallbackNotice}</span><button onClick={() => setFallbackNotice(null)} type="button" aria-label="Dismiss notice">×</button></div>}
           {error && <div className="notice notice-error" role="alert"><span><strong>Evaluation failed.</strong> {error}</span><button onClick={() => setError(null)} type="button" aria-label="Dismiss error">×</button></div>}
           {(loading || improving) && <div className="loading-state" role="status"><div className="loading-orbit"><span /></div><div><strong>{improving ? "Rewriting and re-evaluating" : "Running structured evaluation"}</strong><span>DeepSeek V4 Flash · usually under a minute</span></div></div>}
 

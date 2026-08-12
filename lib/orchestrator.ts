@@ -14,8 +14,8 @@ import type {
 import { PROVIDER_REGISTRY, ALL_PROVIDERS } from "./providers/registry.ts";
 import { recordOperation } from "./metrics.ts";
 
-// Production defaults use one primary provider and only fall back on failure.
-// Multi-provider max-score selection is an explicit evaluation experiment.
+// The default runtime has one configured provider. The strategy seam remains
+// explicit so provider behavior is still easy to test and instrument.
 const TASK_DEFAULT_STRATEGY: Record<TaskType, OrchestratorStrategy> = {
   evaluation: "fallback",
   rewrite:    "fallback",
@@ -143,7 +143,7 @@ export async function orchestrateTournament(
   prompts: string[],
   options?: OrchestratorOptions
 ): Promise<Result<TournamentResult>> {
-  const provider = options?.providers?.[0] ?? "groq";
+  const provider = options?.providers?.[0] ?? "deepseek";
   const t0 = Date.now();
 
   // Generate all pairs (round-robin)

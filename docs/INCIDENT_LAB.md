@@ -55,11 +55,12 @@ the client never records prompt contents or raw provider errors.
 soak result. A second preview run also showed a successful response taking
 about 29 seconds, proving that a fetch abort alone was not enough in the
 deployed runtime. The shared provider-call deadline now enforces the budget at
-the orchestration seam. The next verification uses the previously observed
-Groq-primary / DeepSeek-fallback deployment shape, with the same deadline and
-typed events.
+the orchestration seam. The old Groq-primary / DeepSeek-fallback deployment
+shape is retained in INC-006 as historical evidence. The current runtime is
+DeepSeek-only; the next
+verification should exercise DeepSeek timeout, rate-limit, and malformed-
+response behavior without claiming a fallback provider.
 
-The latest preview run is recorded in `docs/incidents/INC-006-preview-provider-rate-limit.md`:
-the route is now bounded and diagnosable, but the provider pair was unavailable
-for that observation window, so the PR is not presented as a stable availability
-claim.
+The latest dual-provider preview run is recorded in
+`docs/incidents/INC-006-preview-provider-rate-limit.md` as historical evidence.
+It is not a current availability claim for the DeepSeek-only runtime.

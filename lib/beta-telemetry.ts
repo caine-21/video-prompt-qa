@@ -12,8 +12,6 @@ export type BetaEventName =
 export interface BetaEventProperties {
   mode?: BetaMode;
   provider?: string;
-  actual_provider?: string;
-  fallback?: boolean;
   latency_ms?: number;
   trial_remaining?: number;
   http_status?: number;

@@ -18,7 +18,14 @@ export function decodeShareState(encoded: string): ShareState | null {
   try {
     const json = decodeURIComponent(atob(encoded));
     const parsed = JSON.parse(json) as ShareState;
-    return { ...parsed, provider: parsed.provider ?? "groq" };
+    return {
+      ...parsed,
+      provider: "deepseek",
+      result: { ...parsed.result, provider: "deepseek" },
+      improvedResult: parsed.improvedResult
+        ? { ...parsed.improvedResult, provider: "deepseek" }
+        : undefined,
+    };
   } catch {
     return null;
   }

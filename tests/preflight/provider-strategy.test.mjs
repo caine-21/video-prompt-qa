@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { orchestrateEvaluate } from "../../lib/orchestrator.ts";
-import { PROVIDER_REGISTRY } from "../../lib/providers/registry.ts";
+import { ALL_PROVIDERS, PROVIDER_REGISTRY } from "../../lib/providers/registry.ts";
 
 function success(provider, score) {
   return {
@@ -40,36 +40,7 @@ test("default evaluation uses the sole configured provider", async () => {
   }
 });
 
-test("fallback moves from Groq to DeepSeek and preserves the first failure code", async () => {
-  const originalGroq = PROVIDER_REGISTRY.groq.evaluate;
-  const originalDeepSeek = PROVIDER_REGISTRY.deepseek.evaluate;
-  const calls = [];
-
-  PROVIDER_REGISTRY.groq.evaluate = async () => {
-    calls.push("groq");
-    return {
-      success: false,
-      provider: "groq",
-      error: { type: "rate_limit", message: "Groq rate limit", retryable: true },
-    };
-  };
-  PROVIDER_REGISTRY.deepseek.evaluate = async () => {
-    calls.push("deepseek");
-    return success("deepseek", 8);
-  };
-
-  try {
-    const result = await orchestrateEvaluate("A sufficiently detailed video prompt for provider strategy testing.", {
-      providers: ["groq", "deepseek"],
-      task: "evaluation",
-      strategy: "fallback",
-    });
-    assert.equal(result.success, true);
-    assert.equal(result.provider, "deepseek");
-    assert.equal(result.fallbackReasonCode, "rate_limit");
-    assert.deepEqual(calls, ["groq", "deepseek"]);
-  } finally {
-    PROVIDER_REGISTRY.groq.evaluate = originalGroq;
-    PROVIDER_REGISTRY.deepseek.evaluate = originalDeepSeek;
-  }
+test("the runtime registry exposes DeepSeek as its only provider", () => {
+  assert.deepEqual(ALL_PROVIDERS, ["deepseek"]);
+  assert.deepEqual(Object.keys(PROVIDER_REGISTRY), ["deepseek"]);
 });

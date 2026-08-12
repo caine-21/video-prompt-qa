@@ -43,9 +43,7 @@ for (let index = 0; index < count; index += 1) {
       http_status: response.status,
       latency_ms: Date.now() - started,
       ok: response.ok,
-      requested_provider: body.requested_provider,
-      actual_provider: body.actual_provider,
-      fallback: body.fallback,
+      provider: body.provider,
       error_type: body.errorType ?? (!response.ok ? `http_${response.status}` : undefined),
       score: typeof body.overallScore === "number" ? body.overallScore : undefined,
     });
@@ -73,7 +71,6 @@ const report = {
     count: samples.length,
     passed: samples.filter((sample) => sample.ok).length,
     failed: samples.filter((sample) => !sample.ok).length,
-    fallback_count: samples.filter((sample) => sample.fallback === true).length,
     p95_ms: p95 ?? null,
   },
   samples,

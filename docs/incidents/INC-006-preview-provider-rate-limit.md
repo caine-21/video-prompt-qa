@@ -1,4 +1,8 @@
-# INC-006: Groq rate limit exhausted the fallback budget
+# INC-006: Historical Groq rate limit exhausted the fallback budget
+
+> HISTORICAL: this incident predates the DeepSeek-only provider decision. The
+> Groq observations and fallback metadata are retained to preserve the prior
+> incident chain; the active runtime no longer configures or calls Groq.
 
 - Status: contained; provider availability follow-up remains open
 - Detected: Netlify Deploy Preview #2 after restoring Groq primary / DeepSeek fallback

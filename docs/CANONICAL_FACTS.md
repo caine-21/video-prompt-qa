@@ -1,5 +1,11 @@
 # CANONICAL_FACTS.md — video-prompt-qa
 
+> CURRENT OVERRIDE (2026-08-13): The active runtime is DeepSeek-only. The
+> historical Groq + DeepSeek provider pair and fallback observations below are
+> retained as incident provenance, not as current capabilities or deployment
+> configuration. Current source of truth is `lib/providers/registry.ts`,
+> `lib/providers/deepseek.ts`, and the DeepSeek-only environment template.
+
 > 本文件是 video-prompt-qa 唯一事实口径。所有公开结论必须与本文件一致；冲突时以本文件 + 机器可读证据为准。
 > 建立日期：2026-08-07。标签：CURRENT VERIFIED / HISTORICAL / DESIGN ONLY / FUTURE / UNRESOLVED。
 

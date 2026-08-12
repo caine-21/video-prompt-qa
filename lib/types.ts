@@ -1,4 +1,4 @@
-export type AIProvider = "groq" | "deepseek";
+export type AIProvider = "deepseek";
 
 export interface EvaluationDimension {
   name: string;

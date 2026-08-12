@@ -23,7 +23,7 @@ import ModernWorkspace from "@/components/ModernWorkspace";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
+const PROVIDERS: AIProvider[] = ["deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const MAX_HISTORY = 20;
 
@@ -39,7 +39,7 @@ export function HomeInner() {
   const { t, lang, toggleLang } = useLanguage();
 
   const [tab, setTab]                     = useState<Tab>("evaluate");
-  const [provider, setProvider]           = useState<AIProvider>("groq");
+  const [provider, setProvider]           = useState<AIProvider>("deepseek");
   const [evalResult, setEvalResult]       = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult]       = useState<CompareResult | null>(null);
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);
@@ -52,7 +52,6 @@ export function HomeInner() {
   const [pendingFeedbackId, setPendingFeedbackId] = useState<string | null>(null);
   const [demoMode, setDemoMode]           = useState(false);
   const [demoTitle, setDemoTitle]         = useState<string>("");
-  const [fallbackNotice, setFallbackNotice] = useState<string | null>(null);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -123,42 +122,33 @@ export function HomeInner() {
   }
 
   async function handleEvaluate(prompt: string) {
-    setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setEvalResult(null); setDelta(null); setPendingFeedbackId(null);
     try {
       const res  = await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, provider }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Request failed");
-      if (data.provider && data.provider !== provider) {
-        setFallbackNotice(`${provider.toUpperCase()} unavailable — result from ${data.provider.toUpperCase()}`);
-      }
       setEvalResult(data); saveToHistory(data);
     } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
     finally     { setLoading(false); }
   }
 
   async function handleCompare(promptA: string, promptB: string) {
-    setLoading(true); setError(null); setCompareResult(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setCompareResult(null);
     try {
       const res  = await fetch("/api/compare", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ promptA, promptB, provider }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Request failed");
-      if (data.provider && data.provider !== provider) {
-        setFallbackNotice(`${provider.toUpperCase()} unavailable — result from ${data.provider.toUpperCase()}`);
-      }
       setCompareResult(data);
     } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
     finally     { setLoading(false); }
   }
 
   async function handleTournament(prompts: string[]) {
-    setLoading(true); setError(null); setTournamentResult(null); setFallbackNotice(null);
+    setLoading(true); setError(null); setTournamentResult(null);
     try {
       const res  = await fetch("/api/tournament", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompts, provider }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Request failed");
-      if (data.provider && data.provider !== provider) {
-        setFallbackNotice(`${provider.toUpperCase()} unavailable — result from ${data.provider.toUpperCase()}`);
-      }
       setTournamentResult(data);
     } catch (e) { setError(e instanceof Error ? e.message : "Request failed"); }
     finally     { setLoading(false); }
@@ -345,13 +335,6 @@ export function HomeInner() {
           {tab === "evaluate"   && <EvaluatePanel   onSubmit={handleEvaluate}   loading={loading} />}
           {tab === "compare"    && <ComparePanel    onSubmit={handleCompare}    loading={loading} />}
           {tab === "tournament" && <TournamentPanel onSubmit={handleTournament} loading={loading} />}
-
-          {fallbackNotice && (
-            <div style={{ border: "3px solid #000", background: "#FFD93D", boxShadow: "4px 4px 0 #000", padding: "12px 20px", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span>⚠ {fallbackNotice}</span>
-              <button onClick={() => setFallbackNotice(null)} style={{ background: "transparent", border: "none", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>×</button>
-            </div>
-          )}
 
           {error && (
             <div className="neo-card">

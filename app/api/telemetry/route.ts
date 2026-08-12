@@ -31,7 +31,6 @@ function sanitizeEvent(body: unknown): Record<string, unknown> | null {
 
   const mode = safeString(input.mode, 20);
   const provider = safeString(input.provider, 30);
-  const actualProvider = safeString(input.actual_provider, 30);
   const errorType = safeString(input.error_type, 50);
   const sanitized: Record<string, unknown> = {
     event,
@@ -42,8 +41,6 @@ function sanitizeEvent(body: unknown): Record<string, unknown> | null {
 
   if (mode && MODES.has(mode)) sanitized.mode = mode;
   if (provider) sanitized.provider = provider;
-  if (actualProvider) sanitized.actual_provider = actualProvider;
-  if (typeof input.fallback === "boolean") sanitized.fallback = input.fallback;
 
   const latency = safeNumber(input.latency_ms, 0, 300_000);
   const trialRemaining = safeNumber(input.trial_remaining, 0, 3);
