@@ -83,8 +83,8 @@ export interface ProviderError {
 }
 
 export type Result<T> =
-  | { success: true; data: T; provider: AIProvider }
-  | { success: false; error: ProviderError; provider: AIProvider };
+  | { success: true; data: T; provider: AIProvider; fallbackReasonCode?: ProviderErrorType }
+  | { success: false; error: ProviderError; provider: AIProvider; fallbackReasonCode?: ProviderErrorType };
 
 export function isErrorResult<T>(r: Result<T>): r is { success: false; error: ProviderError; provider: AIProvider } {
   return r.success === false;
