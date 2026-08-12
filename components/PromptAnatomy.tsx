@@ -16,9 +16,9 @@ export default function PromptAnatomy({ anatomy }: Props) {
   const absentCount  = anatomy.filter(a => a.status === "absent").length;
 
   const STATUS_CONFIG = {
-    present: { bg: "#FFD93D", symbol: "✓", label: t("anat.status.present") },
-    partial: { bg: "#C4B5FD", symbol: "~", label: t("anat.status.partial") },
-    absent:  { bg: "#FF6B6B", symbol: "✗", label: t("anat.status.absent")  },
+    present: { bg: "#e8f1ea", symbol: "✓", label: t("anat.status.present") },
+    partial: { bg: "#f4efe2", symbol: "~", label: t("anat.status.partial") },
+    absent:  { bg: "#fae9e6", symbol: "✗", label: t("anat.status.absent")  },
   };
 
   return (
@@ -40,12 +40,12 @@ export default function PromptAnatomy({ anatomy }: Props) {
               key={item.component}
               style={{
                 padding: "16px 20px",
-                borderBottom: i < anatomy.length - (isOdd ? 1 : 2) ? "3px solid #000" : "none",
-                borderRight: i % 2 === 0 && !isLast ? "3px solid #000" : "none",
+                borderBottom: i < anatomy.length - (isOdd ? 1 : 2) ? "1px solid #d8d8d2" : "none",
+                borderRight: i % 2 === 0 && !isLast ? "1px solid #d8d8d2" : "none",
                 display: "flex", alignItems: "flex-start", gap: 12,
               }}
             >
-              <div style={{ background: cfg.bg, border: "3px solid #000", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16, flexShrink: 0 }}>
+              <div style={{ background: cfg.bg, border: "1px solid #d8d8d2", borderRadius: 4, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
                 {cfg.symbol}
               </div>
               <div style={{ minWidth: 0 }}>

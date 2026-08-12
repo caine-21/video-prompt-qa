@@ -42,20 +42,23 @@ export default function SubjectWarningCard({ anatomy, improvements }: Props) {
   return (
     <div
       style={{
-        background: "#FF6B6B",
-        border: "4px solid #000",
-        boxShadow: "8px 8px 0 #000",
-        padding: "20px 24px",
+        background: "#fff7f5",
+        border: "1px solid #e6c3bf",
+        borderRadius: 8,
+        boxShadow: "none",
+        padding: "18px 20px",
       }}
     >
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <span style={{
-          background: "#000",
-          color: "#FF6B6B",
+          background: "#fae9e6",
+          color: "#a43c34",
           fontWeight: 700,
           fontSize: 18,
-          padding: "4px 12px",
+          border: "1px solid #e6c3bf",
+          borderRadius: 4,
+          padding: "4px 9px",
           letterSpacing: "0.04em",
         }}>
           ⚠ {isAbsent ? t("warn.absent.title") : t("warn.placeholder.title")}
@@ -76,14 +79,14 @@ export default function SubjectWarningCard({ anatomy, improvements }: Props) {
           <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 4 }}>
             {SUBJECT_EXAMPLES.map(ex => (
               <li key={ex} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ background: "#000", color: "#FF6B6B", fontWeight: 700, fontSize: 11, padding: "1px 6px" }}>→</span>
+                <span style={{ color: "#a43c34", fontWeight: 700, fontSize: 11 }}>→</span>
                 <span style={{ fontWeight: 600, fontSize: 13, fontFamily: "monospace" }}>{ex}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div style={{ borderLeft: "3px solid rgba(0,0,0,0.25)", paddingLeft: 24 }}>
+        <div style={{ borderLeft: "1px solid #e6c3bf", paddingLeft: 24 }}>
           <p style={{ fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 8px" }}>
             {t("warn.impact.label")}
           </p>
@@ -94,7 +97,7 @@ export default function SubjectWarningCard({ anatomy, improvements }: Props) {
 
       {/* Fix suggestion from LLM */}
       {fixSuggestion && (
-        <div style={{ marginTop: 14, borderTop: "2px solid rgba(0,0,0,0.2)", paddingTop: 10 }}>
+        <div style={{ marginTop: 14, borderTop: "1px solid #e6c3bf", paddingTop: 10 }}>
           <p style={{ fontWeight: 600, fontSize: 13, margin: 0, opacity: 0.85 }}>
             {fixSuggestion}
           </p>

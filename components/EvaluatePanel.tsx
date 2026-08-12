@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useLanguage } from "@/lib/lang-context";
-
 const EXAMPLES = [
   "A lone astronaut walks across a red Martian landscape at sunset, dust swirling around boots, cinematic wide shot",
   "cat",
@@ -15,50 +13,42 @@ interface Props {
 }
 
 export default function EvaluatePanel({ onSubmit, loading }: Props) {
-  const { t } = useLanguage();
   const [prompt, setPrompt] = useState("");
 
   return (
-    <div className="neo-card">
-      <div className="neo-bar">{t("eval.ui.title")}</div>
-
-      <div className="px-6 pt-5 pb-2">
-        <div className="flex items-center gap-2 flex-wrap mb-4">
-          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.45, marginRight: 4 }}>
-            {t("eval.ui.try")}
-          </span>
+    <div className="prompt-editor">
+      <div className="example-row" aria-label="Prompt examples">
+        <span className="editor-label">Start with an example</span>
           {EXAMPLES.map((ex, i) => (
             <button
               key={i}
+              type="button"
               onClick={() => setPrompt(ex)}
-              className="neo-btn neo-btn-outline"
-              style={{ padding: "4px 12px", minHeight: 32, fontSize: 11, boxShadow: "3px 3px 0 #000" }}
+              className="example-button"
             >
-              {t("eval.ui.example")} {i + 1}
+              Example {i + 1}
             </button>
           ))}
-        </div>
-
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder={t("eval.ui.placeholder")}
-          rows={5}
-          className="neo-input"
-        />
       </div>
-
-      <div className="flex items-center justify-between px-6 py-4" style={{ borderTop: "3px solid #000", background: "#FFFDF5" }}>
-        <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.45 }}>
-          {prompt.length} {t("eval.ui.chars")}
-        </span>
+      <label className="sr-only" htmlFor="prompt-input">Video prompt</label>
+      <textarea
+        id="prompt-input"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Describe the subject, action, setting, camera and motion."
+        rows={7}
+        className="prompt-textarea"
+        aria-describedby="prompt-count"
+      />
+      <div className="editor-footer">
+        <span id="prompt-count" className="character-count">{prompt.length.toLocaleString()} characters</span>
         <button
+          type="button"
           onClick={() => onSubmit(prompt)}
           disabled={loading || !prompt.trim()}
-          className="neo-btn neo-btn-primary"
-          style={{ minWidth: 180 }}
+          className="primary-action"
         >
-          {loading ? t("eval.ui.loading") : t("eval.ui.submit")}
+          {loading ? "Evaluating…" : "Run preflight"} {!loading && <span aria-hidden="true">→</span>}
         </button>
       </div>
     </div>

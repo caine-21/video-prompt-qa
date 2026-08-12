@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useLanguage } from "@/lib/lang-context";
 
 interface Props {
   onSubmit: (promptA: string, promptB: string) => void;
@@ -12,59 +11,27 @@ const DEFAULT_A = "A lone astronaut walks across a red Martian landscape at suns
 const DEFAULT_B = "astronaut on mars walking";
 
 export default function ComparePanel({ onSubmit, loading }: Props) {
-  const { t } = useLanguage();
   const [promptA, setPromptA] = useState(DEFAULT_A);
   const [promptB, setPromptB] = useState(DEFAULT_B);
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div className="neo-card">
-          <div className="neo-bar-accent">{t("cmp.ui.promptA")}</div>
-          <div className="p-4">
-            <textarea
-              value={promptA}
-              onChange={(e) => setPromptA(e.target.value)}
-              placeholder={t("cmp.ui.placeholder.a")}
-              rows={6}
-              className="neo-input"
-              style={{ fontSize: 14 }}
-            />
-          </div>
-          <div className="px-4 pb-3" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}>
-            {promptA.length} {t("eval.ui.chars")}
-          </div>
+    <div className="compare-editor">
+      <div className="compare-columns">
+        <div className="compare-column">
+          <div className="compare-column-heading"><span className="compare-letter">A</span><div><strong>Prompt A</strong><span>Current direction</span></div></div>
+          <label className="sr-only" htmlFor="compare-prompt-a">Prompt A</label>
+          <textarea id="compare-prompt-a" value={promptA} onChange={(e) => setPromptA(e.target.value)} placeholder="Enter the first direction" rows={8} className="prompt-textarea" />
+          <span className="character-count">{promptA.length.toLocaleString()} characters</span>
         </div>
-
-        <div className="neo-card">
-          <div className="neo-bar-secondary">{t("cmp.ui.promptB")}</div>
-          <div className="p-4">
-            <textarea
-              value={promptB}
-              onChange={(e) => setPromptB(e.target.value)}
-              placeholder={t("cmp.ui.placeholder.b")}
-              rows={6}
-              className="neo-input"
-              style={{ fontSize: 14 }}
-            />
-          </div>
-          <div className="px-4 pb-3" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.4 }}>
-            {promptB.length} {t("eval.ui.chars")}
-          </div>
+        <div className="compare-divider" aria-hidden="true">VS</div>
+        <div className="compare-column">
+          <div className="compare-column-heading"><span className="compare-letter compare-letter-alt">B</span><div><strong>Prompt B</strong><span>Challenger direction</span></div></div>
+          <label className="sr-only" htmlFor="compare-prompt-b">Prompt B</label>
+          <textarea id="compare-prompt-b" value={promptB} onChange={(e) => setPromptB(e.target.value)} placeholder="Enter the second direction" rows={8} className="prompt-textarea" />
+          <span className="character-count">{promptB.length.toLocaleString()} characters</span>
         </div>
       </div>
-
-      <div className="flex justify-end">
-        <button
-          onClick={() => onSubmit(promptA, promptB)}
-          disabled={loading || !promptA.trim() || !promptB.trim()}
-          className="neo-btn neo-btn-primary"
-          style={{ minWidth: 220 }}
-        >
-          {loading ? t("cmp.ui.loading") : t("cmp.ui.submit")}
-        </button>
-      </div>
+      <div className="editor-footer editor-footer-standalone"><span className="editor-hint">Compare clarity, motion and consistency side by side.</span><button type="button" onClick={() => onSubmit(promptA, promptB)} disabled={loading || !promptA.trim() || !promptB.trim()} className="primary-action">{loading ? "Comparing…" : "Compare prompts"} {!loading && <span aria-hidden="true">→</span>}</button></div>
     </div>
   );
 }

@@ -39,9 +39,13 @@ addresses are not added to request logs.
 - `provider_operation` records task, strategy, latency, success, score when a
   score exists, and typed provider error category.
 - `/api/telemetry` accepts allowlisted beta events from the browser. The
-  current funnel events are `beta_landed`, `beta_run_started`,
-  `beta_run_completed`, `beta_run_failed`, `beta_gate_shown`,
-  `beta_gate_submitted`, and `beta_history_opened`.
+  current funnel events are `beta_session_start`, `preflight_started`,
+  `preflight_succeeded`, `preflight_failed`, `rewrite_requested`,
+  `rewrite_copied`, `rewrite_re_evaluated`, `rewrite_failed`,
+  `compare_started`, `compare_completed`, `compare_failed`,
+  `tournament_started`, `tournament_completed`, `tournament_failed`,
+  `beta_gate_shown`, `beta_gate_completed`, `beta_history_opened`, and
+  `feedback_submitted`.
 
 Telemetry is rate-limited and schema-sanitized. The browser session id is an
 anonymous local UUID; the product path does not send the user email or prompt
@@ -62,7 +66,7 @@ data:
 | rate-limit hit count | request `outcome=rate_limited` plus provider-attempt `error_type=rate_limit`, reported separately by layer |
 | latency p50/p95 | percentile over `latency_ms` for a stated route/feature/time window |
 | feature invocation count | group `api_request` by `feature`, or beta run events by `mode` |
-| beta gate exposure/completion | counts of `beta_gate_shown` / `beta_gate_submitted` |
+| beta gate exposure/completion | counts of `beta_gate_shown` / `beta_gate_completed` |
 | free quota exhaustion | count of `beta_gate_shown` with `trial_remaining=0` |
 
 The current implementation emits raw structured logs but does not persist or
@@ -79,7 +83,7 @@ inspect nearby provider logs by route/task and timestamp:
 api_request
   -> provider_attempt (provider/context/latency/error category)
   -> provider_operation (provider/task/latency/success)
-  -> beta_run_failed (if the request came from the beta UI)
+  -> preflight_failed (if the request came from the beta UI)
 ```
 
 Provider-attempt and provider-operation records do not yet carry the same
