@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:preflight": "node --no-warnings --experimental-strip-types --test --test-isolation=none tests/preflight/*.test.mjs",
+    "test:preflight": "node --no-warnings --experimental-strip-types --test --test-isolation=none tests/observability.test.mjs tests/preflight/*.test.mjs",
     "test:semantic": "node --no-warnings --experimental-strip-types --test --test-isolation=none tests/preflight/semantic-analyst.test.mjs tests/preflight/semantic-evaluation.test.mjs",
     "eval:gate1": "node --no-warnings --experimental-strip-types scripts/run_gate1_eval.mjs",
     "gate:1": "node scripts/validate_prompt_cases.mjs data/prompt_case_seed_v1.json && node scripts/validate_preflight_rubric.mjs data/preflight_rubric_v0.json && node scripts/validate_preflight_record_schema.mjs data/preflight_record_schema_v0.json && node scripts/run_preflight_harness.mjs data/prompt_case_seed_v1.json data/preflight_records_seed_v1.json data/preflight_rubric_v0.json data/preflight_record_schema_v0.json && node scripts/summarize_preflight_records.mjs data/preflight_records_seed_v1.json data/preflight_summary_seed_v1.json && node scripts/validate_preflight_records.mjs data/preflight_records_seed_v1.json data/preflight_record_schema_v0.json && npm run test:preflight && npm run eval:gate1",

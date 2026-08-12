@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
 const EVENT_NAMES = new Set([
   "beta_landed",
@@ -55,7 +56,7 @@ function sanitizeEvent(body: unknown): Record<string, unknown> | null {
   return sanitized;
 }
 
-export async function POST(request: Request) {
+async function handlePost(request: Request) {
   const requestId = crypto.randomUUID();
   const limited = rateLimit(request, "telemetry", 30);
   if (limited) return limited;
@@ -78,4 +79,11 @@ export async function POST(request: Request) {
     console.warn(JSON.stringify({ type: "beta_event_rejected", request_id: requestId, error_type: "invalid_json" }));
     return NextResponse.json({ error: "Invalid telemetry payload" }, { status: 400 });
   }
+}
+
+export function POST(request: Request) {
+  return withApiObservability(request, {
+    route: "/api/telemetry",
+    feature: "beta_telemetry",
+  }, () => handlePost(request));
 }

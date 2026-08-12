@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { rewrite } from "@/lib/evaluator";
 import type { RewriteRequest, AIProvider } from "@/lib/types";
 import { maxLength, rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
-export async function POST(req: NextRequest) {
+async function handlePost(req: NextRequest) {
   try {
     const limited = rateLimit(req, "rewrite", 5);
     if (limited) return limited;
@@ -31,4 +32,13 @@ export async function POST(req: NextRequest) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export function POST(req: NextRequest) {
+  return withApiObservability(req, {
+    route: "/api/rewrite",
+    feature: "rewrite",
+    provider: "deepseek",
+    model: "deepseek-v4-flash",
+  }, () => handlePost(req));
 }

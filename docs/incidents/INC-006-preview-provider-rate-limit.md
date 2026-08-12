@@ -4,7 +4,7 @@
 > Groq observations and fallback metadata are retained to preserve the prior
 > incident chain; the active runtime no longer configures or calls Groq.
 
-- Status: contained; provider availability follow-up remains open
+- Status: historical; superseded by the DeepSeek-only provider policy
 - Detected: Netlify Deploy Preview #2 after restoring Groq primary / DeepSeek fallback
 
 ## Impact
@@ -58,7 +58,8 @@ are outside this public smoke test.
 
 ## Follow-up
 
-Keep this incident open until a fresh soak shows stable Groq success or a
-second provider that completes within the route budget. Do not increase the
-timeout to hide the provider failure; the current fail-closed behavior is
-safer than returning an ungrounded evaluation.
+This historical fallback incident is closed as a current-provider decision:
+the runtime no longer configures or calls Groq. Current availability work must
+exercise the DeepSeek-only path and must not restore fallback merely to hide a
+provider failure. The fail-closed behavior remains safer than returning an
+ungrounded evaluation.

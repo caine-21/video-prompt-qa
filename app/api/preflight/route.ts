@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { createDefaultPreflightSession } from "@/lib/preflight";
 import { rateLimit } from "@/lib/rate-limit";
+import { withApiObservability } from "@/lib/observability";
 
-export async function POST(request: Request) {
+async function handlePost(request: Request) {
   try {
     const limited = rateLimit(request, "preflight", 4);
     if (limited) return limited;
@@ -18,7 +19,14 @@ export async function POST(request: Request) {
         issues: error.issues.map((issue) => ({ path: issue.path, message: issue.message }))
       }, { status: 400 });
     }
-    console.error("[PreflightError]", error);
+    console.error(JSON.stringify({ type: "preflight_error", error_type: "runtime" }));
     return NextResponse.json({ error: "PREFLIGHT_FAILED" }, { status: 500 });
   }
+}
+
+export function POST(request: Request) {
+  return withApiObservability(request, {
+    route: "/api/preflight",
+    feature: "preflight",
+  }, () => handlePost(request));
 }
