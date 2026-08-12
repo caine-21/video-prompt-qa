@@ -52,5 +52,7 @@ the client never records prompt contents or raw provider errors.
 ## Current incident record
 
 `docs/incidents/INC-001-public-evaluation-timeout.md` records the first public
-soak result. The working-tree fix is verified by local tests and the production
-build; the deployed site must be re-tested after this branch is deployed.
+soak result. A second preview run also showed a successful response taking
+about 29 seconds, proving that a fetch abort alone was not enough in the
+deployed runtime. The shared provider-call deadline now enforces the budget at
+the orchestration seam; the preview must be re-tested after this follow-up.

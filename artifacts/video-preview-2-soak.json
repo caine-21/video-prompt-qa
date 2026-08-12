@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "suite": "video-http-soak",
+  "base_url": "https://deploy-preview-2--videopromptqa.netlify.app",
+  "evidence_boundary": "real HTTP requests with public prompts; provider billing/availability is not inferred from a 200 alone",
+  "summary": {
+    "count": 6,
+    "passed": 0,
+    "failed": 6,
+    "fallback_count": 0,
+    "p95_ms": 20015
+  },
+  "samples": [
+    {
+      "case": "fixture_0",
+      "http_status": null,
+      "latency_ms": 20013,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_1",
+      "http_status": null,
+      "latency_ms": 20007,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_2",
+      "http_status": null,
+      "latency_ms": 20011,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_3",
+      "http_status": null,
+      "latency_ms": 20015,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_0",
+      "http_status": null,
+      "latency_ms": 20007,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_1",
+      "http_status": null,
+      "latency_ms": 20006,
+      "ok": false,
+      "error_type": "transport_timeout"
+    }
+  ]
+}

@@ -94,17 +94,34 @@ export async function fetchWithTimeout(
   }
 }
 
+async function runWithProviderDeadline<T>(fn: () => Promise<T>, timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      const error = new Error("provider request timed out");
+      error.name = "AbortError";
+      reject(error);
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([Promise.resolve().then(fn), timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
 export async function safeProviderCall<T>(
   fn: () => Promise<T>,
   provider: AIProvider,
   context: string,
   retries = DEFAULT_PROVIDER_RETRIES,
-  attempt = 1
+  attempt = 1,
+  timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS,
 ): Promise<Result<T>> {
   const startedAt = Date.now();
   emitProviderEvent({ event: "provider_attempt_started", provider, context, attempt });
   try {
-    const data = await fn();
+    const data = await runWithProviderDeadline(fn, timeoutMs);
     emitProviderEvent({
       event: "provider_attempt_succeeded",
       provider,
@@ -136,7 +153,7 @@ export async function safeProviderCall<T>(
         retries_remaining: retries - 1,
       });
       await sleep(300 * Math.pow(2, 2 - retries));
-      return safeProviderCall(fn, provider, context, retries - 1, attempt + 1);
+      return safeProviderCall(fn, provider, context, retries - 1, attempt + 1, timeoutMs);
     }
     return { success: false, error, provider };
   }

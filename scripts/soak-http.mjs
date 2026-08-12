@@ -5,6 +5,7 @@ const baseUrl = process.argv[2] ?? "https://videopromptqa.netlify.app";
 const count = Math.max(1, Math.min(20, Number(process.argv[3] ?? 6)));
 const delayMs = Math.max(250, Math.min(30_000, Number(process.argv[4] ?? 1500)));
 const output = process.argv[5];
+const requestTimeoutMs = 20_000;
 const fixtures = [
   "A black cat walks through a sunlit kitchen, locked medium shot, soft daylight, no text.",
   "4K drone shot, golden hour, bokeh, slow motion.",
@@ -15,11 +16,21 @@ const fixtures = [
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const samples = [];
 
+async function fetchWithDeadline(input, init) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), requestTimeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 for (let index = 0; index < count; index += 1) {
   const started = Date.now();
   const prompt = fixtures[index % fixtures.length];
   try {
-    const response = await fetch(`${baseUrl.replace(/\/$/, "")}/api/evaluate`, {
+    const response = await fetchWithDeadline(`${baseUrl.replace(/\/$/, "")}/api/evaluate`, {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ prompt }),
@@ -42,7 +53,7 @@ for (let index = 0; index < count; index += 1) {
       http_status: null,
       latency_ms: Date.now() - started,
       ok: false,
-      error_type: error instanceof Error ? error.name : "unknown",
+      error_type: error?.name === "AbortError" ? "transport_timeout" : error instanceof Error ? error.name : "unknown",
     });
   }
   if (index + 1 < count) await sleep(delayMs);

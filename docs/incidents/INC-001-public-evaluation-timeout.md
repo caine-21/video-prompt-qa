@@ -24,7 +24,10 @@ cannot prove which upstream provider was unhealthy.
 
 ## Fix
 
-- Add a 9-second `fetchWithTimeout` at the DeepSeek boundary.
+- Add a 9-second `fetchWithTimeout` at the DeepSeek boundary and a second
+  `Promise.race` deadline at the shared `safeProviderCall` boundary. The
+  second boundary is intentional: an upstream runtime that ignores abort
+  signals must still not hold the route open.
 - Bound the generic provider retry budget to one retry, keeping the worst-case
   request path below the approximately 30-second platform deadline.
 - Emit redacted `provider_attempt_*` events with provider, attempt, latency, and
