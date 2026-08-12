@@ -5,7 +5,7 @@
 > An experiment in AI evaluation reliability.  
 > Designed to discover how AI evaluators fail, not just how prompts perform.
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://video-prompt-qa.vercel.app) ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://videopromptqa.netlify.app/) ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
 
 ## Key Finding
 
@@ -22,9 +22,9 @@ It became an experiment in evaluator reliability.
 
 ## 🚀 Live Demo
 
-**[Try it live → https://video-prompt-qa.vercel.app](https://video-prompt-qa.vercel.app)**
+**[Try it live → https://videopromptqa.netlify.app/](https://videopromptqa.netlify.app/)**
 
-> ⚠️ Note: This demo calls real LLM APIs. First response takes 5–10 seconds. No signup required.
+> ⚠️ Note: This demo calls real LLM APIs. First response takes 5–10 seconds. No signup required. Public requests are rate-limited to protect the free provider budget.
 
 ## Who this is for
 
@@ -35,7 +35,7 @@ It became an experiment in evaluator reliability.
 ## What it does
 
 1. Paste any video prompt
-2. Pick a model (Claude / Gemini / Groq) — or compare two prompts head-to-head
+2. Pick a model (Groq / DeepSeek) — or compare two prompts head-to-head
 3. Get a score across 5 dimensions + specific rewrite suggestions in ~6 seconds
 
 **5 evaluation dimensions:**
@@ -51,8 +51,8 @@ It became an experiment in evaluator reliability.
 ## Design Decisions
 
 - **Why 5 orthogonal dimensions, not a single score:** Each dimension maps to a distinct failure mode. A single score hides which aspect to fix. This forces the user to address the actual root cause.
-- **Why all three providers share the same system prompt:** To make scores *comparable* — if Claude gives 7/10 and Groq gives 4/10 on the same prompt, the gap is signal about model calibration, not about prompt quality. Shared prompts are required for fair comparison.
-- **Why 16 edge case fixtures instead of automated tests:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges. They're the spec, not a test suite.
+- **Why both providers share the same system prompt:** To make scores *comparable* — if Groq gives 7/10 and DeepSeek gives 4/10 on the same prompt, the gap is signal about model calibration, not about prompt quality. Shared prompts are required for fair comparison.
+- **Why 18 edge case fixtures instead of automated tests:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges. They're the spec, not a test suite.
 
 ## Quick start
 
@@ -94,4 +94,4 @@ This is the **Evaluate** module of a 3-layer AI Content Ops system (Evaluate →
 
 ## Stack
 
-Next.js 16 · TypeScript · Tailwind CSS · Claude / Gemini / Groq APIs · Supabase
+Next.js 16 · TypeScript · Tailwind CSS · Groq / DeepSeek APIs · Supabase

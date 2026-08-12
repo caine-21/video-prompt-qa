@@ -8,7 +8,7 @@
 
 **作者：** 李哲雷  
 **项目地址：** https://github.com/caine-21/video-prompt-qa  
-**Live Demo：** https://video-prompt-qa.vercel.app  
+**Live Demo：** https://videopromptqa.netlify.app/  
 **对抗测试数据：** `ADVERSARIAL_TESTS.md` / `tests/adversarial-results.json`
 
 ---
@@ -87,7 +87,7 @@ AI 视频生产场景让这个问题变得更具体：一个坏的 Prompt 在 Pi
 
 不共用 system prompt，就无法区分"是 Prompt 写得差"还是"是这个模型的基准偏高"。
 
-共享 system prompt 把跨模型比较变成了**模型校准实验**：如果 Claude 给 7/10、Groq 给 4/10，这个分差本身是信号——它告诉你两个模型的评分基准不同，而不是 Prompt 的质量不同。
+共享 system prompt 把跨模型比较变成了**模型校准实验**：如果 Groq 给 7/10、DeepSeek 给 4/10，这个分差本身是信号——它告诉你两个模型的评分基准不同，而不是 Prompt 的质量不同。
 
 ### 3.3 架构决策
 
@@ -98,7 +98,7 @@ AI 视频生产场景让这个问题变得更具体：一个坏的 Prompt 在 Pi
     ↓
 编排器（consensus / race / fallback 三种策略）
     ↓
-Provider（Groq / Claude / Gemini，共享 system prompt）
+Provider（Groq / DeepSeek，共享 system prompt）
     ↓
 结构化评分结果（JSON）
 ```
@@ -121,8 +121,8 @@ Provider（Groq / Claude / Gemini，共享 system prompt）
 
 **实际 workflow：**
 1. 先写 EVALUATION_SYSTEM_PROMPT 的第一版，手动测试 10 个 Prompt，观察分数分布是否合理
-2. 发现 Groq 和 Claude 基准差异后，固定 shared prompt 设计
-3. 写 16 个 edge-case fixtures 定义边界行为（不是 automated tests，是 spec）
+2. 发现 Groq 和 DeepSeek 基准差异后，固定 shared prompt 设计
+3. 写 18 个 edge-case fixtures 定义边界行为（不是 automated tests，是 spec）
 4. 用 Python 脚本跑 15 个对抗用例，捕获原始 JSON 输出，再分析
 
 ---
