@@ -1,16 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { compare } from "@/lib/evaluator";
 import type { CompareRequest, AIProvider } from "@/lib/types";
+import { maxLength, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, "compare", 8);
+    if (limited) return limited;
+
     const body: CompareRequest = await req.json();
 
-    if (!body.promptA?.trim() || !body.promptB?.trim()) {
+    if (
+      typeof body.promptA !== "string" ||
+      typeof body.promptB !== "string" ||
+      !body.promptA.trim() ||
+      !body.promptB.trim()
+    ) {
       return NextResponse.json(
         { error: "Both prompts are required" },
         { status: 400 }
       );
+    }
+    if (!maxLength(body.promptA, 8000) || !maxLength(body.promptB, 8000)) {
+      return NextResponse.json({ error: "Each prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
     const provider: AIProvider = body.provider ?? "groq";

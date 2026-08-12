@@ -2,13 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { evaluate } from "@/lib/evaluator";
 import { logEvaluation } from "@/lib/db";
 import type { EvaluateRequest, AIProvider } from "@/lib/types";
+import { maxLength, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, "evaluate", 10);
+    if (limited) return limited;
+
     const body: EvaluateRequest = await req.json();
 
-    if (!body.prompt?.trim()) {
+    if (typeof body.prompt !== "string" || !body.prompt.trim()) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+    }
+    if (!maxLength(body.prompt, 8000)) {
+      return NextResponse.json({ error: "Prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
     const provider: AIProvider = body.provider ?? "groq";

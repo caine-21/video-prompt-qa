@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tournament } from "@/lib/evaluator";
 import type { TournamentRequest, AIProvider } from "@/lib/types";
+import { maxLength, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, "tournament", 2);
+    if (limited) return limited;
+
     const body: TournamentRequest = await req.json();
 
     if (!Array.isArray(body.prompts) || body.prompts.length < 2) {
@@ -12,9 +16,15 @@ export async function POST(req: NextRequest) {
     if (body.prompts.length > 5) {
       return NextResponse.json({ error: "Maximum 5 prompts allowed" }, { status: 400 });
     }
+    if (body.prompts.some((prompt) => typeof prompt !== "string")) {
+      return NextResponse.json({ error: "Each prompt must be a string" }, { status: 400 });
+    }
     const trimmed = body.prompts.map((p) => p.trim()).filter(Boolean);
     if (trimmed.length < 2) {
       return NextResponse.json({ error: "At least 2 non-empty prompts are required" }, { status: 400 });
+    }
+    if (trimmed.some((prompt) => !maxLength(prompt, 8000))) {
+      return NextResponse.json({ error: "Each prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
     const provider: AIProvider = body.provider ?? "groq";

@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rewrite } from "@/lib/evaluator";
 import type { RewriteRequest, AIProvider } from "@/lib/types";
+import { maxLength, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, "rewrite", 5);
+    if (limited) return limited;
+
     const body: RewriteRequest = await req.json();
 
-    if (!body.prompt?.trim()) {
+    if (typeof body.prompt !== "string" || !body.prompt.trim()) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+    }
+    if (!maxLength(body.prompt, 8000)) {
+      return NextResponse.json({ error: "Prompt must be 8000 characters or fewer" }, { status: 400 });
     }
     if (!body.dimensions?.length || !body.improvements?.length) {
       return NextResponse.json({ error: "Evaluation context is required" }, { status: 400 });

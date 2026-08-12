@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { evaluate } from "@/lib/evaluator";
 import { logEvaluation } from "@/lib/db";
 import type { AIProvider } from "@/lib/types";
+import { maxLength, rateLimit } from "@/lib/rate-limit";
 
 const MAX_BATCH = 10;
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, "batch", 2);
+    if (limited) return limited;
+
     const body = await req.json();
     const prompts: string[] = body.prompts;
     const provider: AIProvider = body.provider ?? "groq";
@@ -16,6 +20,9 @@ export async function POST(req: NextRequest) {
     }
     if (prompts.length > MAX_BATCH) {
       return NextResponse.json({ error: `Max batch size is ${MAX_BATCH}` }, { status: 400 });
+    }
+    if (prompts.some((prompt) => typeof prompt !== "string" || !maxLength(prompt, 8000))) {
+      return NextResponse.json({ error: "Each prompt must be a string of 8000 characters or fewer" }, { status: 400 });
     }
 
     const results = await Promise.all(
