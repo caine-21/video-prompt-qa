@@ -65,12 +65,16 @@ async function runEvaluate(strategy: OrchestratorStrategy, providers: AIProvider
 
 async function fallbackEvaluate(providers: AIProvider[], prompt: string): Promise<ProviderEvaluationResult> {
   let last: ProviderEvaluationResult = { success: false, provider: providers[0], error: { type: "unknown", message: "All providers failed", retryable: false } };
+  let firstFailureReasonCode: Extract<ProviderEvaluationResult, { success: false }>["error"]["type"] | undefined;
   for (const p of providers) {
     const r = await PROVIDER_REGISTRY[p].evaluate(prompt);
-    if (r.success) return r;
+    if (r.success) {
+      return firstFailureReasonCode ? { ...r, fallbackReasonCode: firstFailureReasonCode } : r;
+    }
+    firstFailureReasonCode ??= r.error.type;
     last = r;
   }
-  return last;
+  return firstFailureReasonCode ? { ...last, fallbackReasonCode: firstFailureReasonCode } : last;
 }
 
 async function raceEvaluate(providers: AIProvider[], prompt: string): Promise<ProviderEvaluationResult> {

@@ -1,24 +1,37 @@
 import type { EvaluationResult, CompareResult, AIProvider, ProviderError, ProviderErrorType, Result } from "@/lib/types";
 
 const ERROR_META: Record<ProviderErrorType, { retryable: boolean; message: (provider: string) => string }> = {
-  network:          { retryable: true,  message: (p) => `Network error: unable to reach ${p}` },
-  rate_limit:       { retryable: true,  message: (p) => `Rate limit exceeded for ${p}` },
-  auth:             { retryable: false, message: (p) => `${p} API key is invalid or missing` },
-  invalid_response: { retryable: true,  message: (p) => `${p} returned an invalid response` },
-  unknown:          { retryable: false, message: (p) => `${p} provider error` },
+  network:               { retryable: true,  message: (p) => `Network error: unable to reach ${p}` },
+  timeout:               { retryable: true,  message: (p) => `${p} request timed out` },
+  rate_limit:            { retryable: true,  message: (p) => `Rate limit exceeded for ${p}` },
+  auth:                  { retryable: false, message: (p) => `${p} API key is invalid or missing` },
+  missing_config:        { retryable: false, message: (p) => `${p} provider configuration is missing` },
+  insufficient_balance: { retryable: false, message: (p) => `${p} balance or quota is insufficient` },
+  invalid_model:         { retryable: false, message: (p) => `${p} model configuration is invalid` },
+  upstream_4xx:          { retryable: false, message: (p) => `${p} upstream request was rejected` },
+  upstream_5xx:          { retryable: true,  message: (p) => `${p} upstream service failed` },
+  invalid_response:      { retryable: true,  message: (p) => `${p} returned an invalid response` },
+  runtime:               { retryable: false, message: (p) => `${p} runtime error` },
+  unknown:               { retryable: false, message: (p) => `${p} provider error` },
 };
 
 function classifyError(err: unknown): ProviderErrorType {
   const status = (err as { status?: number })?.status;
-  if (status === 429) return "rate_limit";
-  if (status === 401 || status === 403) return "auth";
-  if (status === 400) return "invalid_response";
-
+  const name = (err as { name?: string })?.name?.toLowerCase() ?? "";
   const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+
+  if (name === "syntaxerror" || name === "zoderror" || msg.includes("no json found") || msg.includes("invalid response") || msg.includes("unexpected token") || msg.includes("cannot read properties of undefined") || msg.includes("not iterable")) return "invalid_response";
+  if (msg.includes("api_key is not set") || msg.includes("api key is not set") || msg.includes("missing configuration")) return "missing_config";
+  if (name === "aborterror" || msg.includes("timeout") || msg.includes("timed out") || msg.includes("etimedout") || msg.includes("connect_timeout")) return "timeout";
+  if (status === 429 || msg.includes("429") || msg.includes("rate limit") || msg.includes("resource_exhausted")) return "rate_limit";
+  if (status === 401 || status === 403 || msg.includes("401") || msg.includes("403") || msg.includes("api key") || msg.includes("invalid_api_key")) return "auth";
+  if (msg.includes("insufficient") || msg.includes("balance") || msg.includes("quota") || msg.includes("credits")) return "insufficient_balance";
+  if (msg.includes("model") && (msg.includes("invalid") || msg.includes("not found") || msg.includes("unsupported"))) return "invalid_model";
+  if (status && status >= 500) return "upstream_5xx";
+  if (status && status >= 400) return "upstream_4xx";
   if (msg.includes("fetch") || msg.includes("network") || msg.includes("econnrefused")) return "network";
-  if (msg.includes("json") || msg.includes("json_validate_failed") || msg.includes("invalid response")) return "invalid_response";
-  if (msg.includes("429") || msg.includes("rate limit") || msg.includes("quota") || msg.includes("resource_exhausted")) return "rate_limit";
-  if (msg.includes("401") || msg.includes("403") || msg.includes("api key") || msg.includes("invalid_api_key")) return "auth";
+  if (msg.includes("json") || msg.includes("json_validate_failed")) return "invalid_response";
+  if (msg.includes("runtime")) return "runtime";
   return "unknown";
 }
 

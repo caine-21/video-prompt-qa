@@ -3,7 +3,7 @@ import { orchestrateEvaluate, orchestrateCompare, orchestrateRewrite, orchestrat
 import { fallbackOrder } from "./providers/registry";
 
 export function evaluate(prompt: string, provider: AIProvider = "groq"): Promise<ProviderEvaluationResult> {
-  return orchestrateEvaluate(prompt, { providers: fallbackOrder(provider), task: "evaluation" });
+  return orchestrateEvaluate(prompt, { providers: fallbackOrder(provider), task: "evaluation", strategy: "fallback" });
 }
 
 export function compare(promptA: string, promptB: string, provider: AIProvider = "groq"): Promise<ProviderCompareResult> {

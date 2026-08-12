@@ -61,7 +61,19 @@ export interface RewriteRequest {
   provider?: AIProvider;
 }
 
-export type ProviderErrorType = "network" | "rate_limit" | "auth" | "invalid_response" | "unknown";
+export type ProviderErrorType =
+  | "network"
+  | "timeout"
+  | "rate_limit"
+  | "auth"
+  | "missing_config"
+  | "insufficient_balance"
+  | "invalid_model"
+  | "upstream_4xx"
+  | "upstream_5xx"
+  | "invalid_response"
+  | "runtime"
+  | "unknown";
 
 export interface ProviderError {
   message: string;
