@@ -27,7 +27,11 @@ that resolves after the deadline.
 ## Verification
 
 - Preview request: HTTP 200, approximately 29 seconds before this follow-up.
+- Follow-up preview soak after the deadline fix: 6/6 requests returned typed
+  timeout results instead of 502/504, with a p95 near 20 seconds because the
+  single-provider path retried once.
 - Local regression test: must prove a non-cooperative provider call returns a
   typed `timeout` within the deadline.
-- Required next step: redeploy the follow-up and run the bounded preview/public
-  soak again. Do not treat the previous 200 as a healthy latency result.
+- Required next step: verify the restored Groq-primary / DeepSeek-fallback path
+  in a fresh preview/public soak. Do not treat a typed timeout alone as a
+  healthy user experience.

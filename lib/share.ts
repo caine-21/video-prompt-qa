@@ -18,7 +18,7 @@ export function decodeShareState(encoded: string): ShareState | null {
   try {
     const json = decodeURIComponent(atob(encoded));
     const parsed = JSON.parse(json) as ShareState;
-    return { ...parsed, provider: "deepseek" };
+    return { ...parsed, provider: parsed.provider ?? "groq" };
   } catch {
     return null;
   }

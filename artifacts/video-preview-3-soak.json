@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "suite": "video-http-soak",
+  "base_url": "https://deploy-preview-2--videopromptqa.netlify.app",
+  "evidence_boundary": "real HTTP requests with public prompts; provider billing/availability is not inferred from a 200 alone",
+  "summary": {
+    "count": 6,
+    "passed": 0,
+    "failed": 6,
+    "fallback_count": 0,
+    "p95_ms": 20009
+  },
+  "samples": [
+    {
+      "case": "fixture_0",
+      "http_status": null,
+      "latency_ms": 20009,
+      "ok": false,
+      "error_type": "transport_timeout"
+    },
+    {
+      "case": "fixture_1",
+      "http_status": 503,
+      "latency_ms": 19957,
+      "ok": false,
+      "requested_provider": "deepseek",
+      "actual_provider": "deepseek",
+      "fallback": false,
+      "error_type": "timeout"
+    },
+    {
+      "case": "fixture_2",
+      "http_status": 503,
+      "latency_ms": 18989,
+      "ok": false,
+      "requested_provider": "deepseek",
+      "actual_provider": "deepseek",
+      "fallback": false,
+      "error_type": "timeout"
+    },
+    {
+      "case": "fixture_3",
+      "http_status": 503,
+      "latency_ms": 18970,
+      "ok": false,
+      "requested_provider": "deepseek",
+      "actual_provider": "deepseek",
+      "fallback": false,
+      "error_type": "timeout"
+    },
+    {
+      "case": "fixture_0",
+      "http_status": 503,
+      "latency_ms": 19140,
+      "ok": false,
+      "requested_provider": "deepseek",
+      "actual_provider": "deepseek",
+      "fallback": false,
+      "error_type": "timeout"
+    },
+    {
+      "case": "fixture_1",
+      "http_status": 503,
+      "latency_ms": 19103,
+      "ok": false,
+      "requested_provider": "deepseek",
+      "actual_provider": "deepseek",
+      "fallback": false,
+      "error_type": "timeout"
+    }
+  ]
+}

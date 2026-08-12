@@ -55,4 +55,6 @@ the client never records prompt contents or raw provider errors.
 soak result. A second preview run also showed a successful response taking
 about 29 seconds, proving that a fetch abort alone was not enough in the
 deployed runtime. The shared provider-call deadline now enforces the budget at
-the orchestration seam; the preview must be re-tested after this follow-up.
+the orchestration seam. The next verification uses the previously observed
+Groq-primary / DeepSeek-fallback deployment shape, with the same deadline and
+typed events.

@@ -143,7 +143,7 @@ export async function orchestrateTournament(
   prompts: string[],
   options?: OrchestratorOptions
 ): Promise<Result<TournamentResult>> {
-  const provider = options?.providers?.[0] ?? "deepseek";
+  const provider = options?.providers?.[0] ?? "groq";
   const t0 = Date.now();
 
   // Generate all pairs (round-robin)

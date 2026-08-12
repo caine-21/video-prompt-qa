@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Each prompt must be 8000 characters or fewer" }, { status: 400 });
     }
 
-    const provider: AIProvider = body.provider ?? "deepseek";
+    const provider: AIProvider = body.provider ?? "groq";
     const result = await compare(body.promptA.trim(), body.promptB.trim(), provider);
 
     if (!result.success) {

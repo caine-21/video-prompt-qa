@@ -23,7 +23,7 @@ import ModernWorkspace from "@/components/ModernWorkspace";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["deepseek"];
+const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const MAX_HISTORY = 20;
 
@@ -39,7 +39,7 @@ export function HomeInner() {
   const { t, lang, toggleLang } = useLanguage();
 
   const [tab, setTab]                     = useState<Tab>("evaluate");
-  const [provider, setProvider]           = useState<AIProvider>("deepseek");
+  const [provider, setProvider]           = useState<AIProvider>("groq");
   const [evalResult, setEvalResult]       = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult]       = useState<CompareResult | null>(null);
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);

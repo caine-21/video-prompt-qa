@@ -22,7 +22,7 @@ import CalibrationPanel from "@/components/CalibrationPanel";
 
 type Tab = "evaluate" | "compare" | "tournament";
 
-const PROVIDERS: AIProvider[] = ["deepseek"];
+const PROVIDERS: AIProvider[] = ["groq", "deepseek"];
 const HISTORY_KEY = "vpqa_history";
 const FREE_TRIAL_KEY = "vpqa_free_runs_v1";
 const ACCOUNT_KEY = "vpqa_beta_account_v1";
@@ -32,7 +32,7 @@ const FREE_TRIAL_LIMIT = 3;
 export default function ModernWorkspace() {
   const { lang, toggleLang } = useLanguage();
   const [tab, setTab] = useState<Tab>("evaluate");
-  const [provider, setProvider] = useState<AIProvider>("deepseek");
+  const [provider, setProvider] = useState<AIProvider>("groq");
   const [evalResult, setEvalResult] = useState<EvaluationResult | null>(null);
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [tournamentResult, setTournamentResult] = useState<TournamentResult | null>(null);
@@ -66,7 +66,7 @@ export default function ModernWorkspace() {
 
       const shared = readShareFromURL();
       if (!shared) return;
-      setProvider("deepseek");
+      setProvider(shared.provider);
       setEvalResult(shared.improvedResult ?? shared.result);
       if (shared.improvedResult) setDelta({ originalResult: shared.result });
       if (shared.demoMode) {
