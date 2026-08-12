@@ -35,7 +35,7 @@ It became an experiment in evaluator reliability.
 ## What it does
 
 1. Paste any video prompt
-2. Pick a model (Groq / DeepSeek) — or compare two prompts head-to-head
+2. Submit the prompt to the DeepSeek evaluator, then compare it with a second prompt head-to-head
 3. Get a score across 5 dimensions + specific rewrite suggestions in ~6 seconds
 
 **5 evaluation dimensions:**
@@ -51,7 +51,7 @@ It became an experiment in evaluator reliability.
 ## Design Decisions
 
 - **Why 5 orthogonal dimensions, not a single score:** Each dimension maps to a distinct failure mode. A single score hides which aspect to fix. This forces the user to address the actual root cause.
-- **Why both providers share the same system prompt:** To make scores *comparable* — if Groq gives 7/10 and DeepSeek gives 4/10 on the same prompt, the gap is signal about model calibration, not about prompt quality. Shared prompts are required for fair comparison.
+- **Why model fit is evidence-based:** The evaluator scores prompt-to-model fit against a fixed profile of Sora 2, Veo 3.1, Runway Gen-4.5, and MiniMax Hailuo 2.3. It is a recommendation layer, not a claim that this app calls those generation APIs.
 - **Why 18 edge case fixtures instead of automated tests:** The evaluation is inherently subjective. The fixtures define the *boundary conditions* — what the system must classify correctly at the edges. They're the spec, not a test suite.
 
 ## Quick start
@@ -61,7 +61,7 @@ git clone https://github.com/caine-21/video-prompt-qa
 cd video-prompt-qa
 npm install
 cp .env.local.example .env.local
-# Add at least one API key (GROQ_API_KEY is free)
+# Add the evaluator API key
 npm run dev
 ```
 
@@ -71,10 +71,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Provider | Free tier |
 |---|---|---|
-| `GROQ_API_KEY` | Groq Cloud | ✅ Yes |
-| `DEEPSEEK_API_KEY` | DeepSeek | ✅ Low cost (~$0.14/1M tokens) |
+| `DEEPSEEK_API_KEY` | DeepSeek | ✅ Low cost |
 
-Set at least one key. GROQ is free and fast — recommended starting point.
+Set `DEEPSEEK_API_KEY` before starting the app.
 
 ## Architecture
 
@@ -94,4 +93,4 @@ This is the **Evaluate** module of a 3-layer AI Content Ops system (Evaluate →
 
 ## Stack
 
-Next.js 16 · TypeScript · Tailwind CSS · Groq / DeepSeek APIs · Supabase
+Next.js 16 · TypeScript · Tailwind CSS · DeepSeek API · Supabase

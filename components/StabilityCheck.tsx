@@ -10,7 +10,6 @@ interface Props {
   defaultOpen?: boolean;
 }
 
-const ALL_PROVIDERS: AIProvider[] = ["groq", "deepseek"];
 const VARIANCE_THRESHOLD = 1.5;
 
 function scoreColors(score: number) {
@@ -20,9 +19,6 @@ function scoreColors(score: number) {
 }
 
 export default function StabilityCheck({ prompt, currentProvider, currentResult, defaultOpen = false }: Props) {
-  const [compareProvider, setCompareProvider] = useState<AIProvider>(
-    ALL_PROVIDERS.find(p => p !== currentProvider) ?? "deepseek"
-  );
   const [compareResult, setCompareResult] = useState<EvaluationResult | null>(null);
   const [loading, setLoading]             = useState(false);
   const [error, setError]                 = useState<string | null>(null);
@@ -34,7 +30,7 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
       const res  = await fetch("/api/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, provider: compareProvider }),
+        body: JSON.stringify({ prompt, provider: currentProvider }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -61,8 +57,6 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
     ? Math.abs(currentResult.overallScore - compareResult.overallScore)
     : 0;
 
-  const otherProviders = ALL_PROVIDERS.filter(p => p !== currentProvider);
-
   return (
     <div style={{ background: "#FFFDF5", border: "4px solid #000", boxShadow: "8px 8px 0 #000" }}>
       {/* Header / trigger */}
@@ -79,7 +73,7 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
             Evaluator Stability Check
           </p>
           <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.5, margin: 0 }}>
-            Re-score with a second provider — detect evaluator variance
+            Re-score with the same evaluator — detect run-to-run variance
           </p>
         </div>
         <span style={{ fontWeight: 700, fontSize: 18, opacity: 0.4 }}>{open ? "▲" : "▼"}</span>
@@ -90,13 +84,13 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
           {/* Provider selector + run */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
             <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.5 }}>
-              Compare against:
+              Repeat evaluator:
             </span>
-            {otherProviders.map(p => (
+            {[currentProvider].map(p => (
               <button
                 key={p}
-                onClick={() => { setCompareProvider(p); setCompareResult(null); }}
-                className={`neo-btn ${compareProvider === p ? "neo-btn-active" : "neo-btn-ghost"}`}
+                onClick={() => setCompareResult(null)}
+                className="neo-btn neo-btn-active"
                 style={{ padding: "4px 14px", fontSize: 12, minHeight: 32 }}
               >
                 {p.toUpperCase()}
@@ -120,7 +114,7 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
             <>
               {/* Baseline note */}
               <p style={{ fontSize: 11, fontWeight: 500, opacity: 0.45, margin: "0 0 12px", lineHeight: 1.5 }}>
-                Variance reflects directional disagreement, not statistical variance — different providers have different scoring baselines.
+                Variance reflects run-to-run disagreement from the same evaluator.
               </p>
 
               {/* Overall variance summary */}
@@ -140,7 +134,7 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 2px" }}>
-                    {currentProvider.toUpperCase()}: {currentResult.overallScore} &nbsp;|&nbsp; {compareProvider.toUpperCase()}: {compareResult.overallScore}
+                    Run 1: {currentResult.overallScore} &nbsp;|&nbsp; Run 2: {compareResult.overallScore}
                   </p>
                   <p style={{ fontWeight: 500, fontSize: 12, opacity: 0.65, margin: 0 }}>
                     {overallVariance >= VARIANCE_THRESHOLD
@@ -174,14 +168,14 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
                         <span style={{ background: scoreColors(d!.scoreA), border: "2px solid #000", padding: "2px 8px", fontWeight: 700, fontSize: 13 }}>
                           {d!.scoreA}
                         </span>
-                        <span style={{ fontWeight: 700, fontSize: 11, opacity: 0.4 }}>{currentProvider.toUpperCase()}</span>
+                        <span style={{ fontWeight: 700, fontSize: 11, opacity: 0.4 }}>RUN 1</span>
                       </div>
                       <span style={{ fontWeight: 700, fontSize: 14, opacity: 0.3 }}>vs</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <span style={{ background: scoreColors(d!.scoreB), border: "2px solid #000", padding: "2px 8px", fontWeight: 700, fontSize: 13 }}>
                           {d!.scoreB}
                         </span>
-                        <span style={{ fontWeight: 700, fontSize: 11, opacity: 0.4 }}>{compareProvider.toUpperCase()}</span>
+                        <span style={{ fontWeight: 700, fontSize: 11, opacity: 0.4 }}>RUN 2</span>
                       </div>
                       <span style={{ fontWeight: 700, fontSize: 12, opacity: 0.6, marginLeft: "auto" }}>
                         Δ {d!.variance.toFixed(1)}
@@ -195,7 +189,7 @@ export default function StabilityCheck({ prompt, currentProvider, currentResult,
               {highVariance.length === 0 && (
                 <div style={{ background: "#FFD93D", border: "3px solid #000", padding: "12px 16px" }}>
                   <p style={{ fontWeight: 700, fontSize: 13, margin: 0 }}>
-                    All dimensions within variance threshold — evaluator is consistent on this prompt across {currentProvider.toUpperCase()} and {compareProvider.toUpperCase()}.
+                    All dimensions within variance threshold — evaluator is consistent across repeated runs.
                   </p>
                 </div>
               )}

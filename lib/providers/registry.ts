@@ -1,6 +1,5 @@
 import type { AIProvider, ProviderEvaluationResult, ProviderCompareResult, ProviderRewriteResult, EvaluationDimension } from "@/lib/types";
-import { evaluateWithGroq,     rewriteWithGroq,     compareWithGroq     } from "./groq";
-import { evaluateWithDeepSeek, rewriteWithDeepSeek, compareWithDeepSeek } from "./deepseek";
+import { evaluateWithDeepSeek, rewriteWithDeepSeek, compareWithDeepSeek } from "./deepseek.ts";
 
 interface ProviderOps {
   evaluate: (prompt: string) => Promise<ProviderEvaluationResult>;
@@ -9,13 +8,11 @@ interface ProviderOps {
 }
 
 export const PROVIDER_REGISTRY: Record<AIProvider, ProviderOps> = {
-  groq:     { evaluate: evaluateWithGroq,     rewrite: rewriteWithGroq,     compare: compareWithGroq     },
   deepseek: { evaluate: evaluateWithDeepSeek, rewrite: rewriteWithDeepSeek, compare: compareWithDeepSeek },
 };
 
 export const PROVIDER_CONFIG: Record<AIProvider, { priority: number }> = {
-  groq:     { priority: 1 },
-  deepseek: { priority: 2 },
+  deepseek: { priority: 1 },
 };
 
 export const ALL_PROVIDERS = (Object.keys(PROVIDER_REGISTRY) as AIProvider[]).sort(

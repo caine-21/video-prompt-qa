@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const prompts: string[] = body.prompts;
-    const provider: AIProvider = body.provider ?? "groq";
+    const provider: AIProvider = body.provider ?? "deepseek";
 
     if (!Array.isArray(prompts) || prompts.length === 0) {
       return NextResponse.json({ error: "prompts must be a non-empty array" }, { status: 400 });

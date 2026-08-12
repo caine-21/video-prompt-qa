@@ -35,5 +35,5 @@ exit 0
 - shadow revision benchmark = FUTURE（无真实人工修订样本）
 
 ## Not verified
-- 在线评分 pipeline（Next.js + Groq/DeepSeek API）——需 API key + 前端环境
+- 在线评分 pipeline（Next.js + DeepSeek API）——需 API key + 前端环境
 - 真实视频生成对照（Sora/Kling/Pika）——从未接入，也不在 clean-room 范围

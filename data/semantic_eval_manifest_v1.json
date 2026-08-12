@@ -1,0 +1,42 @@
+{
+  "manifest_version": "semantic_eval_manifest_v1",
+  "experiment_name": "gate2_live_semantic_single_provider",
+  "dataset_version": "semantic_eval_dataset_v1",
+  "matching_policy_version": "semantic_matching_v1",
+  "holdout_policy": {
+    "status": "LOCKED_BEFORE_FIRST_PROVIDER_RUN",
+    "locked_at": "2026-08-10T00:00:00.000Z",
+    "allowed_prompt_tuning_split": "DEV",
+    "formal_reporting_split": "HOLDOUT",
+    "max_substantive_prompt_versions": 3
+  },
+  "frozen_config": {
+    "provider_mode": "SINGLE_PROVIDER",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "temperature": 0,
+    "system_prompt_version": "semantic_system_v2",
+    "semantic_prompt_version": "semantic_prompt_v2",
+    "semantic_output_schema_version": "semantic_output_v2",
+    "semantic_detection_tools": [],
+    "post_detection_tools": ["retrieve_failure_patterns"],
+    "capability_registry_version": "capability_registry_v2",
+    "failure_pattern_version": "preflight_rubric_v0",
+    "timeout_ms": 12000,
+    "max_provider_calls_per_case": 1,
+    "retry_limit": 0,
+    "fallback_enabled": false,
+    "environment_key_name": "DEEPSEEK_API_KEY"
+  },
+  "aggregation_policy": {
+    "provider_failures_are_semantic_errors": false,
+    "malformed_output_is_provider_failure": true,
+    "failed_cases_are_excluded_from_semantic_precision_recall": true,
+    "fallback_runs_may_join_primary_metrics": false
+  },
+  "config_fingerprint": {
+    "algorithm": "sha256",
+    "canonicalization": "recursively sorted JSON keys",
+    "stored_per_run": true
+  }
+}

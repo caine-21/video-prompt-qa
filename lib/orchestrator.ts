@@ -11,12 +11,13 @@ import type {
   TournamentResult,
   Result,
 } from "@/lib/types";
-import { PROVIDER_REGISTRY, ALL_PROVIDERS } from "./providers/registry";
-import { recordOperation } from "./metrics";
+import { PROVIDER_REGISTRY, ALL_PROVIDERS } from "./providers/registry.ts";
+import { recordOperation } from "./metrics.ts";
 
-// Task-aware default strategies — evaluation needs quality, compare needs speed
+// Production defaults use one primary provider and only fall back on failure.
+// Multi-provider max-score selection is an explicit evaluation experiment.
 const TASK_DEFAULT_STRATEGY: Record<TaskType, OrchestratorStrategy> = {
-  evaluation: "consensus",
+  evaluation: "fallback",
   rewrite:    "fallback",
   compare:    "race",
   tournament: "fallback",
@@ -59,7 +60,7 @@ async function runEvaluate(strategy: OrchestratorStrategy, providers: AIProvider
   switch (strategy) {
     case "fallback":  return fallbackEvaluate(providers, prompt);
     case "race":      return raceEvaluate(providers, prompt);
-    case "consensus": return consensusEvaluate(providers, prompt);
+    case "max_score_experiment": return maxScoreExperimentEvaluate(providers, prompt);
   }
 }
 
@@ -91,7 +92,7 @@ async function raceEvaluate(providers: AIProvider[], prompt: string): Promise<Pr
   }
 }
 
-async function consensusEvaluate(providers: AIProvider[], prompt: string): Promise<ProviderEvaluationResult> {
+async function maxScoreExperimentEvaluate(providers: AIProvider[], prompt: string): Promise<ProviderEvaluationResult> {
   const results  = await Promise.all(providers.map((p) => PROVIDER_REGISTRY[p].evaluate(prompt)));
   const successes = results.filter((r): r is Extract<ProviderEvaluationResult, { success: true }> => r.success);
   if (successes.length === 0) return results[results.length - 1];
@@ -142,7 +143,7 @@ export async function orchestrateTournament(
   prompts: string[],
   options?: OrchestratorOptions
 ): Promise<Result<TournamentResult>> {
-  const provider = options?.providers?.[0] ?? "groq";
+  const provider = options?.providers?.[0] ?? "deepseek";
   const t0 = Date.now();
 
   // Generate all pairs (round-robin)

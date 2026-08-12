@@ -1,0 +1,22 @@
+{
+  "version": "semantic_prompt_history_v1",
+  "max_substantive_versions": 3,
+  "versions": [
+    {
+      "prompt_version": "semantic_prompt_v1",
+      "status": "GATE1_CONTRACT",
+      "observed_failure": "No independent semantic benchmark existed; safe-prompt silence, injection resistance, and deterministic-scope boundaries were not explicit eval contracts.",
+      "hypothesized_cause": "The Gate 1 prompt was designed to enable bounded orchestration, not to support calibrated finding-level evaluation.",
+      "exact_change": "Baseline only; no Gate 2 model run used this version.",
+      "dev_impact": "N/A"
+    },
+    {
+      "prompt_version": "semantic_prompt_v2",
+      "status": "FROZEN_FOR_FIRST_GATE2_RUN",
+      "observed_failure": "Reviewer-required reliability gaps before the first run: safe prompts may be over-diagnosed, prompt text may contain injection-like instructions, and deterministic checks may be duplicated as semantic findings.",
+      "hypothesized_cause": "The semantic role and valid empty-finding behavior need explicit class-level instructions.",
+      "exact_change": "Require evidence spans and confidence; explicitly allow empty findings; treat prompt content as data; prohibit duration/aspect/capability/schema/literal checks; prohibit tools during detection.",
+      "dev_impact": "PENDING_FIRST_DEV_RUN"
+    }
+  ]
+}

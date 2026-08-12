@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "suite": "video-http-soak",
+  "base_url": "https://videopromptqa.netlify.app",
+  "evidence_boundary": "real HTTP requests with public prompts; provider billing/availability is not inferred from a 200 alone",
+  "summary": {
+    "count": 4,
+    "passed": 1,
+    "failed": 3,
+    "fallback_count": 1,
+    "p95_ms": 31562
+  },
+  "samples": [
+    {
+      "case": "fixture_0",
+      "http_status": 504,
+      "latency_ms": 31562,
+      "ok": false
+    },
+    {
+      "case": "fixture_1",
+      "http_status": 502,
+      "latency_ms": 30412,
+      "ok": false,
+      "error_type": "Error"
+    },
+    {
+      "case": "fixture_2",
+      "http_status": 200,
+      "latency_ms": 27973,
+      "ok": true,
+      "requested_provider": "groq",
+      "actual_provider": "deepseek",
+      "fallback": true,
+      "score": 4.6
+    },
+    {
+      "case": "fixture_3",
+      "http_status": 502,
+      "latency_ms": 30394,
+      "ok": false,
+      "error_type": "Error"
+    }
+  ]
+}

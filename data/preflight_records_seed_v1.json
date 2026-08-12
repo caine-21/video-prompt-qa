@@ -397,30 +397,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-007; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -516,30 +502,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "physical_motion_risk"
-      ],
-      "detected_risk_tags": [
-        "physical_motion_risk"
-      ],
-      "matched_rule_ids": [
-        "physical_motion_risk"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-009; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints"
-      ],
-      "intervention_priority": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -683,30 +655,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-012; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -919,30 +877,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "prompt_conflict"
-      ],
-      "detected_risk_tags": [
-        "prompt_conflict"
-      ],
-      "matched_rule_ids": [
-        "prompt_conflict"
-      ],
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
       "confidence": "low",
-      "evidence_level": "hypothesis_heavy",
-      "hypothesis_flags": [
-        "prompt_conflict"
-      ],
-      "rationale": "Used seed risk annotations for PC-016; no NLP or semantic inference was performed. Hypothesis-heavy tags preserved separately: prompt_conflict.",
-      "recommended_interventions": [
-        "simplify_prompt",
-        "reduce_simultaneous_constraints"
-      ],
-      "intervention_priority": [
-        "simplify_prompt",
-        "reduce_simultaneous_constraints"
-      ],
-      "should_generate_decision": "needs_review",
+      "evidence_level": "unknown",
+      "hypothesis_flags": [],
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1031,30 +975,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-018; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1211,30 +1141,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-021; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1323,39 +1239,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-023; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1446,30 +1339,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-025; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1561,39 +1440,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-027; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1686,39 +1542,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "physical_motion_risk",
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-029; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints",
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1870,39 +1703,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked",
-        "physical_motion_risk"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked",
-        "physical_motion_risk"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked",
-        "physical_motion_risk"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-032; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first",
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first",
-        "simplify_prompt",
-        "split_into_shots",
-        "reduce_simultaneous_constraints"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -1996,30 +1806,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-034; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,
@@ -2030,7 +1826,7 @@
         "revision_count",
         "output_side_failure_tags"
       ],
-      "notes_for_reviewer": "Safe-pass non-critical product case. The schema requires a risk tag, so product_features_not_locked is used even though the actual risk is mild."
+      "notes_for_reviewer": "Safe-pass non-critical product case. No prompt-side risk tag is assigned because the actual risk is mild and the benchmark now allows safe cases without synthetic risk labels."
     },
     {
       "run_id": "preflight_seed_v1",
@@ -2113,30 +1909,16 @@
       "reference_availability": "unspecified",
       "hard_requirements": [],
       "constraints": [],
-      "expected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "detected_risk_tags": [
-        "product_features_not_locked"
-      ],
-      "matched_rule_ids": [
-        "product_features_not_locked"
-      ],
-      "confidence": "medium",
-      "evidence_level": "partially_supported",
+      "expected_risk_tags": [],
+      "detected_risk_tags": [],
+      "matched_rule_ids": [],
+      "confidence": "low",
+      "evidence_level": "unknown",
       "hypothesis_flags": [],
-      "rationale": "Used seed risk annotations for PC-036; no NLP or semantic inference was performed.",
-      "recommended_interventions": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "intervention_priority": [
-        "lock_product_attributes",
-        "add_reference_image",
-        "generate_image_keyframe_first"
-      ],
-      "should_generate_decision": "revise_first",
+      "rationale": "No seed risk annotations were available, so the offline harness did not infer semantic risk tags.",
+      "recommended_interventions": [],
+      "intervention_priority": [],
+      "should_generate_decision": "unknown",
       "validation_group": "both",
       "fixed_budget_ready": true,
       "stop_when_usable_ready": true,

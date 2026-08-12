@@ -14,8 +14,8 @@
 2026-08-07
 
 ## Current architecture
-一次请求 = 一次 completion（共享 `EVALUATION_SYSTEM_PROMPT`，Groq llama-3.3-70b 优先 + DeepSeek fallback）→ `buildEvaluationResult()` 确定性聚合（5 维均值）。orchestrator 策略 fallback/race/consensus（consensus 取最高分）。
-生产 provider **只有 Groq + DeepSeek**（`lib/types.ts` `AIProvider = "groq"|"deepseek"`）。
+一次请求 = 一次 completion（共享 `EVALUATION_SYSTEM_PROMPT`，DeepSeek 单一 evaluator）→ `buildEvaluationResult()` 确定性聚合（5 维均值）。orchestrator 保留策略接口，但生产默认只配置 DeepSeek。
+生产 provider **只有 DeepSeek**（`lib/types.ts` `AIProvider = "deepseek"`）。
 不调用真实视频模型；Subject Gate 是 **prompt 指令**（软约束），非代码强制。
 
 ## Current maturity
@@ -23,7 +23,7 @@
 
 ## Canonical evaluation
 **三组手动受控实验 + preflight 确定性映射，无自动化测试套件：**
-1. 对抗 15 例（`run_adversarial.py`，需 Groq key）
+1. 对抗 15 例（`run_adversarial.py`，需 DeepSeek key）
 2. subject omission 3×3（`run_subject_omission_experiment.py`）
 3. gate validation 6 例（`run_subject_gate_validation.py` → `tests/subject-gate-validation.json`，需 key）
 4. preflight 36 条 seed（确定性 .mjs 脚本，offline）
@@ -34,7 +34,7 @@
 - `data/preflight_records_seed_v1.json` — 36 条 seed（PC-001..036）
 
 ## Run command
-- 全量无自动化测试。现有 Python 脚本需 Groq key 且各自硬编码 system prompt。
+- Python 实验脚本需 DeepSeek key；部分脚本保留独立 system prompt 作为历史实验记录。
 - 本轮新增离线统一入口：`py evaluate_preflight.py`（后续补充细节）
 
 ## Result artifact
@@ -62,7 +62,7 @@
 ## Deprecated claims
 - ❌ **CASE_STUDY 声称 G1 after=4.6 / Spe=2** — 与持久数据 `subject-gate-validation.json`（6.4 / 4，GATE VIOLATED）矛盾。必须用持久数据口径
 - ❌「16 edge case fixtures」— 实为 18
-- ❌ README「Pick a model (Claude/Gemini/Groq)」— 代码只有 Groq + DeepSeek
+- ❌ 旧版 README provider 描述 — 当前运行时只保留 DeepSeek，模型 fit 仅是推荐层
 - ❌「gate 修复后 G1 降到 4.6」— 门加入后持久数据显示仍 VIOLATED
 
 ## Allowed interview claims

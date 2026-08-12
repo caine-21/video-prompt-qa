@@ -1,19 +1,19 @@
 import type {
   PreflightContractResult,
-  PreflightDecision,
+  LegacyPreflightDecision,
   PreflightDecisionBucket,
   PreflightRiskLevel,
   RawPreflightRecordLike
 } from "./types";
 
-const decisionLabels: Record<PreflightDecision, string> = {
+const decisionLabels: Record<LegacyPreflightDecision, string> = {
   generate_ok: "Looks safe enough to try",
   revise_first: "Revise before generating",
   needs_review: "Needs human review",
   unknown: "Needs manual check"
 };
 
-const decisionBuckets: Record<PreflightDecision, PreflightDecisionBucket> = {
+const decisionBuckets: Record<LegacyPreflightDecision, PreflightDecisionBucket> = {
   generate_ok: "ready_to_try",
   revise_first: "revise_before_generation",
   needs_review: "review_before_generation",
@@ -56,21 +56,21 @@ function unique(items: string[]): string[] {
   return [...new Set(items.filter(Boolean))];
 }
 
-function normalizeDecision(value: string): PreflightDecision {
+function normalizeDecision(value: string): LegacyPreflightDecision {
   if (value === "generate_ok" || value === "revise_first" || value === "needs_review" || value === "unknown") {
     return value;
   }
   return "unknown";
 }
 
-function deriveRiskLevel(decision: PreflightDecision, hypothesisFlags: string[] = []): PreflightRiskLevel {
+function deriveRiskLevel(decision: LegacyPreflightDecision, hypothesisFlags: string[] = []): PreflightRiskLevel {
   if (decision === "needs_review") return "high";
   if (decision === "revise_first") return "medium";
   if (decision === "generate_ok") return hypothesisFlags.length > 0 ? "medium" : "low";
   return "unknown";
 }
 
-function buildSummary(decision: PreflightDecision, riskTags: string[], hypothesisFlags: string[]): string {
+function buildSummary(decision: LegacyPreflightDecision, riskTags: string[], hypothesisFlags: string[]): string {
   if (decision === "generate_ok") {
     return "This prompt looks constrained enough to try, but output quality is not guaranteed.";
   }
