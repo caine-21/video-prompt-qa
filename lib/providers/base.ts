@@ -132,7 +132,13 @@ export async function safeProviderCall<T>(
     return { success: true, data, provider };
   } catch (err) {
     const error = normalizeProviderError(err, provider, context);
-    console.warn("[ProviderError]", { provider, context, type: error.type, message: error.message, retryable: error.retryable });
+    console.warn(JSON.stringify({
+      type: "provider_error",
+      provider,
+      context,
+      error_type: error.type,
+      retryable: error.retryable,
+    }));
     emitProviderEvent({
       event: "provider_attempt_failed",
       provider,
